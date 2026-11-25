@@ -1,0 +1,8 @@
+{
+  "description": "Real Sun, Earth and Moon for one year",
+  "bodies": ["sun", "earth", "moon"],
+  "integrator": "ias15",
+  "duration_days": 365,
+  "output_interval_hours": 6,
+  "ejection_distance_km": 4500000
+}

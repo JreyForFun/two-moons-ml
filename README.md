@@ -36,6 +36,11 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\check_setup.py` | Checks the packages by simulating one simple orbit |
 | `venv\Scripts\python src\check_initial_state.py` | Checks the saved NASA data (add `--online` to ask NASA again) |
 | `venv\Scripts\python src\horizons.py` | Downloads the NASA data if it is not saved yet |
+| `venv\Scripts\python src\simulate.py` | Simulates the real Sun, Earth and Moon for one year |
+| `venv\Scripts\python src\check_events.py` | Checks collision and ejection detection |
+| `venv\Scripts\python src\fetch_reference.py` | Downloads NASA's Moon positions if not saved yet |
+| `venv\Scripts\python src\validate_real_system.py` | Compares the simulated Moon with NASA's |
+| `venv\Scripts\python src\plot_real_system.py` | Saves charts to `figures/` |
 
 ## Folders
 
@@ -49,6 +54,6 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 
 ## Known limitations
 
-Bodies are treated with Newtonian gravity only. Tides, Earth's equatorial bulge
+Bodies are treated with Newtonian gravity only. Other planets, tides, Earth's equatorial bulge
 and relativity are not modeled, so results should not be read as predictions
 over millions of years.
