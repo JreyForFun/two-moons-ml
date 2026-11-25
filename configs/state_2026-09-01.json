@@ -1,0 +1,70 @@
+{
+  "source": "NASA JPL Horizons via astroquery",
+  "astroquery_version": "0.4.11",
+  "retrieved_utc": "2026-11-25T15:22:45+00:00",
+  "epoch_tdb": "2026-09-01 00:00:00",
+  "epoch_jd_tdb": 2461284.5,
+  "center": "Solar System barycenter",
+  "frame": "ICRF axes rotated to the J2000 ecliptic",
+  "aberrations": "geometric (true positions, no light-time correction)",
+  "units": {
+    "position": "km",
+    "velocity": "km/s",
+    "gm": "km^3/s^2",
+    "radius": "km"
+  },
+  "gm_source": "JPL DE440 (Park et al., 2021)",
+  "bodies": {
+    "sun": {
+      "horizons_id": "10",
+      "gm_km3_s2": 132712440041.27942,
+      "radius_km": 695700.0,
+      "horizons_name": "Sun (10)",
+      "position_km": [
+        -213744.856115862,
+        -779753.0659967104,
+        14739.27542690479
+      ],
+      "velocity_km_s": [
+        0.010681862323840682,
+        0.003974867240281722,
+        -0.0002234000058526931
+      ],
+      "query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&EPHEM_TYPE=VECTORS&OUT_UNITS=AU-D&COMMAND=%2210%22&CSV_FORMAT=%22YES%22&REF_PLANE=ECLIPTIC&REF_SYSTEM=ICRF&TP_TYPE=ABSOLUTE&VEC_LABELS=YES&VEC_CORR=%22NONE%22&VEC_DELTA_T=NO&OBJ_DATA=YES&CENTER=%27500%400%27&TLIST=2461284.5"
+    },
+    "earth": {
+      "horizons_id": "399",
+      "gm_km3_s2": 398600.435507,
+      "radius_km": 6371.0084,
+      "horizons_name": "Earth (399)",
+      "position_km": [
+        139999643.31429315,
+        -56795553.24762839,
+        16918.40965371951
+      ],
+      "velocity_km_s": [
+        10.584222965357384,
+        27.54418612248029,
+        -0.002567766698064133
+      ],
+      "query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&EPHEM_TYPE=VECTORS&OUT_UNITS=AU-D&COMMAND=%22399%22&CSV_FORMAT=%22YES%22&REF_PLANE=ECLIPTIC&REF_SYSTEM=ICRF&TP_TYPE=ABSOLUTE&VEC_LABELS=YES&VEC_CORR=%22NONE%22&VEC_DELTA_T=NO&OBJ_DATA=YES&CENTER=%27500%400%27&TLIST=2461284.5"
+    },
+    "moon": {
+      "horizons_id": "301",
+      "gm_km3_s2": 4902.800118,
+      "radius_km": 1737.4,
+      "horizons_name": "Moon (301)",
+      "position_km": [
+        140340937.29915333,
+        -56636113.59370769,
+        45591.78274242208
+      ],
+      "velocity_km_s": [
+        10.111751270390593,
+        28.4701154848635,
+        0.04875870814811557
+      ],
+      "query_url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=text&EPHEM_TYPE=VECTORS&OUT_UNITS=AU-D&COMMAND=%22301%22&CSV_FORMAT=%22YES%22&REF_PLANE=ECLIPTIC&REF_SYSTEM=ICRF&TP_TYPE=ABSOLUTE&VEC_LABELS=YES&VEC_CORR=%22NONE%22&VEC_DELTA_T=NO&OBJ_DATA=YES&CENTER=%27500%400%27&TLIST=2461284.5"
+    }
+  }
+}

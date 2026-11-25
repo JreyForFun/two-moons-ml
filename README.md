@@ -50,6 +50,10 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\plot_single_run.py` | Saves charts of the run with a second moon |
 | `venv\Scripts\python src\animate.py` | Saves the orbit GIF (takes a few minutes) |
 | `venv\Scripts\python src\check_summary.py` | Checks the lightweight simulation mode and its settings |
+| `venv\Scripts\python src\check_sampling.py` | Checks the random second moons and labels |
+| `venv\Scripts\python src\check_generate.py` | Checks the batch runner |
+| `venv\Scripts\python src\generate_dataset.py configs\pilot.json` | Simulates many random second moons (can be stopped and resumed) |
+| `venv\Scripts\python src\analyze_pilot.py` | Summarizes the pilot runs |
 
 The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 

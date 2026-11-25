@@ -1,6 +1,7 @@
 """Get Sun, Earth and Moon starting states from NASA JPL Horizons.
 
 Run once from the project root:  venv/Scripts/python src/horizons.py
+Another start date:              venv/Scripts/python src/horizons.py --date 2026-05-01
 The result is saved to configs/initial_state.json. Everything else reads that
 file, so reruns need no internet and always start from identical numbers.
 """
@@ -26,7 +27,7 @@ BODIES = {
 }
 
 
-def fetch_state():
+def fetch_state(epoch_tdb=EPOCH_TDB):
     """Download the state vectors and return them as a JSON-ready dictionary."""
     # Imported here so that loading the saved file needs no astroquery/internet.
     import astropy.units as u
@@ -34,7 +35,7 @@ def fetch_state():
     from astropy.time import Time
     from astroquery.jplhorizons import Horizons
 
-    epoch_jd = Time(EPOCH_TDB, scale="tdb").jd
+    epoch_jd = Time(epoch_tdb, scale="tdb").jd
     bodies = {}
     for name, info in BODIES.items():
         query = Horizons(id=info["horizons_id"], location=CENTER, epochs=epoch_jd)
@@ -61,7 +62,7 @@ def fetch_state():
         "source": "NASA JPL Horizons via astroquery",
         "astroquery_version": astroquery.__version__,
         "retrieved_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "epoch_tdb": EPOCH_TDB,
+        "epoch_tdb": epoch_tdb,
         "epoch_jd_tdb": float(epoch_jd),
         "center": "Solar System barycenter",
         "frame": "ICRF axes rotated to the J2000 ecliptic",
@@ -81,18 +82,20 @@ def load_state(path=STATE_FILE):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--force", action="store_true", help="replace the saved file")
+    parser.add_argument("--date", help="start date like 2026-05-01, saved to its own file")
     args = parser.parse_args()
 
-    if STATE_FILE.exists() and not args.force:
-        print(f"{STATE_FILE.name} already exists. Use --force to replace it.")
+    path = ROOT / "configs" / f"state_{args.date}.json" if args.date else STATE_FILE
+    if path.exists() and not args.force:
+        print(f"{path.name} already exists. Use --force to replace it.")
         return
 
-    state = fetch_state()
-    STATE_FILE.parent.mkdir(exist_ok=True)
-    with open(STATE_FILE, "w", encoding="utf-8", newline="\n") as f:
+    state = fetch_state(f"{args.date} 00:00:00" if args.date else EPOCH_TDB)
+    path.parent.mkdir(exist_ok=True)
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(state, f, indent=2)
         f.write("\n")
-    print(f"Saved {STATE_FILE}")
+    print(f"Saved configs/{path.name}")
 
 
 if __name__ == "__main__":

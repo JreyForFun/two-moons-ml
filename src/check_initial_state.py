@@ -11,6 +11,7 @@ import argparse
 import math
 import sys
 import urllib.request
+from pathlib import Path
 
 import astropy.units as u
 import numpy as np
@@ -18,7 +19,7 @@ from astropy.coordinates import get_body_barycentric, solar_system_ephemeris
 from astropy.time import Time
 from astropy.utils import iers
 
-from horizons import load_state
+from horizons import STATE_FILE, load_state
 
 AU_KM = 149597870.7
 OBLIQUITY = math.radians(84381.448 / 3600)  # J2000 ecliptic tilt
@@ -82,9 +83,10 @@ def online_difference(body):
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--online", action="store_true", help="also ask Horizons again")
+    parser.add_argument("--state", type=Path, default=STATE_FILE, help="file to check")
     args = parser.parse_args()
 
-    state = load_state()
+    state = load_state(args.state)
     print(f"Date: {state['epoch_tdb']} TDB")
     sun_distance = np.linalg.norm(relative_state(state, "earth", "sun")[0])
     print(f"Earth-Sun distance: {sun_distance / AU_KM:.4f} AU")
