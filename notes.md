@@ -7,6 +7,8 @@ Material for the final LinkedIn post and a possible paper.
 - Simulated Moon vs NASA over one year: at most 10.3 km off (average 5.6 km), about
   0.003% of the Earth-Moon distance.
 - Same run without the Sun: up to 55,535 km off.
+- First second moon (0.1 lunar masses at 0.4 of the Moon's distance): survived 10 years,
+  staying 146,072 to 162,087 km from Earth. Computing time 4.1 s.
 
 _Planned: number of simulations, model accuracy, speedup of ML vs. simulation._
 
@@ -33,6 +35,11 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - 2026-11-25, step 3 (`src/check_events.py`): a Moon dropped from rest hits Earth at 4.384
   days (exact formula: 4.384), and one thrown outward at 3 km/s is labeled ejected.
 
+- 2026-11-25, step 4 (`src/check_second_moon.py`, limits set before the first run): orbit
+  matches its settings to 7.9e-14; a second moon of 1e-12 lunar masses shifts the Moon by at
+  most 59.2 mm in 10 years; reruns are bit-for-bit identical on this computer; collisions with
+  Earth and the Moon, and an ejection, are labeled correctly.
+
 ## Story moments
 
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
@@ -48,6 +55,8 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Starting positions: NASA JPL Horizons, fixed date 2026-01-01, saved to `configs/`.
 - Ejected means farther than 4.5 million km from Earth (about 3 Hill radii) and not bound
   to it, checked every 6 hours. Collisions are checked along the path of every step.
+- The second moon has the Moon's density. Its settings describe an orbit around Earth alone;
+  inclination is measured from the ecliptic. Distance unit: 384,400 km.
 - The Sun is included because it limits how far from Earth a moon can stay bound.
 - Integrator: IAS15, which adapts its time step during close encounters.
 - Before adding a second moon, the real Sun-Earth-Moon system is checked against known values.

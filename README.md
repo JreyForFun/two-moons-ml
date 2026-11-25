@@ -41,6 +41,8 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\fetch_reference.py` | Downloads NASA's Moon positions if not saved yet |
 | `venv\Scripts\python src\validate_real_system.py` | Compares the simulated Moon with NASA's |
 | `venv\Scripts\python src\plot_real_system.py` | Saves charts to `figures/` |
+| `venv\Scripts\python src\simulate.py configs\single_run.json` | Simulates 10 years with a second moon |
+| `venv\Scripts\python src\check_second_moon.py` | Checks the second moon's setup, collisions and ejection |
 
 ## Folders
 

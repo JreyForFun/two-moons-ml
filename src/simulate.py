@@ -8,6 +8,7 @@ Units: km, seconds, and GM instead of mass (so G = 1).
 import argparse
 import json
 import math
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -15,6 +16,7 @@ import numpy as np
 import rebound
 
 from horizons import ROOT, load_state
+from second_moon import add_second_moon
 
 DEFAULT_CONFIG = ROOT / "configs" / "real_system.json"
 DAY_S = 86400.0
@@ -92,6 +94,8 @@ def find_ejected(sim, config):
 
 def run(state, config):
     """Run one simulation until it ends, a collision or an ejection."""
+    if "moon2" in config["bodies"] and "second_moon" in config:
+        state = add_second_moon(state, config["second_moon"])
     names = list(config["bodies"])
     sim = build_simulation(state, config)
     collided = []
@@ -131,12 +135,18 @@ def main():
     parser.add_argument("config", nargs="?", type=Path, default=DEFAULT_CONFIG)
     args = parser.parse_args()
 
+    started = time.perf_counter()
     result = run(load_state(), load_config(args.config))
-    distance = np.linalg.norm(result.relative("moon"), axis=1)
+    seconds = time.perf_counter() - started
     print(f"Outcome: {result.outcome} {' + '.join(result.involved)}".rstrip())
     print(f"Simulated: {result.end_time_s / DAY_S:.2f} days, {len(result.times_s)} outputs")
-    print(f"Earth-Moon distance: {distance.min():,.0f} to {distance.max():,.0f} km")
+    for name in result.bodies:
+        if name not in ("sun", "earth"):
+            distance = np.linalg.norm(result.relative(name), axis=1)
+            print(f"Distance from Earth, {name}: "
+                  f"{distance.min():,.0f} to {distance.max():,.0f} km")
     print(f"Max relative energy error: {result.max_energy_error():.1e}")
+    print(f"Computing time: {seconds:.1f} s")
 
     output = ROOT / "data" / f"{args.config.stem}.npz"
     output.parent.mkdir(exist_ok=True)
