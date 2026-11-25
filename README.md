@@ -27,6 +27,16 @@ python3 -m venv venv
 venv/bin/python -m pip install -r requirements.txt
 ```
 
+## Run
+
+From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
+
+| Command | What it does |
+|---|---|
+| `venv\Scripts\python src\check_setup.py` | Checks the packages by simulating one simple orbit |
+| `venv\Scripts\python src\check_initial_state.py` | Checks the saved NASA data (add `--online` to ask NASA again) |
+| `venv\Scripts\python src\horizons.py` | Downloads the NASA data if it is not saved yet |
+
 ## Folders
 
 | Folder | Contents |

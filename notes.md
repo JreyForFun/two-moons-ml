@@ -8,6 +8,8 @@ _None yet. Planned: number of simulations, model accuracy, speedup of ML vs. sim
 
 ## Checks passed
 
+Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
+
 - 2026-11-25, REBOUND 5.2.3 with IAS15: a two-body test orbit returned to its start
   after one period (position error 3.0e-15 in units of the orbit's semi-major axis,
   relative energy error 4.3e-16).
