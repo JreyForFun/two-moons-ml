@@ -30,7 +30,7 @@ class Result:
     times_s: np.ndarray  # (n,)
     positions_km: np.ndarray  # (n, bodies, 3)
     energy: np.ndarray  # (n,)
-    outcome: str  # "survived", "collision" or "ejection"
+    outcome: str  # "survived", "collision", "ejection" or "timeout"
     involved: tuple  # names of the bodies that collided or were ejected
     end_time_s: float
 
@@ -41,6 +41,16 @@ class Result:
 
     def max_energy_error(self):
         return float(np.max(np.abs((self.energy - self.energy[0]) / self.energy[0])))
+
+
+@dataclass
+class Summary:
+    """Only the ending of a run."""
+
+    outcome: str
+    involved: tuple
+    end_time_s: float  # simulated time
+    computing_s: float  # time the computer needed
 
 
 def load_config(path=DEFAULT_CONFIG):
@@ -61,6 +71,8 @@ def build_simulation(state, config):
     sim = rebound.Simulation()
     sim.G = 1.0
     sim.integrator = config["integrator"]
+    if "epsilon" in config:  # IAS15 accuracy; REBOUND's default is 1e-9
+        sim.integrator.epsilon = config["epsilon"]
     sim.dt = 3600.0  # first guess only: IAS15 chooses its own steps
     for name in config["bodies"]:
         body = state["bodies"][name]
@@ -92,8 +104,11 @@ def find_ejected(sim, config):
     return None
 
 
-def run(state, config):
-    """Run one simulation until it ends, a collision or an ejection."""
+def _simulate(state, config):
+    """Advance one simulation, yielding (sim, outcome, involved) at every output.
+
+    The outcome is None until the last output of the run.
+    """
     if "moon2" in config["bodies"] and "second_moon" in config:
         state = add_second_moon(state, config["second_moon"])
     names = list(config["bodies"])
@@ -111,23 +126,44 @@ def run(state, config):
     sim.collision = "line"
     sim.collision_resolve = on_collision
 
-    times, positions, energy = [], [], []
-    outcome, involved = "survived", ()
-    for t in output_times(config):
+    started = time.perf_counter()
+    max_seconds = config.get("max_seconds", math.inf)
+    outputs = output_times(config)
+    for i, t in enumerate(outputs):
         sim.integrate(t)
+        if collided:
+            yield sim, "collision", tuple(sorted(collided[0]))
+            return
+        ejected = find_ejected(sim, config)
+        if ejected:
+            yield sim, "ejection", (ejected,)
+            return
+        if i == len(outputs) - 1:
+            yield sim, "survived", ()
+            return
+        if time.perf_counter() - started > max_seconds:
+            yield sim, "timeout", ()
+            return
+        yield sim, None, ()
+
+
+def run(state, config):
+    """Run one simulation and keep the whole trajectory."""
+    times, positions, energy = [], [], []
+    for sim, outcome, involved in _simulate(state, config):
         times.append(sim.t)
         positions.append([[p.x, p.y, p.z] for p in sim.particles])
         energy.append(sim.energy())
-        if collided:
-            outcome, involved = "collision", tuple(sorted(collided[0]))
-            break
-        ejected = find_ejected(sim, config)
-        if ejected:
-            outcome, involved = "ejection", (ejected,)
-            break
+    return Result(list(config["bodies"]), np.array(times), np.array(positions),
+                  np.array(energy), outcome, involved, times[-1])
 
-    return Result(names, np.array(times), np.array(positions), np.array(energy),
-                  outcome, involved, float(sim.t))
+
+def run_summary(state, config):
+    """Run one simulation and keep only how it ended (uses little memory)."""
+    started = time.perf_counter()
+    for sim, outcome, involved in _simulate(state, config):
+        pass
+    return Summary(outcome, involved, float(sim.t), time.perf_counter() - started)
 
 
 def main():

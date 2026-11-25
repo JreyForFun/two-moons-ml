@@ -7,7 +7,7 @@ model to predict the outcome from the starting conditions alone.
 Inspired by SPOCK (Tamayo et al., 2020), which uses ML to predict the stability
 of planetary systems.
 
-**Status:** Phase 1 (setup and first simulation) finished. Next: dataset generation.
+**Status:** Phase 2, dataset generation.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -29,6 +29,8 @@ python3 -m venv venv
 venv/bin/python -m pip install -r requirements.txt
 ```
 
+`requirements-lock.txt` lists every installed package version on the development computer (Windows).
+
 ## Run
 
 From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
@@ -47,6 +49,7 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\check_second_moon.py` | Checks the second moon's setup, collisions and ejection |
 | `venv\Scripts\python src\plot_single_run.py` | Saves charts of the run with a second moon |
 | `venv\Scripts\python src\animate.py` | Saves the orbit GIF (takes a few minutes) |
+| `venv\Scripts\python src\check_summary.py` | Checks the lightweight simulation mode and its settings |
 
 The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 
