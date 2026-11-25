@@ -9,6 +9,8 @@ Material for the final LinkedIn post and a possible paper.
 - Same run without the Sun: up to 55,535 km off.
 - First second moon (0.1 lunar masses at 0.4 of the Moon's distance): survived 10 years,
   staying 146,072 to 162,087 km from Earth. Computing time 4.1 s.
+- That second moon's distance range grew from 5,847 km (first year) to 14,726 km (last year),
+  about 2.5 times (`src/plot_single_run.py`).
 
 _Planned: number of simulations, model accuracy, speedup of ML vs. simulation._
 
@@ -45,8 +47,13 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
 
+- The first two-moon run "survived", but plotting it showed the second moon's orbit stretching.
+  The outcome label alone would have hidden that.
+
 ## Best figures
 
+- `figures/two_moons.gif`: 60 days of both moons.
+- `figures/two_moons_distance.png`: the second moon's orbit stretching over 10 years.
 - `figures/real_moon_error.png`: with vs without the Sun.
 - `figures/real_moon_orbit.png`: one year of the Moon's path, with NASA's positions.
 
@@ -60,6 +67,13 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - The Sun is included because it limits how far from Earth a moon can stay bound.
 - Integrator: IAS15, which adapts its time step during close encounters.
 - Before adding a second moon, the real Sun-Earth-Moon system is checked against known values.
+
+## Questions for Phase 2
+
+- How long must a moon survive to count as stable?
+- Do outcomes stay the same with stricter integrator settings?
+- Do outcomes depend on the starting date?
+- Does the orbit stretching keep growing, or swing back?
 
 ## Limitations to state in a paper
 

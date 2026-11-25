@@ -3,44 +3,15 @@
 Run:  venv/Scripts/python src/plot_real_system.py
 """
 
-import matplotlib
-
-matplotlib.use("Agg")  # save files without opening a window
 import matplotlib.pyplot as plt
 
-from horizons import ROOT
+from plot_style import (
+    BLUE, INK, MUTED_INK, ORANGE, SURFACE, add_legend, new_chart, save, set_titles,
+)
 from simulate import DAY_S
 from validate_real_system import compare
 
-FIGURES = ROOT / "figures"
-BLUE, ORANGE = "#2a78d6", "#eb6834"  # checked for color-blind readers
-SURFACE, INK, MUTED_INK, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#e1e0d9"
 NASA_DOT_EVERY = 20  # outputs; 20 x 6 hours = 5 days
-
-
-def new_chart(width, height):
-    fig, ax = plt.subplots(figsize=(width, height), layout="constrained")
-    fig.set_facecolor(SURFACE)
-    ax.set_facecolor(SURFACE)
-    ax.grid(color=GRID, linewidth=0.8)
-    ax.set_axisbelow(True)
-    ax.tick_params(which="both", colors=MUTED_INK, length=0)
-    for spine in ax.spines.values():
-        spine.set_visible(False)
-    return fig, ax
-
-
-def set_titles(ax, title, subtitle):
-    ax.set_title(f"{title}\n", loc="left", color=INK, fontsize=14, fontweight="bold")
-    ax.text(0, 1.015, subtitle, transform=ax.transAxes, color=MUTED_INK, fontsize=10)
-
-
-def save(fig, name):
-    FIGURES.mkdir(exist_ok=True)
-    path = FIGURES / name
-    fig.savefig(path, dpi=160)
-    plt.close(fig)
-    print(f"Saved {path}")
 
 
 def plot_orbit(c):
@@ -56,11 +27,10 @@ def plot_orbit(c):
     ax.set_aspect("equal")
     ax.set_xlabel("x (thousand km)", color=MUTED_INK)
     ax.set_ylabel("y (thousand km)", color=MUTED_INK)
-    ax.legend(loc="upper right", frameon=True, facecolor=SURFACE, edgecolor=GRID,
-              framealpha=1, labelcolor=INK)
+    add_legend(ax, loc="upper right")
     set_titles(ax, "The Moon's path around Earth, 2026",
                "One year seen from above, on the plane of Earth's orbit")
-    save(fig, "real_moon_orbit.png")
+    return fig
 
 
 def plot_error(c):
@@ -82,17 +52,17 @@ def plot_error(c):
     ax.yaxis.set_major_formatter(lambda value, _: f"{value:,.10g}")
     ax.set_xlabel("Days since 2026-01-01", color=MUTED_INK)
     ax.set_ylabel("Distance from NASA's Moon (km, log scale)", color=MUTED_INK)
-    ax.legend(loc="lower right", frameon=True, facecolor=SURFACE, edgecolor=GRID,
-              framealpha=1, labelcolor=INK)
+    add_legend(ax, loc="lower right")
     set_titles(ax, "The Moon's orbit needs the Sun",
                "Position error of our simulation compared with NASA JPL Horizons")
-    save(fig, "real_moon_error.png")
+    return fig
 
 
 def main():
+    plt.switch_backend("Agg")  # save files without opening a window
     comparison = compare()
-    plot_orbit(comparison)
-    plot_error(comparison)
+    save(plot_orbit(comparison), "real_moon_orbit.png")
+    save(plot_error(comparison), "real_moon_error.png")
 
 
 if __name__ == "__main__":
