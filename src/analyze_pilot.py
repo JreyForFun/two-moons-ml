@@ -90,8 +90,10 @@ def plot_outcomes(a):
     ax.minorticks_off()
     ax.set_yticks(range(0, 181, 30))
     ax.axhline(90, color=INK, linewidth=0.8)
-    ax.text(0.1, 92, "backward", color=MUTED_INK, fontsize=9, va="bottom")
-    ax.text(0.1, 88, "forward", color=MUTED_INK, fontsize=9, va="top")
+    for y, text in ((97, "backward"), (83, "forward")):
+        ax.annotate(text, (1, y), xycoords=("axes fraction", "data"), xytext=(6, 0),
+                    textcoords="offset points", color=MUTED_INK, fontsize=9, va="center",
+                    annotation_clip=False)
     ax.set_xlabel("Starting distance (1 = our Moon's, log scale)", color=MUTED_INK)
     ax.set_ylabel("Tilt (degrees)", color=MUTED_INK)
     add_legend(ax, loc="upper right")
@@ -111,9 +113,9 @@ def plot_survival(a):
     fig, ax = new_chart(8.5, 4.5)
     ax.step(years, share, where="post", color=BLUE, linewidth=2)
     ax.set_xscale("log")
-    ticks = [0.01, 0.1, 1, 10, 100]
+    ticks = [0.1, 1, 10, 100]
     ax.set_xticks(ticks, [str(t) for t in ticks])
-    ax.set_xlim(0.01, 100)
+    ax.set_xlim(0.1, 100)
     ax.set_ylim(0, 102)
     ax.set_xlabel("Years (log scale)", color=MUTED_INK)
     ax.set_ylabel("Still there (%)", color=MUTED_INK)
@@ -170,6 +172,19 @@ def main():
     errors = sum(r["result_label"] == "error" for r in a.values())
     print(f"\n\nTimeouts: {timeouts} ({'fine' if timeouts <= MAX_TIMEOUTS * n else 'too many'}), "
           f"errors: {errors}")
+
+    print()
+    print("ADDED AFTER SEEING THE RESULTS (not part of the rules)")
+    for years in LIMITS_YEARS:
+        print(f"  Chaos, {years:3d} years, C vs A: {describe(*agreement(a, c, years))}")
+    for low, high in ((0, 40), (40, 90), (90, 140), (140, 180)):
+        rows = [r for r in a.values() if low <= float(r["input_inclination_deg"]) < high]
+        counts = Counter(r["result_label"] for r in rows)
+        print(f"  Tilt {low:3d}-{high:3d}, {len(rows):2d} moons: {dict(counts.most_common())}")
+    for low, high in ((0.1, 0.3), (0.3, 1), (1, 3)):
+        rows = [r for r in a.values() if low <= float(r["input_distance_lunar"]) < high]
+        counts = Counter(r["result_label"] for r in rows)
+        print(f"  Distance {low}-{high}, {len(rows):2d} moons: {dict(counts.most_common())}")
 
     plt.switch_backend("Agg")  # save files without opening a window
     save(plot_outcomes(a), "pilot_outcomes.png")

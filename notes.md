@@ -42,7 +42,25 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
   most 59.2 mm in 10 years; reruns are bit-for-bit identical on this computer; collisions with
   Earth and the Moon, and an ejection, are labeled correctly.
 
+## Pilot (2026-11-25, `src/analyze_pilot.py`, rules set before the runs)
+
+- 100 random second moons, up to 100 years: hit Earth 42, ejected 38, survived 18,
+  hit the Moon 1, real Moon lost 1. No timeouts or errors. Median 1.2 s per moon.
+- Survived: 45 after 10 years, 28 after 30, 18 after 100. It keeps falling.
+- Moving a moon by 1 meter changed 12 of 100 outcomes at 100 years (9 at 10 years).
+  Stricter integrator settings changed 6, so the default (1e-9) is kept.
+- The plan called the 88% agreement a ceiling for ML. That is not quite right: if outcomes are
+  partly random, the best possible model can score somewhat above 88%. Treat it as a guide.
+- Other start dates agreed on 27/30 and 26/30; the 1 meter shift on 28/30 of the same moons. Not
+  clearly different, but 30 moons is a small test.
+- Time limit rule: 100 years fits (about 2.4 hours for 5,000 moons).
+- Added after seeing results: only 7 of 100 moons had a tilt under 40 degrees, so near-flat
+  orbits are thinly covered by the uniform cos(tilt) sampling.
+
 ## Story moments
+
+- Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
+  what any model can predict.
 
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
@@ -52,6 +70,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 ## Best figures
 
+- `figures/pilot_outcomes.png`, `figures/pilot_survival.png`: pilot results.
 - `figures/two_moons.gif`: 60 days of both moons.
 - `figures/two_moons_distance.png`: the second moon's orbit stretching over 10 years.
 - `figures/real_moon_error.png`: with vs without the Sun.
