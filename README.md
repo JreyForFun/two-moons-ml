@@ -101,6 +101,13 @@ command again.
 | `venv\Scripts\python src\long_run.py` | Follows the first second moon for 1,000 years |
 | `venv\Scripts\python src\paper_numbers.py` | Prints every derived number quoted in the paper |
 
+### Phase 4: surrogate models
+
+| Command | What it does |
+|---|---|
+| `venv\Scripts\python src\select_twins.py` | Chooses 1,500 training moons to re-simulate with a 1 m nudge (run once) |
+| `venv\Scripts\python src\generate_dataset.py configs\twins_1m.json` | Simulates the chaos twins (about 40 minutes) |
+
 ### Checks (each prints PASS or FAIL)
 
 | Command | What it checks |
@@ -114,6 +121,7 @@ command again.
 | `venv\Scripts\python src\check_generate.py` | The batch runner: workers, resuming, chosen ids |
 | `venv\Scripts\python src\check_dataset.py configs\dataset.json` | The finished dataset, including 20 re-simulated moons |
 | `venv\Scripts\python src\check_explore.py` | The test split and the exploration helpers |
+| `venv\Scripts\python src\check_models.py` | Model inputs, targets and cross-validation: leaks, test-set guard, reproducibility |
 
 ## Code layout
 
