@@ -136,7 +136,10 @@ def generate(config, path, workers=DEFAULT_WORKERS, stop_after=None):
     with open(state_path(config), encoding="utf-8") as f:
         state = json.load(f)
     done = prepare_output(path, config, state)
-    tasks = [(i, state, config) for i in range(config["count"]) if i not in done]
+    # An optional "ids" list simulates chosen moons (same seed, so the same moons as the
+    # dataset) instead of moons 0 to count-1.
+    wanted = config["ids"] if "ids" in config else range(config["count"])
+    tasks = [(i, state, config) for i in wanted if i not in done]
     print(f"{len(done)} finished before, {len(tasks)} to do, {workers} workers", flush=True)
     if not tasks:
         return 0

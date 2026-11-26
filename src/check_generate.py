@@ -61,6 +61,17 @@ def check_changed_settings_refused(config, folder):
     return path.read_bytes() == before, "seed, accuracy and duration changes refused"
 
 
+def check_chosen_ids(config, folder):
+    """An "ids" list simulates exactly those moons, identical to a normal batch."""
+    path = folder / "chosen.csv"
+    added = generate({**config, "ids": [7, 2, 5]}, path, workers=2)
+    chosen = comparable(path)
+    normal = {row["id"]: row for row in comparable(folder / "one.csv")}
+    same = [row["id"] for row in chosen] == ["2", "5", "7"] and all(
+        row == normal[row["id"]] for row in chosen)
+    return added == 3 and same, "moons 2, 5 and 7 only, identical to the full batch"
+
+
 def check_error_is_recorded(config, folder):
     broken = {**config, "integrator": "does-not-exist"}
     row = simulate_one((0, load_state(), broken))
@@ -87,6 +98,7 @@ def main():
             ("Stop, crash and resume", check_resume),
             ("Longer batch", check_longer_batch),
             ("Changed settings are refused", check_changed_settings_refused),
+            ("Chosen ids", check_chosen_ids),
             ("Error is recorded", check_error_is_recorded),
             ("Columns", check_columns),
         ):
