@@ -54,20 +54,27 @@ def fingerprint(config, state):
     return hashlib.sha256(text.encode()).hexdigest()[:16]
 
 
+def make_inputs(state, config, moon_id):
+    """Return (case, input columns) for one moon, exactly as saved in the CSV."""
+    case, settings, redraws = build_case(state, config, moon_id)
+    earth, moon2 = case["bodies"]["earth"], case["bodies"]["moon2"]
+    vectors = np.concatenate([
+        np.array(moon2["position_km"]) - np.array(earth["position_km"]),
+        np.array(moon2["velocity_km_s"]) - np.array(earth["velocity_km_s"]),
+    ])
+    inputs = {f"input_{name}": repr(settings[name]) for name in SETTINGS}
+    inputs.update({f"input_{n}": repr(float(v)) for n, v in zip(VECTORS, vectors)})
+    inputs["sampling_redraws"] = redraws
+    return case, inputs
+
+
 def simulate_one(task):
     """Run one moon. Runs inside a worker process and never raises."""
     moon_id, state, config = task
     row = {"id": moon_id}
     try:
-        case, settings, redraws = build_case(state, config, moon_id)
-        earth, moon2 = case["bodies"]["earth"], case["bodies"]["moon2"]
-        vectors = np.concatenate([
-            np.array(moon2["position_km"]) - np.array(earth["position_km"]),
-            np.array(moon2["velocity_km_s"]) - np.array(earth["velocity_km_s"]),
-        ])
-        row.update({f"input_{name}": repr(settings[name]) for name in SETTINGS})
-        row.update({f"input_{n}": repr(float(v)) for n, v in zip(VECTORS, vectors)})
-        row["sampling_redraws"] = redraws
+        case, inputs = make_inputs(state, config, moon_id)
+        row.update(inputs)
         summary = run_summary(case, config)
         row.update({
             "result_label": make_label(summary.outcome, summary.involved),

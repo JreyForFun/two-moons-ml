@@ -12,7 +12,12 @@ Material for the final LinkedIn post and a possible paper.
 - That second moon's distance range grew from 5,847 km (first year) to 14,726 km (last year),
   about 2.5 times (`src/plot_single_run.py`).
 
-_Planned: number of simulations, model accuracy, speedup of ML vs. simulation._
+- Full dataset: 12,000 simulated second moons, up to 100 years each. 20.8 CPU-hours,
+  5.2 hours on a laptop with 4 workers. Median 1.5 s per moon, longest 104 s.
+- Outcomes: survived 38.0%, ejected 32.0%, hit Earth 27.4%, hit the Moon 1.4%,
+  real Moon lost 1.2%. No timeouts or errors.
+
+_Planned: model accuracy, speedup of ML vs. simulation._
 
 ## Checks passed
 
@@ -57,10 +62,26 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Added after seeing results: only 7 of 100 moons had a tilt under 40 degrees, so near-flat
   orbits are thinly covered by the uniform cos(tilt) sampling.
 
+## Full dataset (2026-11-26, `configs/dataset.json`)
+
+- 12,000 moons, seed 20261126 (not the pilot's), tilt spread evenly in degrees, 100-year limit,
+  default integrator settings, one start date. Started 10:38, finished 15:50, never restarted.
+- `src/check_dataset.py` passed: no repeated or missing ids, all inputs in range and rebuilt
+  exactly from the seed, labels match outcomes, and 20 random moons rerun gave identical results.
+- `configs/dataset_manifest.json` holds the CSV's SHA-256 (37add84e...), counts and versions.
+- Survived 38% here vs 18% in the pilot (95% interval about 12% to 27%). The tilt sampling
+  changed between them, giving more nearly flat orbits. Whether that explains it is a Phase 3 question.
+- Hit the Moon (1.4%) and real Moon lost (1.2%) are under the 2% rule set in the plan:
+  merge them or sample more of their region. Decide in Phase 4.
+- Survivors are censored: "survived" means at least 100 years, not forever.
+
 ## Story moments
 
 - Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
   what any model can predict.
+
+- The full run's first speed reading promised 11 hours. It took 5.2. The laptop was on battery
+  at the start, and the first few dozen moons were not a fair sample.
 
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
@@ -87,12 +108,18 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Integrator: IAS15, which adapts its time step during close encounters.
 - Before adding a second moon, the real Sun-Earth-Moon system is checked against known values.
 
-## Questions for Phase 2
+## Phase 2 answers
 
-- How long must a moon survive to count as stable?
-- Do outcomes stay the same with stricter integrator settings?
-- Do outcomes depend on the starting date?
-- Does the orbit stretching keep growing, or swing back?
+- How long counts as stable? 100 years (the longest limit that fit the time budget).
+- Stricter integrator settings? Changed fewer outcomes than a 1 meter shift, so the default is kept.
+- Start date? No clear effect in the pilot (30 moons per date), so one date is used.
+
+## Questions for Phase 3
+
+- Why did 38% survive here but 18% in the pilot? Is it the flatter orbits?
+- Which distances and tilts are safe? (stability maps)
+- Do backward orbits survive more often than forward ones?
+- Does the orbit stretching keep growing, or swing back? (still open from Phase 1)
 
 ## Limitations to state in a paper
 

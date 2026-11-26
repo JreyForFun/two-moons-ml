@@ -1,0 +1,49 @@
+{
+  "description": "Full dataset: 12,000 random second moons for up to 100 years",
+  "created": "2026-11-26",
+  "data_file": "data/dataset.csv",
+  "data_sha256": "37add84e980602cc1c652cf3bdb596812212527ca230a6d64f5da07f7329e01d",
+  "data_bytes": 3566058,
+  "rows": 12000,
+  "config_file": "configs/dataset.json",
+  "config_sha256": "02eae2a87faee1965c8805e89edbbb761f81466b107c78e9b80fba4108e84b62",
+  "state_file": "configs/initial_state.json",
+  "state_sha256": "9b4b825e365338754970c65ada845019f186849ac0d4a276cc63d0745ddd9f77",
+  "fingerprint": "922d3b678caeb45e",
+  "labels": {
+    "survived": 4554,
+    "hit_earth": 3288,
+    "hit_moon": 171,
+    "ejected": 3841,
+    "moon_lost": 146,
+    "other": 0,
+    "timeout": 0,
+    "error": 0
+  },
+  "censored_note": "survived = still there at the time limit (lasted at least that long)",
+  "computing": {
+    "cpu_hours": 20.77,
+    "median_s_per_moon": 1.456,
+    "largest_s": 103.843,
+    "started": "2026-11-26 10:38",
+    "finished": "2026-11-26 15:50",
+    "workers": 4,
+    "times_started": 1
+  },
+  "environment": {
+    "python": "3.14.6",
+    "system": "Windows 11",
+    "machine": "AMD64",
+    "packages": {
+      "rebound": "5.2.3",
+      "astroquery": "0.4.11",
+      "astropy": "8.0.3",
+      "numpy": "2.5.5",
+      "matplotlib": "3.11.2",
+      "pillow": "13.0.0",
+      "jupyter": "1.1.1"
+    },
+    "full_list": "requirements-lock.txt",
+    "full_list_sha256": "7eaef94f9dc2283932b7387d26022662e05fc8a205d1703a7c763155b2679a2e"
+  }
+}

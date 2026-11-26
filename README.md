@@ -7,7 +7,7 @@ model to predict the outcome from the starting conditions alone.
 Inspired by SPOCK (Tamayo et al., 2020), which uses ML to predict the stability
 of planetary systems.
 
-**Status:** Phase 2, dataset generation.
+**Status:** Phase 2 finished (12,000 simulated second moons). Next: Phase 3, exploration and stability maps.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -54,6 +54,9 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\check_generate.py` | Checks the batch runner |
 | `venv\Scripts\python src\generate_dataset.py configs\pilot.json` | Simulates many random second moons (can be stopped and resumed) |
 | `venv\Scripts\python src\analyze_pilot.py` | Summarizes the pilot runs |
+| `venv\Scripts\python src\generate_dataset.py configs\dataset.json` | Makes the full dataset (about 5 hours with 4 workers) |
+| `venv\Scripts\python src\make_manifest.py configs\dataset.json` | Records the dataset's SHA-256, counts and versions |
+| `venv\Scripts\python src\check_dataset.py configs\dataset.json` | Checks the dataset and reruns 20 random moons |
 
 The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 
@@ -65,7 +68,7 @@ The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 | `src/` | Reusable code |
 | `notebooks/` | Exploration |
 | `figures/` | Charts and animations |
-| `data/` | Generated simulation results (not stored in Git) |
+| `data/` | Generated simulation results (not stored in Git; `configs/dataset_manifest.json` describes them) |
 
 ## Known limitations
 
