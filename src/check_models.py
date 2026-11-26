@@ -9,6 +9,7 @@ import re
 import sys
 
 import numpy as np
+import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 
 from cv import macro_f1, run_cv
@@ -109,6 +110,23 @@ def check_xgboost_wrapper(df):
     return ok, "probabilities sum to 1; balancing changes the model"
 
 
+def check_twins(df):
+    """Each twin equals its original moon except for the 1 m shift in x."""
+    path = ROOT / "data" / "twins_1m.csv"
+    if not path.exists():
+        return True, "no twins file yet (skipped)"
+    twins = pd.read_csv(path, keep_default_na=False).set_index("id")
+    original = df.set_index("id").loc[twins.index]
+    settings = [c for c in twins.columns if c.startswith("input_") and c != "input_x_km"]
+    same = all(np.array_equal(twins[c].to_numpy(float), original[c].to_numpy(float))
+               for c in settings)
+    shift = (twins["input_x_km"].astype(float) - original["input_x_km"]).to_numpy()
+    timeouts = int(twins["result_label"].isin(["timeout", "error"]).sum())
+    ok = same and np.allclose(shift, 0.001, atol=1e-9) and timeouts == 0
+    return ok, (f"{len(twins):,} twins: other inputs identical, x shifted by "
+                f"{shift.mean() * 1000:.6f} m, {timeouts} timeouts or errors")
+
+
 def main():
     df = training_data()
     passed = True
@@ -122,6 +140,7 @@ def main():
         ("Reproducible", lambda: check_reproducible(df)),
         ("Label permutation", lambda: check_label_permutation(df)),
         ("XGBoost wrapper", lambda: check_xgboost_wrapper(df)),
+        ("Chaos twins", lambda: check_twins(df)),
     ):
         ok, detail = check()
         passed &= bool(ok)
