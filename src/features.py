@@ -11,7 +11,6 @@ import numpy as np
 
 from explore import SPLIT_FILE, load_dataset
 from horizons import ROOT, load_state
-from second_moon import LUNAR_DISTANCE_KM
 
 CONFIG = ROOT / "configs" / "models.json"
 INPUT_VECTORS = ("input_x_km", "input_y_km", "input_z_km",
