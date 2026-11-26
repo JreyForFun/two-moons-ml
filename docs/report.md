@@ -384,7 +384,7 @@ parameters alone, evaluated without touching the held-out test set.
 | 4.4 | Nested model comparison (rules P2, P3, P6), final settings, lifetime task | `975d7fb` |
 | 4.5 | Analysis (`src/analyze_models.py`): chaos reference, rules P4 and P5, learning curve, importance, Phase 5 criteria | `975d7fb` |
 | 4.6 | Figures (`src/plot_models.py`) | `975d7fb` |
-| 4.7 | `notebooks/03_models.ipynb` and documentation | see Git history |
+| 4.7 | `notebooks/03_models.ipynb` and documentation | `84b34cd` |
 
 ### Method
 
