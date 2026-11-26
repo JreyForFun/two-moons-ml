@@ -30,8 +30,8 @@ ephemeris to within 10.3~km over one year. In the full sample, 38.0\% of second 
 second moon by 1~m changes 12\% of outcomes, setting an empirical limit on predictability.
 Second moons survive mainly on close, low-inclination orbits; near-polar orbits are driven into
 Earth, consistent with Lidov--Kozai cycles, and orbits reaching the Moon's are ejected or collide.
-The Moon, rather than the Sun, sets the outer limit, and only retrograde moons survive beyond the
-Moon's orbit. About a fifth of 100-year survivors are lost by 1,000 years. A Random Forest
+The Moon, rather than the Sun, sets the outer limit, and nearly all survivors beyond the
+Moon's orbit are retrograde. About a fifth of 100-year survivors are lost by 1,000 years. A Random Forest
 trained on the initial parameters predicts the outcome with 85.0\% cross-validated accuracy
 (macro-F1 0.72), against 79.5\% for a two-variable physics rule and 37.9\% for the majority class,
 with calibrated survival probabilities (ROC AUC 0.985). Re-simulating 1,500 systems with a 1~m
@@ -350,7 +350,7 @@ the Moon for both orbit directions and therefore misses the retrograde survival 
 orbit, which we report as a descriptive finding. A criterion based on survival beyond one lunar
 distance would be the appropriate test in future work.
 
-The model has several limitations. Bodies interact through Newtonian point-mass gravity only:
+The physical model has several limitations. Bodies interact through Newtonian point-mass gravity only:
 tides, Earth's oblateness, general relativity and the other planets are omitted. These effects
 are small over the 100-year integrations, as the validation error shows, but they would matter
 over longer timescales and for orbits close to Earth. ``Survived'' denotes survival for 100 years,

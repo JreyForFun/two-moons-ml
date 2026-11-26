@@ -299,7 +299,7 @@ def direction_plot(df, r2):
     ax.set_xlabel("Semi-major axis (Hill radii, log scale)", color=MUTED_INK)
     ax.set_ylabel("Surviving 100 years (%)", color=MUTED_INK)
     add_legend(ax, loc="lower left")
-    set_titles(ax, "Beyond the Moon, only retrograde second moons survive",
+    set_titles(ax, "Beyond the Moon, nearly all surviving second moons are retrograde",
                "Training moons by semi-major axis bin; bands are 95% Wilson intervals")
     return fig
 

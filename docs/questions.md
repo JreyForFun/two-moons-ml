@@ -121,12 +121,13 @@ Earth-relative state vector) or `result_` (label, raw outcome, survival time, co
 
 **Q21. Are the classes balanced?** *Answered.*
 No: `survived` 38.0%, `ejected` 32.0%, `hit_earth` 27.4%, `hit_moon` 1.4%, `moon_lost` 1.2%. Phase 4
-will decide between merging the rare classes and targeted sampling, and will report per-class
-metrics.
+merged the two rare classes into `moon_interaction` (Q39), used macro-F1 as the primary metric so
+every class counts equally, and reports per-class precision and recall.
 
 **Q22. What is the baseline to beat?** *Answered.*
-The majority-class baseline (always `survived`) scores 38.0% accuracy. A Random Forest will be
-the first learned baseline.
+Two baselines: the majority class (always `survived`; 37.9% accuracy, macro-F1 0.138 on the
+training set) and a physics rule, a depth-3 tree on apoapsis and |cos *i*| only (79.5%, macro-F1
+0.597). The selected Random Forest beats both (85.0%, macro-F1 0.723).
 
 **Q23. Can the dataset be trusted?** *Answered.*
 `src/check_dataset.py` passes: no duplicate or missing ids, all parameters in range, all inputs
@@ -142,8 +143,8 @@ It was based on the first few dozen moons, computed while the machine was on bat
 reduced processor speed. Small early samples give unreliable estimates.
 
 **Q26. Why are both orbital elements and state vectors stored?** *Answered.*
-They describe the same starting orbit in two forms. Comparing models trained on each (Phase 4)
-shows which representation is easier to learn from.
+They describe the same starting orbit in two forms, so the two representations can be compared.
+Phase 4 found orbital elements much easier to learn from (Q33).
 
 **Q27. Why did 38% survive in the full dataset but only 18% in the pilot?** *Answered.*
 Mostly sampling design, plus a small and unlucky pilot. Reweighting the training moons to the
@@ -162,8 +163,8 @@ Evidence: `src/plot_dataset.py`, `src/compare_pilot.py`, [technical report](repo
 **Q28. Which semi-major axes and inclinations allow survival?** *Answered.*
 Close, low-inclination orbits: 96.5% of moons inside 0.5 lunar distances with inclinations below
 45° or above 135° survive 100 years. Near-polar orbits fail at every distance (Q37), and orbits
-reaching the Moon's orbit rarely survive (3.0%). Beyond about 0.75 lunar distances only
-retrograde orbits survive (Q29). The maps reproduce across independent halves of the data
+reaching the Moon's orbit rarely survive (3.0%). Beyond about 0.75 lunar distances survivors
+are almost all retrograde (Q29). The maps reproduce across independent halves of the data
 (correlation 0.991).
 Evidence: [stability_map.png](figures.md#stability_mappng),
 [stability_map_eccentricity.png](figures.md#stability_map_eccentricitypng).

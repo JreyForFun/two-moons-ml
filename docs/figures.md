@@ -185,8 +185,8 @@ half of Earth's Hill radius. Every cell holds 44 to 93 moons.
   always (96.5%).
 - A pale band around 90° runs across all distances: near-polar orbits rarely survive, even close to
   Earth.
-- Beyond about 0.75 lunar distances the map is pale for prograde orbits; only near-planar
-  retrograde orbits (above 135°) keep some survival beyond the Moon's orbit.
+- Beyond about 0.75 lunar distances the map is pale for prograde orbits (0.3% survive beyond
+  the Moon's orbit); near-planar retrograde orbits (above 135°) keep substantial survival there.
 
 **Interpretation.** Survival is structured by three mechanisms: close encounters with the Moon
 (orbits reaching its distance), Lidov–Kozai cycles for strongly inclined orbits, and the greater

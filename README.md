@@ -24,7 +24,8 @@ evaluation on the held-out test set.
 - **Chaos limits prediction:** moving a second moon by 1 meter changes 12% of outcomes.
 - **Where second moons survive:** close, low-inclination orbits (96.5% survive). Near-polar
   orbits are driven into Earth (99.1%), consistent with Lidov–Kozai cycles; orbits reaching the
-  Moon's are ejected or collide. Beyond the Moon's orbit, only retrograde moons survive.
+  Moon's are ejected or collide. Beyond the Moon's orbit, survivors are almost all retrograde (11.4% of
+  retrograde vs 0.3% of prograde moons survive).
 - **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
 - **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting values
   with 85.0% cross-validated accuracy (physics rule 79.5%, majority class 37.9%) and calibrated
@@ -35,7 +36,7 @@ evaluation on the held-out test set.
 
 | Document | Contents |
 |---|---|
-| [docs/report.md](docs/report.md) | Technical report: methods, results and decisions, phase by phase |
+| [docs/report.md](docs/report.md) | Technical report: key findings, then methods, results and decisions phase by phase |
 | [docs/questions.md](docs/questions.md) | Design decisions and open questions, with evidence |
 | [docs/figures.md](docs/figures.md) | How to read every figure |
 | [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
@@ -163,6 +164,8 @@ Shared modules used by the scripts above:
   its own generator, so results do not depend on the order in which simulations finish.
 - 2,400 systems (20%, `configs/split.json`) are held out for the final model evaluation and are
   not used for exploration or model development.
+- Model results in `data/phase4/` are regenerated with `src/train_models.py`; the selected model's
+  settings and the pre-registered Phase 5 criteria are stored in `configs/selected_model.json`.
 
 ## Folders
 

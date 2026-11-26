@@ -151,7 +151,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 ## Best figures
 
 - `figures/stability_map.png`: the headline figure (where second moons survive).
-- `figures/survival_by_direction.png`: only retrograde moons survive beyond the Moon.
+- `figures/survival_by_direction.png`: beyond the Moon, survivors are almost all retrograde.
 - `figures/outcome_maps.png`: what happens instead, region by region.
 - `figures/first_moon_long_term.png`: 1,000 years of the first second moon.
 - `figures/predicted_map.png`: the model reproduces the stability map from starting values alone.
@@ -185,7 +185,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 - 38% vs 18%: tilt sampling (−8.2 points), the pilot's particular moons (−4.3), noise (−7.4).
 - Safe orbits: close and low-tilt; near-polar and Moon-crossing orbits fail.
-- Backward orbits: same outer 10% survival edge, but only they survive beyond the Moon.
+- Backward orbits: same outer 10% survival edge, but almost all survivors beyond the Moon (11.4% vs 0.3%).
 - Orbit stretching: a bounded ~17-year cycle.
 
 ## Phase 4 answers

@@ -7,6 +7,36 @@ design decisions and open questions are collected in [questions.md](questions.md
 **Status (2026-11-27):** Phase 4 (surrogate models) complete. Phase 5 (test-set evaluation) next.
 A manuscript draft covering Phases 1 to 4 is in [`paper/`](../paper/README.md).
 
+## Key findings
+
+Evidence strength:
+- **Verified:** an automated check or a direct measurement.
+- **Rule met** or **rule not met:** a pre-registered criterion, reported either way.
+- **Descriptive:** a pattern identified after inspecting the data.
+
+Model scores are cross-validated on the training set and await the Phase 5 test evaluation.
+
+| # | Finding | Key numbers | Evidence | Figure |
+|---|---|---|---|---|
+| 1 | The simulation reproduces the real Moon, and the Sun is essential | 10.3 km error after one year; 55,535 km without the Sun | Verified | [real_moon_error](figures.md#real_moon_errorpng) |
+| 2 | Most random second moons do not last; the share depends on the sampling design | 38.0% survive 100 years (29.7% with isotropic inclinations); 32.0% ejected; 27.4% hit Earth | Verified | [stability_map](figures.md#stability_mappng) |
+| 3 | Chaos limits predictability, mainly near the Moon's orbit | A 1 m nudge changes 7.7% of outcomes (20.3% at 0.55–0.97 lunar distances, none inside 0.31) | Verified (1,500 twins) | [chaos_profile](figures.md#chaos_profilepng) |
+| 4 | Survival requires a close, low-inclination orbit | 96.5% survive inside 0.5 lunar distances below 45° or above 135° inclination; 3.0% of Moon-crossing orbits survive | Descriptive (maps reproducible, r = 0.99) | [stability_map_eccentricity](figures.md#stability_map_eccentricitypng) |
+| 5 | Near-polar orbits are driven into Earth, consistent with Lidov–Kozai cycles | 99.1% of close near-polar moons collide with Earth | Descriptive; mechanism inferred | [outcome_maps](figures.md#outcome_mapspng) |
+| 6 | The Moon, not the Sun, sets the outer limit; beyond it, survivors are almost all retrograde | Both directions drop below 10% survival at 0.22 Hill radii; beyond the Moon 11.4% retrograde vs 0.3% prograde survive | R2 not met (edge); difference descriptive | [survival_by_direction](figures.md#survival_by_directionpng) |
+| 7 | Heavier second moons survive less, partly by destabilizing the Moon | 30.9% vs 42.3% survival (heaviest vs lightest bin); Moon lost in 7.4% vs 0% | R3 met | — |
+| 8 | Losses continue beyond 100 years, more slowly | 21.4% of 100-year survivors lost by 1,000 years; about 30% of systems would last 1,000 years | R4 not met (no levelling off) | [survival_curve_full](figures.md#survival_curve_fullpng) |
+| 9 | The pilot-versus-dataset survival gap is explained without a code change | 37.9% → 29.7% (sampling) → 25.4% (pilot draws) → 18% (noise, 2.1σ) | R1 not met; investigated | — |
+| 10 | A two-variable physics rule already captures the main structure | Depth-3 tree on apoapsis and \|cos *i*\|: 79.5% accuracy | Verified (cross-validated) | — |
+| 11 | Orbital elements are far better model inputs than state vectors | Macro-F1 lower by 0.086 for vectors; physics features add 0.006 | Rule P1 met | — |
+| 12 | A Random Forest predicts the outcome from the starting conditions alone | 85.0% accuracy, macro-F1 0.723 (physics rule 0.597, majority 0.138) | Rules P2, P3 met | [model_comparison](figures.md#model_comparisonpng) |
+| 13 | Its survival probabilities are trustworthy | ECE 0.019; ROC AUC 0.985 | Rule P6 met | [calibration](figures.md#calibrationpng) |
+| 14 | Its errors concentrate on chaotic systems; more data would help little | Error 53.4% on chaotic vs 10.5% on stable systems; macro-F1 0.700 → 0.723 with 10× data | Rule P5 met; learning curve | [learning_curve](figures.md#learning_curvepng) |
+| 15 | The model relies on the same physics: distance and inclination | Importance 0.31 (distance), 0.24 (inclination), 0.075 (mass) | Descriptive | [feature_importance](figures.md#feature_importancepng) |
+| 16 | Collisions with the Moon remain hard to predict | `moon_interaction` recall 30.3% (collisions with the Moon 14.6%) | Rule P4 met narrowly | [confusion_matrix_cv](figures.md#confusion_matrix_cvpng) |
+| 17 | The starting conditions also predict roughly when a system fails | Lifetime class: 76.7% accuracy, 98.6% within one class | Descriptive (cross-validated) | [lifetime_confusion](figures.md#lifetime_confusionpng) |
+| 18 | A stable-looking second moon can oscillate without growing | Phase 1 moon: eccentricity cycles (~17 years), bounded over 1,000 years | Descriptive (one system) | [first_moon_long_term](figures.md#first_moon_long_termpng) |
+
 ## Simulation log
 
 | Date | Run | Simulations | CPU-hours | Cumulative random second moons |
@@ -355,8 +385,8 @@ for future tests rather than confirmed results.
 
 - Three regions dominate: close, low-inclination orbits survive; near-polar orbits are driven into
   Earth; orbits reaching the Moon's are ejected or collide.
-- The Moon, not the Hill radius, sets the outer limit for prograde second moons. Only retrograde
-  moons survive beyond the Moon's orbit.
+- The Moon, not the Hill radius, sets the outer limit for prograde second moons. Beyond the Moon's
+  orbit, survivors are almost all retrograde (11.4% versus 0.3%).
 - Heavier second moons survive less often, partly because they destabilize the Moon.
 - The pilot-to-dataset difference is accounted for by sampling design, small-sample variation and
   outcome noise.
