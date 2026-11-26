@@ -58,6 +58,8 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\make_manifest.py configs\dataset.json` | Records the dataset's SHA-256, counts and versions |
 | `venv\Scripts\python src\check_dataset.py configs\dataset.json` | Checks the dataset and reruns 20 random moons |
 | `venv\Scripts\python src\paper_numbers.py` | Prints the derived numbers quoted in the paper |
+| `venv\Scripts\python src\split.py` | Sets aside the held-out test set (run once) |
+| `venv\Scripts\python src\check_explore.py` | Checks the test split and exploration helpers |
 
 The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 

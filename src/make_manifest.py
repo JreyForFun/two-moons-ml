@@ -24,7 +24,8 @@ from horizons import ROOT
 from labels import LABELS
 from simulate import load_config
 
-PACKAGES = ("rebound", "astroquery", "astropy", "numpy", "matplotlib", "pillow", "jupyter")
+PACKAGES = ("rebound", "astroquery", "astropy", "numpy", "matplotlib", "pillow", "jupyter",
+            "pandas")
 
 
 def sha256(path):
