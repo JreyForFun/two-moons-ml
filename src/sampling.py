@@ -25,15 +25,33 @@ def _log_uniform(rng, low, high):
     return float(math.exp(rng.uniform(math.log(low), math.log(high))))
 
 
-def _draw(rng, ranges):
-    # Uniform in cos(tilt) makes every direction in space equally likely.
+def _draw_tilt(rng, ranges):
+    """Tilt in degrees.
+
+    "isotropic" (the default, used by the pilot): uniform in cos(tilt), so every
+    direction in space is equally likely. Few orbits are then nearly flat.
+    "uniform_degrees": every tilt angle is equally likely, which covers flat
+    orbits better but over-represents them compared with random directions.
+    """
     low, high = ranges["inclination_deg"]
-    cos_tilt = rng.uniform(math.cos(math.radians(high)), math.cos(math.radians(low)))
+    rule = ranges.get("tilt_distribution", "isotropic")
+    if rule == "uniform_degrees":
+        return float(rng.uniform(low, high))
+    if rule == "isotropic":
+        cos_tilt = rng.uniform(math.cos(math.radians(high)), math.cos(math.radians(low)))
+        return math.degrees(math.acos(cos_tilt))
+    raise ValueError(f"unknown tilt_distribution: {rule}")
+
+
+def _draw(rng, ranges):
+    # The tilt is drawn first. Changing this order would change every moon,
+    # including those already simulated in the pilot.
+    tilt = _draw_tilt(rng, ranges)
     return {
         "mass_lunar": _log_uniform(rng, *ranges["mass_lunar"]),
         "distance_lunar": _log_uniform(rng, *ranges["distance_lunar"]),
         "eccentricity": float(rng.uniform(*ranges["eccentricity"])),
-        "inclination_deg": math.degrees(math.acos(cos_tilt)),
+        "inclination_deg": tilt,
         "node_deg": float(rng.uniform(0, 360)),
         "periapsis_deg": float(rng.uniform(0, 360)),
         "true_anomaly_deg": float(rng.uniform(0, 360)),

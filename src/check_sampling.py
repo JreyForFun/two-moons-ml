@@ -50,6 +50,31 @@ def check_coverage(state, config, samples):
     return worst < 0.03, f"largest deviation {worst:.3f}, {backward:.1%} backward"
 
 
+def check_uniform_degrees(state, config, samples):
+    """With "uniform_degrees", tilt is spread evenly in degrees instead."""
+    ranges = {**config["sampling"], "tilt_distribution": "uniform_degrees"}
+    other = {**config, "sampling": ranges}
+    tilts = np.sort([sample_settings(state, other, i)[0]["inclination_deg"] / 180
+                     for i in range(len(samples))])
+    n = len(tilts)
+    worst = max(np.max(np.arange(1, n + 1) / n - tilts), np.max(tilts - np.arange(n) / n))
+    flat = np.mean(tilts < 40 / 180)
+    try:
+        sample_settings(state, {**config, "sampling": {**ranges, "tilt_distribution": "x"}}, 0)
+        refused = False
+    except ValueError:
+        refused = True
+    ok = worst < 0.03 and refused
+    return ok, f"largest deviation {worst:.3f}, {flat:.1%} under 40 degrees, unknown rule refused"
+
+
+def check_pilot_unchanged(state, config, samples):
+    """The pilot data was made before tilt rules existed. Moon 0 must be the same."""
+    expected = "106.85589859387636"  # input_inclination_deg of moon 0 in data/pilot.csv
+    value = repr(samples[0]["inclination_deg"])
+    return value == expected, f"moon 0 tilt {value}"
+
+
 def check_reproducible(state, config, samples):
     """Same moon again, in a different order, and different with another seed."""
     again = {i: sample_settings(state, config, i)[0] for i in reversed(range(50))}
@@ -125,6 +150,8 @@ def main():
     for label, check in (
         ("Ranges", check_ranges),
         ("Even coverage", check_coverage),
+        ("Tilt evenly in degrees", check_uniform_degrees),
+        ("Pilot moons unchanged", check_pilot_unchanged),
         ("Reproducible", check_reproducible),
         ("Roche rule", check_roche),
         ("Orbits, forward and backward", check_orbits),

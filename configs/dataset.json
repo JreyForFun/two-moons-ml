@@ -1,0 +1,35 @@
+{
+  "description": "Full dataset: 12,000 random second moons for up to 100 years",
+  "bodies": [
+    "sun",
+    "earth",
+    "moon",
+    "moon2"
+  ],
+  "integrator": "ias15",
+  "duration_days": 36525,
+  "output_interval_hours": 24,
+  "ejection_distance_km": 4500000,
+  "max_seconds": 600,
+  "seed": 20261126,
+  "count": 12000,
+  "sampling": {
+    "mass_lunar": [
+      0.001,
+      1.0
+    ],
+    "distance_lunar": [
+      0.1,
+      3.0
+    ],
+    "eccentricity": [
+      0.0,
+      0.8
+    ],
+    "inclination_deg": [
+      0.0,
+      180.0
+    ],
+    "tilt_distribution": "uniform_degrees"
+  }
+}
