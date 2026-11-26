@@ -64,7 +64,7 @@ The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 
 | Folder | Contents |
 |---|---|
-| `docs/` | Project report, questions and answers, every figure explained |
+| `docs/` | Technical report, design decisions, figure guide, glossary |
 | `configs/` | Starting conditions and simulation settings |
 | `src/` | Reusable code |
 | `notebooks/` | Exploration |

@@ -1,20 +1,21 @@
-# Figures explained
+# Figure guide
 
-Each figure: what it shows, how to read it, what it tells us, and its limits. Every figure is
-made by a script, so it can be remade exactly. Updated whenever a figure is added or changed.
+Description, reading guide, interpretation and caveats for every figure in `figures/`. Each figure
+is produced by a script and can be regenerated exactly. Terms are defined in the
+[glossary](glossary.md).
 
-Colors are the same throughout: **blue** for our Moon, survivors or our simulation; **orange** for
-the second moon, failures or comparisons.
+Color convention: **blue** for the Moon, surviving systems or the reference simulation;
+**orange** for the second moon, non-surviving systems or comparison runs.
 
-| Figure | Phase | Made by | Good for the post? |
-|---|---|---|---|
-| [two_moons.gif](#two_moonsgif) | 1 | `src/animate.py` | Yes, the opening visual |
-| [real_moon_orbit.png](#real_moon_orbitpng) | 1 | `src/plot_real_system.py` | Maybe |
-| [real_moon_error.png](#real_moon_errorpng) | 1 | `src/plot_real_system.py` | Yes, shows the simulation is trustworthy |
-| [two_moons_distance.png](#two_moons_distancepng) | 1 | `src/plot_single_run.py` | Yes, "survived is not stable" |
-| [two_moons_energy.png](#two_moons_energypng) | 1 | `src/plot_single_run.py` | No, technical check |
-| [pilot_outcomes.png](#pilot_outcomespng) | 2 | `src/analyze_pilot.py` | Maybe; Phase 3 maps will replace it |
-| [pilot_survival.png](#pilot_survivalpng) | 2 | `src/analyze_pilot.py` | Yes, simple and striking |
+| Figure | Phase | Script |
+|---|---|---|
+| [two_moons.gif](#two_moonsgif) | 1 | `src/animate.py` |
+| [real_moon_orbit.png](#real_moon_orbitpng) | 1 | `src/plot_real_system.py` |
+| [real_moon_error.png](#real_moon_errorpng) | 1 | `src/plot_real_system.py` |
+| [two_moons_distance.png](#two_moons_distancepng) | 1 | `src/plot_single_run.py` |
+| [two_moons_energy.png](#two_moons_energypng) | 1 | `src/plot_single_run.py` |
+| [pilot_outcomes.png](#pilot_outcomespng) | 2 | `src/analyze_pilot.py` |
+| [pilot_survival.png](#pilot_survivalpng) | 2 | `src/analyze_pilot.py` |
 
 ---
 
@@ -22,18 +23,18 @@ the second moon, failures or comparisons.
 
 ![Both moons orbiting Earth](../figures/two_moons.gif)
 
-**What it shows:** 60 days of Earth (center), our Moon and the hypothetical second moon (0.1 lunar
-masses, at 0.4 of the Moon's distance), seen from above. Each frame is 6 hours later; the trails
-show the last 5 days.
+**Content.** 60 days of the Earth-centered system viewed from above the ecliptic: the Moon and a
+hypothetical second moon of 0.1 lunar masses on a circular orbit at 0.4 lunar distances. Frames
+are 6 hours apart; trails show the previous 5 days.
 
-**How to read it:** the second moon goes around about 4 times for each lap of our Moon. A closer
-orbit is faster (Kepler's third law: period grows with distance to the power 1.5, and
-0.4^1.5 ≈ 0.25).
+**Reading.** The second moon completes about four orbits per lunar orbit, as expected from
+Kepler's third law (0.4^1.5 ≈ 0.25).
 
-**What it tells us:** what the question looks like. It doesn't prove anything; the charts below do.
+**Interpretation.** An illustration of the system studied; quantitative results are in the
+figures below.
 
-**Limits:** distances are to scale, but Earth's and the moons' sizes are not. Earth looks still
-because the view moves with it; in reality Earth is also going around the Sun.
+**Caveats.** Distances are to scale; body sizes are not. The frame is centered on Earth, so
+Earth's motion around the Sun is not shown.
 
 ---
 
@@ -41,16 +42,17 @@ because the view moves with it; in reality Earth is also going around the Sun.
 
 ![The Moon's path around Earth](../figures/real_moon_orbit.png)
 
-**What it shows:** one year of the Moon's path around Earth in 2026, seen from above. Blue line:
-our simulation. Orange dots: NASA's positions every 5 days.
+**Content.** The Moon's path around Earth during 2026, projected onto the ecliptic. Line:
+simulation. Points: JPL Horizons positions every 5 days.
 
-**How to read it:** every orange dot sits on the blue line, so simulation and reality agree at
-this scale. The orbit is not a perfect circle: it is an ellipse (about 357,000 to 405,000 km from
-Earth), and the Sun slowly turns and reshapes it, so the laps don't overlap exactly.
+**Reading.** Every JPL point lies on the simulated path. The orbit is an ellipse (about 357,000 to
+405,000 km from Earth) whose orientation and shape are slowly changed by the Sun, so successive
+orbits do not overlap exactly.
 
-**What it tells us:** the simulation reproduces the real Moon's orbit.
+**Interpretation.** The simulation reproduces the Moon's orbit at the scale of the figure.
 
-**Limits:** at this scale, 10 km errors are invisible. The next chart measures them.
+**Caveats.** Errors of order 10 km are invisible at this scale; they are quantified in the next
+figure.
 
 ---
 
@@ -58,23 +60,20 @@ Earth), and the Sun slowly turns and reshapes it, so the laps don't overlap exac
 
 ![Position error with and without the Sun](../figures/real_moon_error.png)
 
-**What it shows:** how far our simulated Moon is from NASA's Moon, day by day, for one year. Blue:
-with the Sun. Orange: without it.
+**Content.** Distance between the simulated and JPL Moon positions over one year, with the Sun
+included (blue) and omitted (orange).
 
-**How to read it:** the vertical axis is a log scale; each grid line is 10 times the one below.
-Blue ends near 10 km. Orange is between 4,000 and 55,000 km for almost the whole year. The gap
-between the lines is a factor of thousands.
+**Reading.** Logarithmic vertical axis: each gridline is a factor of 10. With the Sun, the error
+grows slowly to about 10 km. Without it, the error exceeds 4,000 km within weeks and peaks at
+55,535 km.
 
-**What it tells us:**
-- The simulation is accurate: at most 10.3 km after a year, about 0.003% of the Moon's distance.
-- The Sun cannot be left out. Even "just Earth and moons" needs it.
-- Blue grows slowly over time. That is expected: small missing effects (other planets, tides,
-  Earth's bulge) add up.
+**Interpretation.**
+- The simulation is accurate to 10.3 km after one year (about 0.003% of the Earth-Moon distance).
+- Solar perturbations dominate the error budget; the Sun cannot be omitted.
+- The slow growth of the blue curve is consistent with small unmodeled effects (other planets,
+  tides, oblateness) accumulating over time.
 
-**Limits:** one year, one start date. Over much longer times the small errors keep growing.
-
-**Paper wording:** "The integration reproduces the JPL Horizons lunar ephemeris to within 10.3 km
-over one year; omitting the Sun raises this to 5.6 × 10⁴ km."
+**Caveats.** One year from one start date; errors continue to grow over longer integrations.
 
 ---
 
@@ -82,22 +81,21 @@ over one year; omitting the Sun raises this to 5.6 × 10⁴ km."
 
 ![Both moons' distance from Earth over 10 years](../figures/two_moons_distance.png)
 
-**What it shows:** each moon's distance from Earth over 10 years with the second moon present.
-Blue: our Moon. Orange: the second moon.
+**Content.** Earth distance of the Moon (blue) and the second moon (orange) over a 10-year
+integration.
 
-**How to read it:** each wiggle is one orbit. The band's height is how far the distance swings
-during an orbit, which shows how stretched (eccentric) the orbit is. A perfect circle would be a
-flat line.
-- Blue: a steady band from about 357,000 to 403,000 km, the Moon's normal ellipse.
-- Orange: starts as a thin line (a circle) and widens. Its yearly range grew from 5,847 km in
-  the first year to 14,726 km in the last, about 2.5 times.
+**Reading.** Each oscillation is one orbit; the height of each band reflects the orbit's
+eccentricity, and a circular orbit would appear as a flat line.
+- The Moon's band is steady at about 357,000 to 403,000 km.
+- The second moon starts on a circular orbit (a thin line) and its band widens: the yearly
+  distance range grows from 5,847 km in the first year to 14,726 km in the tenth.
 
-**What it tells us:** both moons survived, but the second moon's orbit is changing: the Moon's
-pull keeps nudging it into a more stretched shape. **"Survived" is not the same as "stable".**
-This is why the dataset says "lasted at least 100 years", never "stable forever".
+**Interpretation.** Both moons survive, but the second moon's eccentricity is being excited by
+lunar perturbations. Survival over a fixed interval does not imply an unchanging orbit, which is
+why `survived` in the dataset means a lifetime of at least 100 years.
 
-**Limits:** one moon, 10 years. We don't know yet whether the widening keeps going or swings back
-(question Q14).
+**Caveats.** A single system over 10 years; whether the growth continues or oscillates is open
+(Q9 in [questions.md](questions.md)).
 
 ---
 
@@ -105,18 +103,15 @@ This is why the dataset says "lasted at least 100 years", never "stable forever"
 
 ![Total energy over 10 years](../figures/two_moons_energy.png)
 
-**What it shows:** how much the total energy of the system changed during the 10-year run,
-relative to its starting value.
+**Content.** Relative change in the total energy of the system during the 10-year integration.
 
-**How to read it:** the vertical axis is in units of 10⁻¹⁵, a millionth of a billionth. The dots
-sit on separate rows because a computer stores numbers with a fixed number of digits, and these
-are the smallest steps it can represent. There is no upward or downward drift.
+**Reading.** The vertical axis is in units of 10⁻¹⁵. Values fall on discrete levels set by
+floating-point precision. No systematic drift is present.
 
-**What it tells us:** the calculation doesn't create or lose energy beyond rounding. Gravity alone
-conserves energy, so a drift would mean numerical error.
+**Interpretation.** The integration conserves energy to rounding precision.
 
-**Limits:** almost all of the energy is Earth's orbit around the Sun, so a problem with the moons
-could hide in it. That's why the NASA comparison matters more.
+**Caveats.** The total is dominated by Earth's heliocentric orbit, so errors confined to the moons
+could be masked. The ephemeris comparison is the more sensitive test.
 
 ---
 
@@ -124,23 +119,23 @@ could hide in it. That's why the NASA comparison matters more.
 
 ![Which pilot moons survived](../figures/pilot_outcomes.png)
 
-**What it shows:** the 100 pilot moons, placed by starting distance (horizontal, log scale) and
-tilt (vertical). Blue circles survived 100 years; orange crosses didn't (crashed or escaped).
-Above the 90-degree line the moon orbits backward.
+**Content.** The 100 pilot moons by initial semi-major axis (logarithmic horizontal axis) and
+inclination. Circles: survived 100 years. Crosses: collided or were ejected. Above 90° the orbit
+is retrograde.
 
-**How to read it:** look for regions where blue gathers.
-- 17 of the 18 survivors started within 0.7 lunar distances. Beyond 1 lunar distance, almost all
-  failed: 24 of those 30 escaped, because the Moon and the Sun pull them away more easily.
-- Forward survivors have tilts of about 45 to 70 degrees. Backward survivors have tilts of about
-  125 to 166 degrees, flatter than most backward failures (which crowd between 90 and 120).
-- Few moons sit near the bottom (flat forward orbits) because of how tilts were drawn in the pilot.
-  This gap is why the full dataset spreads tilt evenly in degrees.
+**Reading.**
+- 17 of the 18 survivors start within 0.7 lunar distances. Beyond 1 lunar distance, 24 of 30 moons
+  are ejected.
+- Prograde survivors have inclinations of about 45° to 70°; retrograde survivors about 125° to
+  166°, flatter than most retrograde non-survivors (concentrated between 90° and 120°).
+- Few points lie near 0° because the pilot sampled inclination isotropically.
 
-**What it tells us:** survival is not random; it depends on where the moon starts. That pattern is
-what the ML model will have to learn.
+**Interpretation.** Outcomes are structured in parameter space, the pattern a surrogate model
+must learn. The sparse coverage of near-planar orbits motivated the change of inclination
+sampling for the full dataset.
 
-**Limits:** 100 moons is few. Mass, eccentricity and the other angles also vary but are hidden in
-this view. The Phase 3 stability maps, with 12,000 moons, will replace it.
+**Caveats.** 100 moons; mass, eccentricity and orientation angles also vary but are not shown.
+Stability maps from the full dataset (Phase 3) supersede this figure.
 
 ---
 
@@ -148,20 +143,14 @@ this view. The Phase 3 stability maps, with 12,000 moons, will replace it.
 
 ![Share of pilot moons still there over time](../figures/pilot_survival.png)
 
-**What it shows:** the share of the 100 pilot moons still orbiting after a given time.
+**Content.** Fraction of the 100 pilot moons not yet collided or ejected, as a function of time.
 
-**How to read it:** the line steps down each time a moon crashes or escapes. Time is on a log
-scale, so 0.1 to 1 year takes as much room as 10 to 100 years.
-- 88% are still there after 1 year, 45% after 10 years, 18% after 100 years.
-- The line is still falling at 100 years.
+**Reading.** Each step down is one collision or ejection. Logarithmic time axis. The surviving
+fraction is 88% at 1 year, 45% at 10 years and 18% at 100 years, and is still declining at the end.
 
-**What it tells us:** most second moons don't last, and the losses continue at every time scale.
-Choosing the time limit (100 years) is therefore a real choice: with a longer limit, fewer
-moons would count as survivors.
+**Interpretation.** Losses continue on every timescale from months to a century, so the choice of
+time limit materially affects the share labeled `survived`.
 
-**Limits:** 100 moons, one sampling choice. A survival curve like this is called a Kaplan-Meier
-curve when some runs are censored; here every run reached its end or the limit, so it is a simple
-count.
-
-**Paper wording:** "The surviving fraction declines steadily over four decades in time, from 88%
-at 1 yr to 45% at 10 yr and 18% at 100 yr, with no plateau."
+**Caveats.** All runs reached either a terminal event or the 100-year limit, so this is a simple
+empirical fraction; with censoring before the limit, a Kaplan-Meier estimate would be needed.
+Based on isotropic inclination sampling.

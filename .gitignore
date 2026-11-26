@@ -1,7 +1,3 @@
-# Private / local tooling
-CLAUDE.md
-.claude/
-
 # Python
 venv/
 .venv/

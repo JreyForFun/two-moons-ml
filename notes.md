@@ -1,10 +1,11 @@
-# Project notes
+# Lab notes
 
-Material for the final LinkedIn post and a possible paper.
+Running notes: key numbers, checks, notable moments and figure picks for the paper and
+project write-up.
 
-Full detail lives in `docs/`: [report.md](docs/report.md) (the story, phase by phase),
-[questions.md](docs/questions.md) (every question and its answer), and
-[figures.md](docs/figures.md) (every figure explained).
+The structured record lives in `docs/`: [technical report](docs/report.md),
+[design decisions and open questions](docs/questions.md), [figure guide](docs/figures.md) and
+[glossary](docs/glossary.md).
 
 ## Key numbers
 
