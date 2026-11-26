@@ -2,6 +2,10 @@
 
 Material for the final LinkedIn post and a possible paper.
 
+Full detail lives in `docs/`: [report.md](docs/report.md) (the story, phase by phase),
+[questions.md](docs/questions.md) (every question and its answer), and
+[figures.md](docs/figures.md) (every figure explained).
+
 ## Key numbers
 
 - Simulated Moon vs NASA over one year: at most 10.3 km off (average 5.6 km), about
