@@ -7,7 +7,7 @@ model to predict the outcome from the starting conditions alone.
 Inspired by SPOCK (Tamayo et al., 2020), which uses ML to predict the stability
 of planetary systems.
 
-**Status:** Phase 2 finished (12,000 simulated second moons). Next: Phase 3, exploration and stability maps.
+**Status:** Phase 3 finished (stability maps of 12,000 simulated second moons). Next: Phase 4, surrogate models.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -60,8 +60,15 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\paper_numbers.py` | Prints the derived numbers quoted in the paper |
 | `venv\Scripts\python src\split.py` | Sets aside the held-out test set (run once) |
 | `venv\Scripts\python src\check_explore.py` | Checks the test split and exploration helpers |
+| `venv\Scripts\python src\plot_dataset.py` | Applies rules R1–R3 and draws the stability maps |
+| `venv\Scripts\python src\compare_pilot.py` | Investigates the pilot-versus-dataset survival gap |
+| `venv\Scripts\python src\select_survivors.py` | Chooses 500 survivors to integrate for 1,000 years (run once) |
+| `venv\Scripts\python src\generate_dataset.py configs\survivors_1000yr.json` | Integrates those survivors to 1,000 years (about 4.5 hours) |
+| `venv\Scripts\python src\survival_curve.py` | Applies rule R4 and draws survival to 1,000 years |
+| `venv\Scripts\python src\long_run.py` | Follows the first second moon for 1,000 years |
 
-The walkthrough is in `notebooks/01_first_simulation.ipynb`.
+Walkthroughs: `notebooks/01_first_simulation.ipynb` (setup and validation) and
+`notebooks/02_dataset_exploration.ipynb` (stability maps and long-term survival).
 
 ## Folders
 

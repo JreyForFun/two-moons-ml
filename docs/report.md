@@ -4,8 +4,8 @@ A record of the project, phase by phase: methods, results, decisions and revisio
 defined in the [glossary](glossary.md); figures are described in the [figure guide](figures.md);
 design decisions and open questions are collected in [questions.md](questions.md).
 
-**Status (2026-11-26):** Phase 2 (dataset generation) complete. Phase 3 (exploration and stability
-maps) next. A manuscript draft covering Phases 1 and 2 is in [`paper/`](../paper/README.md).
+**Status (2026-11-26):** Phase 3 (exploration and stability maps) complete. Phase 4 (surrogate
+models) next. A manuscript draft covering Phases 1 to 3 is in [`paper/`](../paper/README.md).
 
 ## Simulation log
 
@@ -16,9 +16,13 @@ maps) next. A manuscript draft covering Phases 1 and 2 is in [`paper/`](../paper
 | 2026-11-25 | Pilot B: same moons, integrator tolerance 10⁻¹¹ | 100 | 0.25 | 200 |
 | 2026-11-25 | Pilot C: same moons, second moon displaced by 1 m | 100 | 0.17 | 300 |
 | 2026-11-25 | Pilot D: first 30 moons at two other start dates | 60 | 0.10 | 360 |
-| 2026-11-26 | Full dataset: 12,000 new moons, 100 years | 12,000 | 20.77 | **12,360** |
+| 2026-11-26 | Full dataset: 12,000 new moons, 100 years | 12,000 | 20.77 | 12,360 |
+| 2026-11-26 | Phase 3: the Phase 1 second moon for 1,000 years | 1 | 0.01 | 12,360 |
+| 2026-11-26 | Phase 3: 500 training survivors re-integrated to 1,000 years | 500 | 17.94 | **12,360** |
 
-Short simulations inside the automated checks are not counted.
+Short simulations inside the automated checks and verification reruns (20 dataset moons, 20 pilot
+moons) are not counted. The 500 re-integrated survivors are existing dataset moons, so the
+cumulative count of distinct random second moons is unchanged.
 
 ---
 
@@ -217,6 +221,131 @@ The same 100 moons were simulated under controlled variations:
 - Outputs were saved every 24 hours instead of 6 to reduce cost; collision detection is unaffected.
 - An early runtime estimate of 11 hours, made from the first few dozen moons while the computer was
   on battery power, overstated the actual 5.2 hours.
+
+---
+
+## Phase 3: exploration and stability maps (2026-11-26)
+
+**Objective:** locate each outcome in parameter space before any modeling, and answer the open
+questions on the pilot gap, orbit direction, mass, long-term survival and the first second moon.
+
+### Work
+
+| Step | Content | Commit |
+|---|---|---|
+| 3.1 | Held-out test split (`src/split.py`), exploration helpers (`src/explore.py`) and checks | `ccb9bbc` |
+| 3.2 | Chosen-id batches; 500 random survivors integrated to 1,000 years | `a7dcde4` |
+| 3.3 | Decision rules R1–R3, stability maps (`src/plot_dataset.py`), pilot investigation (`src/compare_pilot.py`) | `dbce1fe` |
+| 3.4 | The Phase 1 second moon over 1,000 years (`src/long_run.py`) | `661d80f` |
+| 3.5 | Rule R4 and survival to 1,000 years (`src/survival_curve.py`) | `3aad1cf` |
+| 3.6 | `notebooks/02_dataset_exploration.ipynb` and documentation | see Git history |
+
+### Method
+
+- **Held-out test set.** Before any exploration, 2,400 moons (20%, stratified by label, seed
+  20261127) were set aside in `configs/split.json`. All Phase 3 analyses use the remaining 9,600
+  training moons, so patterns found here cannot leak into the evaluation of the Phase 4 models.
+- **Fixed binning:** semi-major axis in 12 logarithmic bins from 0.1 to 3 lunar distances,
+  inclination in 12 bins of 15°, eccentricity in 8 bins of 0.1, mass in 6 logarithmic bins. Map
+  cells with fewer than 20 moons are not shown; in practice every cell holds 44 to 93.
+- **Uncertainty:** Wilson intervals for shares; bootstrap intervals (1,000 resamples) for edges and
+  differences.
+- **Robustness:** each map is rebuilt from even and odd ids separately and the two are compared.
+- **Pre-registered rules**, fixed in the Phase 3 plan before the analysis:
+
+| Rule | Question | Criterion |
+|---|---|---|
+| R1 | Does the change of inclination sampling explain the pilot gap (18% vs 38%)? | Isotropically reweighted survival inside the pilot's 95% interval (12% to 27%) |
+| R2 | Do retrograde orbits survive farther out? | Bootstrap interval of (retrograde − prograde) outer 10% survival edge above 0 |
+| R3 | Does mass matter? | Bootstrap interval of (heaviest − lightest mass bin) survival excludes 0 |
+| R4 | Does survival level off after 100 years? | Loss from 100 to 1,000 years below half the loss from 10 to 100 years |
+
+The survival edge in R2 was clarified before the analysis as the *outer* edge: the first bin
+beyond the bin of highest survival whose survival share falls below 10%. The overall
+prograde/retrograde split (35% vs 41%) had been seen while planning, so R2 tests a
+distance-resolved quantity instead.
+
+### Results
+
+**Stability map.** Survival is high for moons inside about half the Moon's distance on low
+inclinations: 96.5% of moons below 0.5 lunar distances with inclinations under 45° or over 135°
+survive. Beyond about 0.75 lunar distances almost nothing prograde survives. The maps are
+reproducible: split-half correlations of 0.991 (semi-major axis × inclination, 141 cells) and
+0.977 (semi-major axis × eccentricity, 93 cells).
+
+**Near-polar orbits.** Close moons on near-polar orbits (inclination 75° to 105°, inside 0.5 lunar
+distances) almost never survive: 0.7% survive and 99.1% collide with Earth. This is consistent
+with Lidov–Kozai cycles driven by the Moon and the Sun, which convert inclination into
+eccentricity until the periapsis reaches Earth.
+
+**Crossing the Moon's orbit.** Moons whose orbits cross the Moon's survive in 3.0% of cases
+(60.5% ejected, 31.2% hit Earth). Moons entirely inside the Moon's orbit survive in 62.0%.
+Survival falls steadily with eccentricity, from 47.1% (e < 0.1) to 24.0% (e 0.7–0.8).
+
+**R1, pilot gap: not explained by the rule.** Reweighting the training moons to isotropic
+inclinations (effective sample size 7,786) lowers survival from 37.9% to 29.7%, just above the
+pilot's interval. Following the rule, other causes were investigated:
+1. Re-simulating pilot moons 0–19 with the current code reproduced all 20 exactly, ruling out a
+   code or setting change.
+2. The survival share of the 50 nearest training moons of each pilot moon predicts 25.4 pilot
+   survivors (95% range from outcome noise ±6.8); 18 were observed, 2.1 standard deviations lower.
+
+| Step | Survival | Change |
+|---|---:|---:|
+| Full dataset as sampled (training moons) | 37.9% | |
+| Reweighted to isotropic inclinations | 29.7% | −8.2 |
+| Expected for the pilot's specific 100 moons | 25.4% | −4.3 |
+| Observed in the pilot | 18.0% | −7.4 |
+
+The gap is therefore attributed to the change of inclination sampling, the particular draws of a
+100-moon pilot, and outcome noise at the 2σ level, with no evidence of a systematic difference.
+The isotropically reweighted outcome shares are: survived 29.7%, ejected 30.7%, hit Earth 37.6%,
+hit the Moon 0.9%, Moon lost 1.1%.
+
+**R2, outer edge by direction: not shown.** Both directions fall below 10% survival in the same
+bin, centered at 0.218 Hill radii (0.84 lunar distances, just inside the Moon's orbit); the
+bootstrap interval of the difference is 0.000 to 0.071. The edge is set by the Moon rather than by
+the Hill radius. *Descriptively*, retrograde moons recover beyond the Moon's orbit: for semi-major
+axes above 1 lunar distance, 11.4% of retrograde moons survive against 0.3% of prograde moons,
+reaching about 17% between 0.5 and 0.78 Hill radii. This agrees qualitatively with the greater
+stability of retrograde satellites found for planets.
+
+**R3, mass: matters.** Survival in the heaviest mass bin (0.32–1 lunar masses) is 11.4 points lower
+than in the lightest (0.001–0.003): 30.9% versus 42.3%, bootstrap interval −14.4 to −8.3 points.
+Heavy second moons more often destabilize the Moon itself (`moon_lost` 7.4% versus 0.0%) and
+collide with Earth (30.2% versus 24.8%).
+
+**R4, survival beyond 100 years: does not level off.** 500 randomly chosen training survivors were
+integrated again from the start to 1,000 years (`configs/survivors_1000yr.json`, 17.9 CPU-hours).
+All 500 were still present at 100 years, exactly as in their original runs, and none timed out.
+Of the systems alive at 10 years, 34.7% were lost by 100 years; of the 100-year survivors, 21.4%
+(95% interval 18.0% to 25.2%) were lost by 1,000 years (69 collided with Earth, 33 were ejected,
+4 collided with the Moon, and in 1 the Moon was lost). The rule required less than 17.4%. Losses
+slow down but continue: an estimated 29.8% of training systems would still be orbiting after
+1,000 years. The label `survived` is therefore a lower bound on lifetime.
+
+**The first second moon over 1,000 years (Q9).** The Phase 1 system (0.1 lunar masses, 0.4 lunar
+distances) survives 1,000 years. Its eccentricity oscillates with a dominant period of about 17
+years; the 10-year mean stays between 0.013 and 0.039, with the same average (0.0242) in both
+halves of the run, and the osculating eccentricity never exceeds 0.055. The semi-major axis stays
+within 153,580 to 154,973 km. The growth seen over the first 10 years was part of this bounded
+oscillation.
+
+### Findings
+
+- Three regions dominate: close, low-inclination orbits survive; near-polar orbits are driven into
+  Earth; orbits reaching the Moon's are ejected or collide.
+- The Moon, not the Hill radius, sets the outer limit for prograde second moons. Only retrograde
+  moons survive beyond the Moon's orbit.
+- Heavier second moons survive less often, partly because they destabilize the Moon.
+- The pilot-to-dataset difference is accounted for by sampling design, small-sample variation and
+  outcome noise.
+- About a fifth of 100-year survivors are lost by 1,000 years; `survived` is a lower bound.
+
+### Revisions
+
+- A bug in `shares_by_bin` (bin edges taken from pandas' rounded interval labels) was caught by
+  `src/check_explore.py` before any results were produced.
 
 ---
 

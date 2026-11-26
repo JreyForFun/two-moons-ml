@@ -28,7 +28,10 @@ ephemeris to within 10.3~km over one year. In the full sample, 38.0\% of second 
 100 years, 32.0\% are ejected, 27.4\% collide with Earth and 1.4\% collide with the Moon; in
 1.2\% of systems the Moon itself is lost. A controlled pilot study shows that displacing the
 second moon by 1~m changes 12\% of outcomes, setting an empirical limit on predictability.
-We train machine-learning classifiers to predict the outcome from the initial parameters alone
+Second moons survive mainly on close, low-inclination orbits; near-polar orbits are driven into
+Earth, consistent with Lidov--Kozai cycles, and orbits reaching the Moon's are ejected or collide.
+The Moon, rather than the Sun, sets the outer limit, and only retrograde moons survive beyond the
+Moon's orbit. About a fifth of 100-year survivors are lost by 1,000 years. We train machine-learning classifiers to predict the outcome from the initial parameters alone
 \pending{and reach an accuracy of X\% against a majority-class baseline of 38.0\%, at a speedup
 of Y over direct integration}. The dataset and code are publicly available.
 \end{abstract}
@@ -111,6 +114,21 @@ three moons beyond the disagreement of C; adopt multiple start dates if D disagr
 than C; and choose the longest time limit of 10, 30 or 100 years that fits the computing budget.
 Confidence intervals for proportions are Wilson score intervals \citep{Wilson1927}.
 
+\subsection{Exploration} \label{sec:exploration}
+
+Before any exploration, 2,400 systems (20\%, stratified by outcome) were set aside as a test set
+for the surrogate models; all results in Sections~\ref{sec:maps} and \ref{sec:longterm} use the
+remaining 9,600 training systems. Outcome shares are computed on a fixed grid of 12 logarithmic
+bins in semi-major axis, 12 bins of $15^\circ$ in inclination, 8 bins of 0.1 in eccentricity and
+6 logarithmic bins in mass. Four questions were given decision rules before the analysis:
+(R1) whether reweighting to isotropic inclinations (weights $\propto \sin i$) brings the survival
+share inside the pilot's 95\% interval; (R2) whether the outer edge where survival falls below
+10\% lies farther out for retrograde than for prograde orbits; (R3) whether survival differs
+between the lightest and heaviest mass bins; and (R4) whether the fraction lost between 100 and
+1,000 years is less than half the fraction lost between 10 and 100 years. Intervals for
+differences and edges come from 1,000 bootstrap resamples. For R4, 500 randomly chosen survivors
+were integrated again from the start to 1,000 years.
+
 \subsection{Surrogate models}
 
 \pending{Phase 4: features (orbital elements and/or geocentric state vectors), train/validation/
@@ -184,13 +202,57 @@ Total & 12,000 & \\
 \end{table}
 
 The survival fraction (38.0\%) exceeds that of the pilot (18\%, 95\% interval 12--27\%).
-\pending{Phase 3: test whether the change in inclination sampling explains the difference.}
+Reweighting the training systems to isotropic inclinations lowers it to 29.7\%, just outside the
+pilot interval, so by rule R1 the sampling change alone does not account for the difference.
+Re-integrating 20 pilot systems with the final code reproduced them exactly, and the survival
+share of the 50 nearest training systems of each pilot system predicts 25.4 survivors against the
+18 observed ($2.1\sigma$ below expectation). We attribute the gap to the inclination sampling
+($-8.2$ percentage points), the particular draws of the 100-system pilot ($-4.3$) and outcome
+noise ($-7.4$). Under isotropic inclinations the outcome shares would be: survived 29.7\%,
+ejected 30.7\%, collided with Earth 37.6\%, collided with the Moon 0.9\% and Moon lost 1.1\%.
 
-\subsection{Stability maps}
+\subsection{Stability maps} \label{sec:maps}
 
-\pending{Phase 3: outcome as a function of semi-major axis, inclination, eccentricity and mass;
-prograde versus retrograde survival; comparison with the expected limit near half the Hill
-radius (about 1.9 lunar distances).}
+Figure~\ref{fig:map} shows the survival share as a function of semi-major axis and inclination.
+Three regions dominate. Inside about 0.5 lunar distances, orbits with inclinations below
+$45^\circ$ or above $135^\circ$ survive in 96.5\% of cases. Near-polar orbits ($75^\circ$ to
+$105^\circ$) in the same region survive in only 0.7\% of cases, and 99.1\% collide with Earth,
+consistent with Lidov--Kozai cycles \citep{Kozai1962, Lidov1962} driven by the Moon and the Sun,
+which raise the eccentricity until the periapsis reaches Earth. Orbits that cross the Moon's
+survive in 3.0\% of cases; most are ejected (60.5\%) or collide with Earth (31.2\%). Survival also
+declines with eccentricity, from 47.1\% below $e=0.1$ to 24.0\% at $e=0.7$--0.8. Maps built
+from even and odd system indices separately agree closely (correlation 0.991).
+
+Both prograde and retrograde survival fall below 10\% in the same semi-major-axis bin, centered at
+0.22 Hill radii (0.84 lunar distances), so rule R2 does not show a difference in this edge: the
+outer limit is set by the Moon rather than by the Sun. Beyond the Moon's orbit, however, 11.4\% of
+retrograde systems survive against 0.3\% of prograde systems, rising to about 17\% between 0.5
+and 0.78 Hill radii, in qualitative agreement with the greater stability of retrograde satellites
+\citep{Domingos2006, Shen2008}. Mass matters (R3): survival is 42.3\% in the lightest bin and
+30.9\% in the heaviest (difference $-11.4$ points, 95\% interval $-14.4$ to $-8.3$), and the
+heaviest second moons destabilize the Moon itself in 7.4\% of systems.
+
+\begin{figure*}
+\includegraphics[width=0.85\textwidth]{stability_map.png}
+\caption{Share of training systems surviving 100 years by initial semi-major axis (bottom axis in
+lunar distances, top axis in Hill radii) and inclination; inclinations above $90^\circ$ are
+retrograde. Each cell contains 44 to 93 systems. Dashed line: the Moon's orbit; dotted line: half
+of Earth's Hill radius. \label{fig:map}}
+\end{figure*}
+
+\subsection{Long-term survival} \label{sec:longterm}
+
+Of the 500 survivors integrated to 1,000 years, all repeated their first century exactly and 393
+survived the full integration. The fraction lost between 100 and 1,000 years, 21.4\% (95\%
+interval 18.0--25.2\%), is smaller than the 34.7\% lost between 10 and 100 years but more than
+half of it, so by rule R4 survival does not level off. Combining both samples, an estimated
+29.8\% of training systems would survive 1,000 years. Most late losses are collisions with Earth
+(69 of 107).
+
+As an individual example, a second moon of 0.1 lunar masses started on a circular orbit in the
+ecliptic at 0.4 lunar distances survives a 1,000-year integration. Its eccentricity oscillates
+with a dominant period of about 17 years and a 10-year mean between 0.013 and 0.039, with no
+secular growth, although its distance range grew by a factor of 2.5 during the first 10 years.
 
 \subsection{Surrogate performance}
 
@@ -207,7 +269,15 @@ the most probable outcome can exceed the agreement between two noisy realization
 
 Outcome shares depend on the sampling design. They describe this dataset rather than the
 probability that an arbitrary second moon survives, and the difference between the pilot and the
-full dataset illustrates this sensitivity.
+full dataset illustrates this sensitivity: with isotropic inclinations, survival would be 29.7\%
+rather than 38.0\%.
+
+The stability maps show that the Moon dominates the fate of a second moon. Prograde survival
+collapses near the Moon's orbit at 0.22 Hill radii, well inside the limit of roughly half the Hill
+radius expected from solar tides alone \citep{Domingos2006}. Close encounters with the Moon and
+Lidov--Kozai cycles for strongly inclined orbits account for most losses, and both depend on
+simple geometric quantities: whether the orbit reaches the Moon's distance and how far its
+inclination is from $90^\circ$. These quantities are natural features for the surrogate models.
 
 The model has several limitations. Bodies interact through Newtonian point-mass gravity only:
 tides, Earth's oblateness, general relativity and the other planets are omitted. These effects
@@ -218,7 +288,7 @@ Finally, a single start date is used, supported by a 30-system test.
 
 \section{Conclusions} \label{sec:conclusions}
 
-\pending{To be completed after Phases 3--5.}
+\pending{To be completed after Phases 4--5.}
 
 \section*{Data availability}
 

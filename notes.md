@@ -22,6 +22,13 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
 - Outcomes: survived 38.0%, ejected 32.0%, hit Earth 27.4%, hit the Moon 1.4%,
   real Moon lost 1.2%. No timeouts or errors.
 
+- Phase 3: 9,600 training moons explored, 2,400 test moons held out. 500 survivors re-run to
+  1,000 years (17.9 CPU-hours, 4.5 hours); 393 survived. Total simulations so far: 12,865.
+- Close, low-tilt orbits: 96.5% survive. Close near-polar orbits: 0.7% survive, 99.1% hit Earth.
+- Beyond the Moon's orbit: prograde 0.3% survive, retrograde 11.4%.
+- Heaviest second moons knock out the real Moon in 7.4% of systems.
+- 21.4% of 100-year survivors are lost by 1,000 years; ~30% of moons would last 1,000 years.
+
 _Planned: model accuracy, speedup of ML vs. simulation._
 
 ## Checks passed
@@ -80,6 +87,17 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
   merge them or sample more of their region. Decide in Phase 4.
 - Survivors are censored: "survived" means at least 100 years, not forever.
 
+## Phase 3 (2026-11-26, `src/plot_dataset.py`, rules R1–R4 set before the analysis)
+
+- Test set frozen first (`configs/split.json`) so exploration cannot leak into model evaluation.
+- R1 failed: reweighting explains only part of the pilot gap (29.7% vs pilot 12–27%). Reruns of
+  pilot moons were identical; the rest is the pilot's unlucky draws and noise (2.1 sigma).
+- R2 not shown as defined (same 10% edge for both directions), but retrograde moons clearly
+  survive beyond the Moon's orbit while prograde ones do not (descriptive).
+- R3: mass matters (−11.4 points, heaviest vs lightest). R4: losses slow but do not stop.
+- First moon over 1,000 years: eccentricity cycles (~17 years), no growth.
+- Maps agree between independent halves of the data (r = 0.99).
+
 ## Story moments
 
 - Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
@@ -87,6 +105,14 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 - The full run's first speed reading promised 11 hours. It took 5.2. The laptop was on battery
   at the start, and the first few dozen moons were not a fair sample.
+
+- The stability map has a dead band at 90° tilt: even very close moons crash into Earth when
+  their orbits are near-polar (Lidov–Kozai). Tilt matters as much as distance.
+
+- A pre-registered rule failed (R1). Instead of changing the rule, the gap was investigated and
+  explained step by step, which is the honest version of the story.
+
+- A pandas quirk (rounded bin labels) was caught by an automated check before any result used it.
 
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
@@ -96,6 +122,10 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 ## Best figures
 
+- `figures/stability_map.png`: the headline figure (where second moons survive).
+- `figures/survival_by_direction.png`: only retrograde moons survive beyond the Moon.
+- `figures/outcome_maps.png`: what happens instead, region by region.
+- `figures/first_moon_long_term.png`: 1,000 years of the first second moon.
 - `figures/pilot_outcomes.png`, `figures/pilot_survival.png`: pilot results.
 - `figures/two_moons.gif`: 60 days of both moons.
 - `figures/two_moons_distance.png`: the second moon's orbit stretching over 10 years.
@@ -119,12 +149,18 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Stricter integrator settings? Changed fewer outcomes than a 1 meter shift, so the default is kept.
 - Start date? No clear effect in the pilot (30 moons per date), so one date is used.
 
-## Questions for Phase 3
+## Phase 3 answers
 
-- Why did 38% survive here but 18% in the pilot? Is it the flatter orbits?
-- Which distances and tilts are safe? (stability maps)
-- Do backward orbits survive more often than forward ones?
-- Does the orbit stretching keep growing, or swing back? (still open from Phase 1)
+- 38% vs 18%: tilt sampling (−8.2 points), the pilot's particular moons (−4.3), noise (−7.4).
+- Safe orbits: close and low-tilt; near-polar and Moon-crossing orbits fail.
+- Backward orbits: same inner edge, but only they survive beyond the Moon.
+- Orbit stretching: a bounded ~17-year cycle.
+
+## Questions for Phase 4
+
+- Merge the two rare outcomes or sample their region (near the Moon's orbit) more densely?
+- Orbital elements, state vectors, or derived features (periapsis, apoapsis vs the Moon, tilt vs 90°)?
+- How far above the 38% majority baseline can a model get, given 12% chaos?
 
 ## Limitations to state in a paper
 

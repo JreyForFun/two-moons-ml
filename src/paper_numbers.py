@@ -64,6 +64,40 @@ def main():
     print(f"  Inclination below 40 degrees     {flat}/{len(a)}")
     expected = (1 - math.cos(math.radians(40))) / 2
     print(f"  Expected under isotropic         {expected:.1%}; uniform in degrees {40 / 180:.1%}")
+    phase3()
+
+
+def phase3():
+    """Phase 3 numbers, read from the outputs of plot_dataset.py, compare_pilot.py and
+    survival_curve.py (run those first)."""
+    files = {name: ROOT / "data" / f"{name}.json"
+             for name in ("phase3_results", "compare_pilot", "survival_curve")}
+    if not all(path.exists() for path in files.values()):
+        print("\nPHASE 3: run plot_dataset.py, compare_pilot.py and survival_curve.py first")
+        return
+    p3, cp, sc = (json.loads(path.read_text(encoding="utf-8")) for path in files.values())
+    r1, r2, r3, d = p3["r1"], p3["r2"], p3["r3"], p3["descriptive"]
+    print(f"\nPHASE 3 (training moons: {p3['moons']:,})")
+    print(f"  R1 survival as sampled {r1['unweighted_survived']:.1%}, isotropic "
+          f"{r1['reweighted']['survived']:.1%} (ESS {r1['effective_sample_size']:,.0f}); "
+          f"pilot expected {cp['expected']:.1f}, observed {cp['observed']}, "
+          f"{cp['gap_sigma']:+.1f} sigma; reruns identical {cp['rerun_identical']}/{cp['rerun']}")
+    print("  R1 isotropic shares: " + ", ".join(f"{k} {v:.1%}" for k, v in r1["reweighted"].items()))
+    print(f"  R2 edges {r2['prograde_edge_hill']:.3f} / {r2['retrograde_edge_hill']:.3f} Hill radii, "
+          f"interval {r2['difference_interval'][0]:.3f} to {r2['difference_interval'][1]:.3f}")
+    print(f"  R3 mass difference {r3['difference']:+.1%} "
+          f"({r3['difference_interval'][0]:+.1%} to {r3['difference_interval'][1]:+.1%})")
+    lo, hi = sc["loss_100_1000_interval"]
+    print(f"  R4 loss 10-100 yr {sc['loss_10_100']:.1%}; 100-1,000 yr {sc['loss_100_1000']:.1%} "
+          f"({lo:.1%} to {hi:.1%}); alive at 1,000 yr {sc['alive_1000']:.1%}")
+    for name in ("inner_low_tilt", "inner_polar", "crossing_moon_orbit", "inside_moon_orbit",
+                 "beyond_moon_prograde", "beyond_moon_retrograde"):
+        print(f"  {name:24s} {d[name]['moons']:5,d} moons, survived {d[name]['survived']:.1%}, "
+              f"hit Earth {d[name]['hit_earth']:.1%}, ejected {d[name]['ejected']:.1%}")
+    heavy = d["mass_outcomes"]["heaviest"]
+    print(f"  Heaviest mass bin: moon_lost {heavy['moon_lost']:.1%}, hit_earth {heavy['hit_earth']:.1%}")
+    rb = p3["robustness"]
+    print("  Split-half r: " + ", ".join(f"{k} {v['correlation']:.3f}" for k, v in rb.items()))
 
 
 if __name__ == "__main__":

@@ -35,14 +35,15 @@ Text in red brackets marks content that depends on later phases.
 
 | Section | Status |
 |---|---|
-| Abstract | Drafted; model results pending |
+| Abstract | Drafted (Phases 1–3); model results pending |
 | Introduction | Drafted |
 | Methods: simulation, sampling, outcomes, pilot | Drafted |
 | Methods: surrogate models | Pending (Phase 4) |
+| Methods: exploration (test split, decision rules R1–R4) | Drafted |
 | Results: validation, pilot, dataset | Drafted |
-| Results: stability maps | Pending (Phase 3) |
+| Results: stability maps, pilot gap, long-term survival | Drafted |
 | Results: surrogate performance | Pending (Phases 4–5) |
-| Discussion | Drafted; to be extended with model results |
+| Discussion | Drafted (Phases 1–3); to be extended with model results |
 | Conclusions | Pending |
 | Author, affiliation, data DOI | Pending |
 

@@ -56,6 +56,14 @@ radii) and has positive orbital energy relative to Earth, meaning it is no longe
 **Energy conservation.** In a system with gravity alone, total energy is constant. Any change in
 the computed total energy measures numerical error.
 
+**Lidov-Kozai effect.** A satellite whose orbit is strongly inclined to the orbit of a distant
+perturber (here the Moon and the Sun, both near the ecliptic) exchanges inclination for
+eccentricity in slow cycles. Above about 39° of relative inclination, the eccentricity can grow
+until the periapsis reaches the planet's surface.
+
+**Osculating elements.** The orbital elements of the two-body orbit a body would follow if all
+perturbations stopped at that instant. Under perturbations they change continuously.
+
 ## Chaos and statistics
 
 **Chaos (sensitive dependence on initial conditions).** In a chaotic system, tiny differences in
@@ -86,6 +94,28 @@ at 100 years.
 **Kaplan-Meier curve.** The standard estimate of the fraction of a population surviving past each
 time, accounting for censored observations.
 
+**Conditional survival.** The share of systems alive at time *t*₂ among those alive at *t*₁. The
+overall survival to *t*₂ is the survival to *t*₁ multiplied by this share.
+
+**Stability map (heat map).** A grid over two starting parameters in which each cell is colored by
+the share of systems in it that survived.
+
+**Importance weighting.** Giving each sample a weight equal to the ratio of a target distribution
+to the distribution it was drawn from, so weighted statistics describe the target distribution
+without new samples.
+
+**Effective sample size.** The number of equally weighted samples that would carry the same
+statistical information as a weighted sample: (Σw)² / Σw².
+
+**Bootstrap.** Estimating the uncertainty of a statistic by recomputing it on many resamples of the
+data drawn with replacement.
+
+**Split-half agreement.** Building the same result from two disjoint halves of the data and
+measuring how closely they agree; high agreement shows a pattern is not sampling noise.
+
+**Nearest-neighbour estimate.** Predicting a quantity for a point from the values at the most
+similar points in a reference set (here, the survival share of the 50 most similar training moons).
+
 **SHA-256.** A cryptographic fingerprint of a file. Any change to the file, even one character,
 produces a completely different value.
 
@@ -106,7 +136,9 @@ Any useful model must clearly exceed it.
 time, such as the survival time, which reveals the outcome. It produces unrealistically good scores.
 
 **Train / test split.** Holding back part of the data that the model never sees during training,
-so its score on that part estimates performance on new cases.
+so its score on that part estimates performance on new cases. A *stratified* split keeps the
+share of every label the same in both parts. Here the test set was fixed before any exploration,
+so patterns seen while exploring cannot shape the model in ways that inflate its test score.
 
 **Overfitting.** When a model memorizes its training data instead of learning general patterns.
 It shows as a high training score with a much lower test score.
