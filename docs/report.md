@@ -5,7 +5,7 @@ defined in the [glossary](glossary.md); figures are described in the [figure gui
 design decisions and open questions are collected in [questions.md](questions.md).
 
 **Status (2026-11-26):** Phase 2 (dataset generation) complete. Phase 3 (exploration and stability
-maps) next.
+maps) next. A manuscript draft covering Phases 1 and 2 is in [`paper/`](../paper/README.md).
 
 ## Simulation log
 

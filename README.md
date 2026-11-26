@@ -57,6 +57,7 @@ From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
 | `venv\Scripts\python src\generate_dataset.py configs\dataset.json` | Makes the full dataset (about 5 hours with 4 workers) |
 | `venv\Scripts\python src\make_manifest.py configs\dataset.json` | Records the dataset's SHA-256, counts and versions |
 | `venv\Scripts\python src\check_dataset.py configs\dataset.json` | Checks the dataset and reruns 20 random moons |
+| `venv\Scripts\python src\paper_numbers.py` | Prints the derived numbers quoted in the paper |
 
 The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 
@@ -65,6 +66,7 @@ The walkthrough is in `notebooks/01_first_simulation.ipynb`.
 | Folder | Contents |
 |---|---|
 | `docs/` | Technical report, design decisions, figure guide, glossary |
+| `paper/` | Manuscript draft (AASTeX) and bibliography |
 | `configs/` | Starting conditions and simulation settings |
 | `src/` | Reusable code |
 | `notebooks/` | Exploration |
