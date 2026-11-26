@@ -238,7 +238,7 @@ questions on the pilot gap, orbit direction, mass, long-term survival and the fi
 | 3.3 | Decision rules R1–R3, stability maps (`src/plot_dataset.py`), pilot investigation (`src/compare_pilot.py`) | `dbce1fe` |
 | 3.4 | The Phase 1 second moon over 1,000 years (`src/long_run.py`) | `661d80f` |
 | 3.5 | Rule R4 and survival to 1,000 years (`src/survival_curve.py`) | `3aad1cf` |
-| 3.6 | `notebooks/02_dataset_exploration.ipynb` and documentation | see Git history |
+| 3.6 | `notebooks/02_dataset_exploration.ipynb` and documentation | `e6996df` |
 
 ### Method
 
