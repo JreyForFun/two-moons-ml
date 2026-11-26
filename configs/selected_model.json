@@ -1,0 +1,77 @@
+{
+  "description": "Model selected in Phase 4 for the Phase 5 test evaluation",
+  "model": "random_forest",
+  "feature_set": "F3",
+  "features": [
+    "log_mass",
+    "log_a",
+    "e",
+    "cos_i",
+    "sin_node",
+    "cos_node",
+    "sin_peri",
+    "cos_peri",
+    "sin_anom",
+    "cos_anom",
+    "periapsis_lunar",
+    "apoapsis_lunar",
+    "crosses_moon",
+    "abs_cos_i",
+    "kozai",
+    "cos_moon_angle"
+  ],
+  "params": {
+    "min_samples_leaf": 5,
+    "max_features": 0.5,
+    "max_depth": 20,
+    "class_weight": "balanced_subsample"
+  },
+  "calibrate": false,
+  "classes": [
+    "survived",
+    "ejected",
+    "hit_earth",
+    "moon_interaction"
+  ],
+  "seed": 20261201,
+  "search": {
+    "candidates": 25,
+    "folds": 5
+  },
+  "seconds": 494.7805098999961,
+  "versions": {
+    "python": "3.14.6",
+    "scikit-learn": "1.9.1",
+    "xgboost": "3.4.1",
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scipy": "1.18.1"
+  },
+  "phase5_criteria": {
+    "fixed_on": "end of Phase 4, before the test set is opened",
+    "test_set": "2,400 moons in configs/split.json, evaluated once",
+    "C1_generalization": {
+      "metric": "test macro-F1",
+      "criterion": "inside the cross-validated 95% interval",
+      "interval": [
+        0.7084237355082573,
+        0.7368932705087219
+      ]
+    },
+    "C2_beats_physics_rule": {
+      "metric": "balanced accuracy",
+      "criterion": "paired bootstrap interval of the gain over the physics rule above 0 on the test set"
+    },
+    "C3_calibration": {
+      "metric": "ECE of P(survived)",
+      "criterion": "at most 0.05"
+    },
+    "C4_rare_class": {
+      "metric": "moon_interaction recall",
+      "criterion": "reported with a Wilson interval (descriptive)"
+    },
+    "speedup": {
+      "metric": "median prediction time per moon versus median simulation time (1.456 s per moon, configs/dataset_manifest.json)"
+    }
+  }
+}
