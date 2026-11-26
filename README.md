@@ -164,3 +164,10 @@ Shared modules used by the scripts above:
 Starting conditions and reference positions come from the
 [NASA JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) system. Simulations use
 [REBOUND](https://rebound.readthedocs.io/) with the IAS15 integrator.
+
+## License and citation
+
+Code is released under the [MIT License](LICENSE). To cite this project, use the metadata in
+[CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button).
+
+Author: John Rey Ishiguro Quizon, STI College Legazpi.

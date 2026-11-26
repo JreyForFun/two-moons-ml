@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software or its data, please cite it as below."
+title: "What if Earth had 2 moons? N-body simulations and a machine-learning surrogate for second-moon stability"
+authors:
+  - given-names: "John Rey Ishiguro"
+    family-names: "Quizon"
+    affiliation: "STI College Legazpi"
+repository-code: "https://github.com/JreyForFun/two-moons-ml"
+license: MIT
+keywords:
+  - N-body simulation
+  - orbital stability
+  - natural satellites
+  - machine learning
+  - REBOUND

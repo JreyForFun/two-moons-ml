@@ -45,7 +45,8 @@ Text in red brackets marks content that depends on later phases.
 | Results: surrogate performance | Pending (Phases 4–5) |
 | Discussion | Drafted (Phases 1–3); to be extended with model results |
 | Conclusions | Pending |
-| Author, affiliation, data DOI | Pending |
+| Author and affiliation | Done |
+| Data DOI | Pending |
 
 ## Before submission
 
