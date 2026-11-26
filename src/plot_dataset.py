@@ -97,6 +97,29 @@ def rule_r3(df):
             ].to_dict(orient="records")}
 
 
+def descriptive(df):
+    """Breakdowns quoted in the report (descriptive, not decision rules)."""
+    inner = df[df[A_COL] < 0.5]
+    groups = {
+        "inner_low_tilt": inner[(inner[I_COL] < 45) | (inner[I_COL] > 135)],
+        "inner_polar": inner[(inner[I_COL] >= 75) & (inner[I_COL] <= 105)],
+        "beyond_moon_prograde": df[(df[A_COL] > 1) & ~df["retrograde"]],
+        "beyond_moon_retrograde": df[(df[A_COL] > 1) & df["retrograde"]],
+        "crossing_moon_orbit": df[(df["apoapsis_km"] > LUNAR_DISTANCE_KM)
+                                  & (df["periapsis_km"] < LUNAR_DISTANCE_KM)],
+        "inside_moon_orbit": df[df["apoapsis_km"] <= LUNAR_DISTANCE_KM],
+    }
+    out = {name: {"moons": int(len(part)),
+                  **{o: float((part["result_label"] == o).mean()) for o in explore.OUTCOMES}}
+           for name, part in groups.items()}
+    bins = explore.BINS[M_COL]
+    out["mass_outcomes"] = {
+        side: {o: float((part["result_label"] == o).mean()) for o in explore.OUTCOMES}
+        for side, part in (("lightest", df[df[M_COL] < bins[1]]),
+                           ("heaviest", df[df[M_COL] >= bins[-2]]))}
+    return out
+
+
 def robustness(df):
     return {name: dict(zip(("correlation", "cells"), explore.split_half_agreement(df, x, y)))
             for name, (x, y) in {"distance_x_tilt": (A_COL, I_COL),
@@ -285,7 +308,7 @@ def direction_plot(df, r2):
 def main():
     df = explore.load_dataset("train")
     results = {"moons": len(df), "r1": rule_r1(df), "r2": rule_r2(df), "r3": rule_r3(df),
-               "robustness": robustness(df),
+               "robustness": robustness(df), "descriptive": descriptive(df),
                "direction": {name: {"moons": int(len(part)), "survived": float(part["survived"].mean())}
                              for name, part in (("prograde", df[~df["retrograde"]]),
                                                 ("retrograde", df[df["retrograde"]]))},
@@ -318,6 +341,13 @@ def main():
         print(f"    {name}: {d['moons']:,} moons, survived {d['survived']:.1%}")
     for row in results["eccentricity_table"]:
         print(f"    e {row['low']:.1f}-{row['high']:.1f}: {row['count']:5d} moons, survived {row['survived']:.1%}")
+    for name, d in results["descriptive"].items():
+        if name == "mass_outcomes":
+            for side, shares in d.items():
+                print(f"    {side} mass bin: " + ", ".join(f"{k} {v:.1%}" for k, v in shares.items()))
+        else:
+            print(f"    {name}: {d['moons']:,} moons; " + ", ".join(
+                f"{o} {d[o]:.1%}" for o in explore.OUTCOMES))
     for name, r in results["robustness"].items():
         print(f"    Split-half agreement, {name}: r = {r['correlation']:.3f} over {r['cells']} cells")
 

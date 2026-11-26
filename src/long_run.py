@@ -66,6 +66,19 @@ def summarize(data):
     print(f"  Largest e over 1,000 years: {e.max():.4f} at year {years[e.argmax()]:.0f}")
     print(f"  Semi-major axis range: {data['moon2_a_km'].min():,.0f} to "
           f"{data['moon2_a_km'].max():,.0f} km")
+    window = round(10 * YEAR_DAYS / 10)
+    smooth = running_mean(e, window)
+    print(f"  10-year mean eccentricity between {smooth.min():.3f} and {smooth.max():.3f}")
+    first, last = smooth[: len(smooth) // 2], smooth[len(smooth) // 2:]
+    print(f"  First half average {first.mean():.4f}, second half {last.mean():.4f}")
+    spectrum = np.abs(np.fft.rfft(e - e.mean()))
+    frequencies = np.fft.rfftfreq(len(e), d=10 / YEAR_DAYS)  # cycles per year
+    usable = frequencies > 1 / 500  # ignore periods longer than half the run
+    peak = frequencies[usable][spectrum[usable].argmax()]
+    slow = (frequencies > 1 / 500) & (frequencies < 1 / 5)
+    slow_peak = frequencies[slow][spectrum[slow].argmax()]
+    print(f"  Strongest cycle: {1 / peak:.2f} years; strongest slow cycle (5-500 years): "
+          f"{1 / slow_peak:.1f} years")
 
 
 def plot(data):
