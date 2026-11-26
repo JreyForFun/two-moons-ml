@@ -1,0 +1,22 @@
+{
+  "description": "The Phase 1 second moon (0.1 lunar masses, 0.4 lunar distances) for 1,000 years",
+  "bodies": [
+    "sun",
+    "earth",
+    "moon",
+    "moon2"
+  ],
+  "integrator": "ias15",
+  "duration_days": 365250,
+  "output_interval_hours": 240,
+  "ejection_distance_km": 4500000,
+  "second_moon": {
+    "mass_lunar": 0.1,
+    "distance_lunar": 0.4,
+    "eccentricity": 0.0,
+    "inclination_deg": 0.0,
+    "node_deg": 0.0,
+    "periapsis_deg": 0.0,
+    "true_anomaly_deg": 0.0
+  }
+}
