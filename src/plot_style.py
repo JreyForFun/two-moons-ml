@@ -9,11 +9,11 @@ BLUE, ORANGE = "#2a78d6", "#eb6834"  # checked for color-blind readers
 SURFACE, INK, MUTED_INK, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#e1e0d9"
 
 
-def new_chart(width, height, rows=1, **kwargs):
-    """Figure and axes (one Axes, or an array if rows > 1) in the project style."""
-    fig, axes = plt.subplots(rows, 1, figsize=(width, height), layout="constrained", **kwargs)
+def new_chart(width, height, rows=1, cols=1, **kwargs):
+    """Figure and axes (one Axes, or an array for several panels) in the project style."""
+    fig, axes = plt.subplots(rows, cols, figsize=(width, height), layout="constrained", **kwargs)
     fig.set_facecolor(SURFACE)
-    for ax in [axes] if rows == 1 else axes:
+    for ax in [axes] if rows == cols == 1 else axes.flat:
         ax.set_facecolor(SURFACE)
         ax.grid(color=GRID, linewidth=0.8)
         ax.set_axisbelow(True)
