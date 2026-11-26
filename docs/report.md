@@ -4,8 +4,8 @@ A record of the project, phase by phase: methods, results, decisions and revisio
 defined in the [glossary](glossary.md); figures are described in the [figure guide](figures.md);
 design decisions and open questions are collected in [questions.md](questions.md).
 
-**Status (2026-11-26):** Phase 3 (exploration and stability maps) complete. Phase 4 (surrogate
-models) next. A manuscript draft covering Phases 1 to 3 is in [`paper/`](../paper/README.md).
+**Status (2026-11-27):** Phase 4 (surrogate models) complete. Phase 5 (test-set evaluation) next.
+A manuscript draft covering Phases 1 to 4 is in [`paper/`](../paper/README.md).
 
 ## Simulation log
 
@@ -18,11 +18,12 @@ models) next. A manuscript draft covering Phases 1 to 3 is in [`paper/`](../pape
 | 2026-11-25 | Pilot D: first 30 moons at two other start dates | 60 | 0.10 | 360 |
 | 2026-11-26 | Full dataset: 12,000 new moons, 100 years | 12,000 | 20.77 | 12,360 |
 | 2026-11-26 | Phase 3: the Phase 1 second moon for 1,000 years | 1 | 0.01 | 12,360 |
-| 2026-11-26 | Phase 3: 500 training survivors re-integrated to 1,000 years | 500 | 17.94 | **12,360** |
+| 2026-11-26 | Phase 3: 500 training survivors re-integrated to 1,000 years | 500 | 17.94 | 12,360 |
+| 2026-11-26 | Phase 4: chaos twins, 1,500 training moons displaced by 1 m | 1,500 | 2.66 | **12,360** |
 
 Short simulations inside the automated checks and verification reruns (20 dataset moons, 20 pilot
-moons) are not counted. The 500 re-integrated survivors are existing dataset moons, so the
-cumulative count of distinct random second moons is unchanged.
+moons) are not counted. The re-integrated survivors and the chaos twins are existing dataset
+moons, so the cumulative count of distinct random second moons is unchanged.
 
 ---
 
@@ -368,6 +369,170 @@ for future tests rather than confirmed results.
 
 ---
 
+## Phase 4: surrogate models (2026-11-26 to 2026-11-27)
+
+**Objective:** models that predict the outcome of a system, and its probability, from the starting
+parameters alone, evaluated without touching the held-out test set.
+
+### Work
+
+| Step | Content | Commit |
+|---|---|---|
+| 4.1 | Settings (`configs/models.json`), feature sets (`src/features.py`), model pipelines (`src/models.py`), cross-validation and metrics (`src/cv.py`), checks (`src/check_models.py`) | `8e1c904` |
+| 4.2 | Chaos twins: 1,500 training systems re-simulated with a 1 m displacement (`src/select_twins.py`) | `8e1c904`, `601590f` |
+| 4.3 | Resumable training runner (`src/train_models.py`); baselines and rule P1 | `bce5e69` |
+| 4.4 | Nested model comparison (rules P2, P3, P6), final settings, lifetime task | `975d7fb` |
+| 4.5 | Analysis (`src/analyze_models.py`): chaos reference, rules P4 and P5, learning curve, importance, Phase 5 criteria | `975d7fb` |
+| 4.6 | Figures (`src/plot_models.py`) | `975d7fb` |
+| 4.7 | `notebooks/03_models.ipynb` and documentation | see Git history |
+
+### Method
+
+- **Target:** four classes, `survived`, `ejected`, `hit_earth` and `moon_interaction` (collision
+  with the Moon or loss of the Moon, merged: 254 training systems). P(survived) also gives a
+  binary survival prediction.
+- **Features** (inputs only):
+  - F1, orbital elements: log mass, log semi-major axis, eccentricity, cos *i*, sine and cosine
+    of the three orientation angles;
+  - F2, Earth-relative state vector and log mass;
+  - F3, F1 plus periapsis, apoapsis, a flag for orbits crossing the Moon's, |cos *i*|, the
+    Lidov–Kozai quantity √(1−e²) cos *i*, and the starting angle to the Moon.
+- **Models:**
+  - baselines: majority class, and a physics rule (a decision tree of depth at most 3 on apoapsis
+    and |cos *i*| only);
+  - candidates: logistic regression, Random Forest, XGBoost, multilayer perceptron.
+
+  Every model is a scikit-learn pipeline, so preprocessing is fitted inside each training fold.
+- **Validation:**
+  - stratified 5-fold cross-validation on the 9,600 training systems;
+  - hyperparameters chosen by a randomized search (25 candidates, inner 3-fold) inside each
+    outer training part (nested cross-validation);
+  - every system receives one out-of-fold (OOF) prediction, and comparisons use paired bootstrap
+    intervals (1,000 resamples) over these.
+- **Metrics:**
+  - primary: macro-F1;
+  - also balanced accuracy, accuracy, per-class precision and recall, log loss and Brier score;
+  - for survival: ROC AUC, accuracy and expected calibration error (ECE).
+- **Chaos reference:** the share of the 1,500 twin pairs with identical outcomes.
+- **Checks** (`src/check_models.py`):
+  - only input columns enter the features, and no test system is loaded;
+  - derived features match hand calculations;
+  - folds are stratified, and runs are reproducible;
+  - a Random Forest trained on shuffled labels scores at chance (macro-F1 0.235 versus 0.662 on
+    real labels in the same quick check), ruling out leakage.
+- **Pre-registered rules**, fixed before any model was trained:
+
+| Rule | Question | Criterion |
+|---|---|---|
+| P1 | Feature set | F2 or F3 replaces F1 if the interval of its macro-F1 gain (Random Forest, default settings) lies above 0 |
+| P2 | Model | Highest macro-F1, unless a simpler model's gap interval includes 0 (logistic < Random Forest < XGBoost < MLP) |
+| P3 | Beats the physics rule | Interval of the balanced-accuracy gain above 0 |
+| P4 | Rare class | Targeted sampling recommended if `moon_interaction` recall is below 30% |
+| P5 | Errors and chaos | Error rate on twin-disagreeing systems exceeds that on twin-agreeing systems (interval above 0) |
+| P6 | Calibration | If ECE of P(survived) exceeds 0.05, an isotonic-calibrated version is kept if it lowers log loss |
+
+### Results
+
+**Baselines.** Always predicting `survived` gives macro-F1 0.138 (accuracy 37.9%). The physics
+rule reaches macro-F1 0.597 and accuracy 79.5%. Fitted on all training systems, it reads:
+orbits with apoapsis below 0.875 lunar distances survive unless |cos *i*| ≤ 0.42 (inclination
+roughly 65° to 115°), in which case they collide with Earth; orbits reaching farther are ejected,
+or collide with Earth when near-polar and within 1.9 lunar distances. It never predicts
+`moon_interaction`.
+
+**P1, feature set: F3.** State vectors are clearly worse than orbital elements (macro-F1 −0.086,
+interval −0.099 to −0.073). The physics features add +0.006 (interval +0.0001 to +0.014), a small
+gain just above zero.
+
+**P2 and P3, model comparison (nested cross-validation on F3):**
+
+| Model | Macro-F1 | Balanced accuracy | Accuracy | Log loss | Fold macro-F1 (mean ± SD) |
+|---|---:|---:|---:|---:|---:|
+| Majority class | 0.138 | 0.250 | 0.379 | — | — |
+| Physics rule | 0.597 | 0.603 | 0.795 | 0.599 | 0.597 ± 0.006 |
+| Logistic regression | 0.658 | 0.694 | 0.780 | 0.608 | 0.652 ± 0.012 |
+| **Random Forest** | **0.723** | **0.719** | **0.850** | 0.405 | 0.723 ± 0.026 |
+| XGBoost | 0.715 | 0.714 | 0.850 | 0.401 | 0.715 ± 0.012 |
+| Multilayer perceptron | 0.653 | 0.650 | 0.835 | 0.428 | 0.652 ± 0.007 |
+
+The Random Forest has the highest macro-F1; its gain over logistic regression is +0.065 (interval
++0.050 to +0.080), so P2 selects it. It beats the physics rule by +0.116 in balanced accuracy
+(interval +0.103 to +0.132; P3 met). Per class, recall is 91.9% (survived), 86.7% (ejected),
+78.7% (hit Earth) and 30.3% (Moon interaction). As a survival classifier it reaches 93.8%
+accuracy and a ROC AUC of 0.985. With isotropic weights, macro-F1 is 0.712 and accuracy 84.6%.
+
+**P6, calibration: no change needed.** The ECE of P(survived) is 0.019, below the 0.05 limit.
+
+**P4, rare class: targeted sampling not triggered (near miss).** The `moon_interaction` recall
+is 30.3% (Wilson interval 25.0% to 36.2%), just above the 30% criterion. Losses of the Moon are
+recognized in 48.7% of cases, collisions with the Moon in 14.6%; 46% of all
+`moon_interaction` systems (117 of 254) are predicted as ejections.
+
+**Chaos reference and P5: errors concentrate on chaotic systems.** A 1 m displacement leaves the
+outcome unchanged in 92.3% of the 1,500 twin pairs (interval 90.8% to 93.5%; 98.4% for survival
+alone). Chaos peaks near the Moon's orbit (20.3% of outcomes change between 0.55 and 0.97
+lunar distances, 17.2% between 0.97 and 1.70) and is absent inside 0.31 lunar distances
+(none of 498 pairs changed). The model errs on 53.4% of the 116 chaotic
+systems and on 10.5% of the stable ones (difference interval +0.34 to +0.52; P5 met). On stable
+systems its accuracy is 89.5%, close to the 92.3% reproducibility of the simulation.
+
+**What the model learned.** Grouped permutation importance (drop in macro-F1):
+- distance 0.308;
+- inclination 0.236;
+- mass 0.075;
+- orientation and phase 0.003;
+- eccentricity alone 0.002, since periapsis and apoapsis in the distance group already carry it.
+
+The out-of-fold predicted survival probability reproduces the simulated stability map, with the
+largest cell difference 0.13, at region edges.
+
+**Learning curve.** From 768 to 7,680 training systems per fold, macro-F1 rises only from 0.700
+to 0.723, and the `moon_interaction` recall stays near 29–30%. Additional simulations would
+improve the model little; the outcomes' chaotic component is the main limit.
+
+**Lifetime classes (secondary task).** With training shares of 10.8% (lost within 1 year),
+31.1% (1–10 years), 20.2% (10–100 years) and 37.9% (survived), the Random Forest predicts the
+lifetime class with macro-F1 0.728 and accuracy 76.7% (majority 37.9%); 98.6% of predictions are
+correct or one class off.
+
+**Selected model for Phase 5.** One randomized search on all training systems gave
+`min_samples_leaf` 5, `max_features` 0.5, `max_depth` 20 and `class_weight`
+`balanced_subsample` (`configs/selected_model.json`). The Phase 5 criteria were fixed before the
+test set is opened:
+- C1: test macro-F1 inside the cross-validated interval 0.708 to 0.737;
+- C2: beats the physics rule in balanced accuracy;
+- C3: ECE of P(survived) at most 0.05;
+- C4: `moon_interaction` recall reported;
+- the speedup over simulation is measured.
+
+### Reading the decision rules
+
+- P1, P2, P3, P5 were met.
+- P6 required no action.
+- P4 was met by a narrow margin: the recall interval (25% to 36%) straddles the criterion, so the
+  conclusion that targeted sampling is unnecessary is supported mainly by the flat learning curve
+  rather than by the recall alone.
+
+### Findings
+
+- A Random Forest predicts the outcome of a second moon with 85% accuracy (macro-F1 0.72) and
+  well-calibrated probabilities, clearly better than a physics rule.
+- On systems whose outcome is reproducible under a 1 m nudge, it is right about 9 times in 10.
+  Most remaining errors are on chaotic systems.
+- The model relies on the same quantities as the physics: distance relative to the Moon and
+  inclination relative to 90°.
+- More simulations would help little; collisions with the Moon remain hard to predict.
+- The starting conditions also predict roughly when a system fails.
+
+### Revisions
+
+- The reported Brier score is the four-class score; the label in `src/paper_numbers.py` was
+  corrected before any document quoted it.
+- The cross-validated scores are slightly optimistic because the feature set was chosen on the
+  same training data; the Phase 5 test evaluation is the unbiased estimate.
+
+---
+
 ## Method summary
 
 > We integrate the Sun, Earth, Moon and a hypothetical second moon with REBOUND's IAS15
@@ -382,7 +547,11 @@ for future tests rather than confirmed results.
 > systems. A stratified 20% test set is held out before exploration. On the remaining 9,600
 > systems, survival is concentrated on close, low-inclination orbits; near-polar orbits collide
 > with Earth, consistent with Lidov–Kozai cycles, and orbits reaching the Moon's are ejected or
-> collide. Of 500 random 100-year survivors integrated to 1,000 years, 21.4% are lost.
+> collide. Of 500 random 100-year survivors integrated to 1,000 years, 21.4% are lost. Under
+> nested cross-validation, a Random Forest on orbital elements and physics features predicts
+> the four-class outcome with macro-F1 0.723 and accuracy 85.0% (physics-rule baseline 0.597
+> and 79.5%), with calibrated survival probabilities (ECE 0.019). A 1 m perturbation leaves
+> 92.3% of outcomes unchanged, and model errors concentrate on the chaotic systems.
 
 ## Limitations
 
@@ -397,3 +566,6 @@ for future tests rather than confirmed results.
   prograde-retrograde difference.
 - The Lidov–Kozai mechanism is inferred from outcome patterns; individual orbits were not traced.
 - Survival between 100 and 1,000 years rests on a sample of 500 systems.
+- Phase 4 scores are cross-validated on the training set; the feature set was chosen on the same
+  data, so they are slightly optimistic until the Phase 5 test evaluation.
+- Collisions with the Moon are rarely predicted (recall 14.6% within the merged class).

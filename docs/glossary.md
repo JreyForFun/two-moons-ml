@@ -154,3 +154,71 @@ so patterns seen while exploring cannot shape the model in ways that inflate its
 
 **Overfitting.** When a model memorizes its training data instead of learning general patterns.
 It shows as a high training score with a much lower test score.
+
+**Cross-validation.** Splitting the training data into *k* parts (folds), training on *k* − 1 and
+scoring on the remaining part, in turn. *Stratified* folds keep every class's share the same in
+each fold.
+
+**Out-of-fold (OOF) prediction.** The prediction for a training moon made by the cross-validation
+model that did not see it. Every moon gets exactly one, so OOF predictions can be scored and
+compared like predictions on new data.
+
+**Nested cross-validation.** Hyperparameters are chosen by an inner cross-validation inside each
+outer training part, so the outer scores are never tuned on the data they measure.
+
+**Hyperparameter.** A model setting chosen before training (for example tree depth), as opposed
+to the parameters the model learns from data.
+
+**Precision, recall and F1.** For one class: precision is the share of predictions of that class
+that are correct; recall is the share of that class that is found; F1 is their harmonic mean.
+
+**Macro-F1.** The F1 score averaged over classes with equal weight, so a rare class counts as much
+as a common one.
+
+**Balanced accuracy.** The recall averaged over classes; equal to accuracy when classes are
+balanced, and robust to imbalance otherwise.
+
+**Log loss and Brier score.** Scores for predicted probabilities. Both reward confident correct
+predictions and penalize confident wrong ones; lower is better.
+
+**Calibration and ECE.** A model is calibrated if events predicted with probability *p* occur a
+fraction *p* of the time. The expected calibration error (ECE) is the average gap between predicted
+probability and observed frequency, weighted over probability bins.
+
+**ROC AUC.** For a yes/no outcome, the probability that a randomly chosen positive case receives a
+higher predicted probability than a randomly chosen negative case (0.5 is chance, 1 is perfect).
+
+**Class weights.** Weighting training examples inversely to their class frequency, so the model
+does not ignore rare classes.
+
+**Logistic regression.** A linear model of the log-odds of each class; a simple, interpretable
+baseline.
+
+**Random Forest.** An average of many decision trees, each trained on a random resample of the data
+and random subsets of the features.
+
+**Gradient boosting (XGBoost).** A sequence of small decision trees, each fitted to correct the
+errors of the previous ones.
+
+**Multilayer perceptron (MLP).** A small feed-forward neural network; it needs standardized inputs.
+
+**Circular encoding.** Representing an angle by its sine and cosine, so 359° and 1° are close.
+
+**Paired bootstrap.** Comparing two models by resampling the same moons for both and recomputing the
+difference in a score; the spread of the differences gives its uncertainty while removing
+moon-to-moon variation common to both models.
+
+**Permutation importance.** The drop in a score when one input (or a *group* of related inputs) is
+randomly shuffled. Grouping related inputs prevents them from hiding each other's importance.
+
+**Label-permutation test.** Training on randomly shuffled labels. A leak-free pipeline then scores
+at chance level; a high score would reveal leakage.
+
+**Learning curve.** A score as a function of the number of training examples; a curve that is still
+rising indicates that more data would help.
+
+**Chaos twins.** Pairs of simulations of the same system, one displaced by 1 m. The share of pairs
+with different outcomes measures how much of the outcome is decided by chaos.
+
+**Selection optimism.** Any choice made with the same data that measures performance can make the
+measured score slightly too favorable; an untouched test set removes this bias.

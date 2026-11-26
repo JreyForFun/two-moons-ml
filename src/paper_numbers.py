@@ -98,6 +98,69 @@ def phase3():
     print(f"  Heaviest mass bin: moon_lost {heavy['moon_lost']:.1%}, hit_earth {heavy['hit_earth']:.1%}")
     rb = p3["robustness"]
     print("  Split-half r: " + ", ".join(f"{k} {v['correlation']:.3f}" for k, v in rb.items()))
+    phase4()
+
+
+def phase4():
+    """Phase 4 numbers, read from data/phase4/ and data/phase4_analysis.json."""
+    folder = ROOT / "data" / "phase4"
+    analysis_path = ROOT / "data" / "phase4_analysis.json"
+    if not (folder / "decisions.json").exists() or not analysis_path.exists():
+        print("\nPHASE 4: run train_models.py and analyze_models.py first")
+        return
+    decisions = json.loads((folder / "decisions.json").read_text(encoding="utf-8"))
+    analysis = json.loads(analysis_path.read_text(encoding="utf-8"))
+    fs = decisions["P1"]["chosen"]
+
+    def run(key):
+        return json.loads((folder / f"{key}.json").read_text(encoding="utf-8"))
+
+    print(f"\nPHASE 4 (training moons, out-of-fold)")
+    for key, name in (("majority", "Majority class"), ("physics_rule", "Physics rule"),
+                      (f"logistic_{fs}", "Logistic regression"),
+                      (f"random_forest_{fs}", "Random Forest"), (f"xgboost_{fs}", "XGBoost"),
+                      (f"mlp_{fs}", "MLP")):
+        r = run(key)
+        m, spread = r["metrics"], r["fold_spread"]["macro_f1"]
+        print(f"  {name:20s} macro-F1 {m['macro_f1']:.3f} (folds {spread[0]:.3f} +/- {spread[1]:.3f}), "
+              f"balanced acc {m['balanced_accuracy']:.3f}, accuracy {m['accuracy']:.3f}, "
+              f"log loss {m['log_loss']:.3f}, {r['seconds'] / 60:.1f} min")
+    for name, g in decisions["P1"]["gains_over_F1"].items():
+        print(f"  P1 {name} minus F1: {g['mean']:+.4f} ({g['interval'][0]:+.4f} to {g['interval'][1]:+.4f}); "
+              f"chosen {fs}")
+    for name, g in decisions["P2"]["gaps"].items():
+        print(f"  P2 {decisions['P2']['highest']} minus {name}: {g['mean']:+.4f} "
+              f"({g['interval'][0]:+.4f} to {g['interval'][1]:+.4f}); selected {decisions['P2']['selected']}")
+    p3, p6 = decisions["P3"], decisions["P6"]
+    print(f"  P3 balanced-accuracy gain over physics rule {p3['mean']:+.4f} "
+          f"({p3['interval'][0]:+.4f} to {p3['interval'][1]:+.4f})")
+    print(f"  P6 ECE {p6['ece']:.4f}; calibrated: {p6['calibrated']}")
+    m, iso = analysis["metrics"], analysis["metrics_isotropic"]
+    print(f"  Selected: recall {[round(v, 3) for v in m['recall']]}, precision "
+          f"{[round(v, 3) for v in m['precision']]}")
+    print(f"  Selected binary: AUC {m['survived_auc']:.3f}, accuracy {m['survived_accuracy']:.3f}, "
+          f"ECE {m['survived_ece']:.4f}; 4-class Brier {m['brier']:.3f}")
+    print(f"  Isotropic-weighted: macro-F1 {iso['macro_f1']:.3f}, accuracy {iso['accuracy']:.3f}, "
+          f"AUC {iso['survived_auc']:.3f}")
+    c, p5, p4 = analysis["chaos"], analysis["P5"], analysis["P4"]
+    print(f"  Chaos twins {c['moons']}: agreement {c['agreement']:.3f} {c['agreement_interval']}, "
+          f"binary {c['binary_agreement']:.3f}")
+    print(f"  P5 error chaotic {p5['error_chaotic']:.3f} ({p5['chaotic_moons']}), stable "
+          f"{p5['error_stable']:.3f}, interval {p5['difference_interval']}")
+    print(f"  P4 rare recall {p4['recall']:.3f} {p4['interval']}, sub {p4['sub_recall']}")
+    first, last = analysis["learning_curve"][0], analysis["learning_curve"][-1]
+    print(f"  Learning curve {first['moons']:.0f} -> {last['moons']:.0f} moons: macro-F1 "
+          f"{first['macro_f1'][0]:.3f} -> {last['macro_f1'][0]:.3f}, rare recall "
+          f"{first['rare_recall'][0]:.3f} -> {last['rare_recall'][0]:.3f}")
+    print("  Importance: " + ", ".join(f"{g} {v[0]:.3f}" for g, v in sorted(
+        analysis["importance"].items(), key=lambda kv: -kv[1][0])))
+    life = run(f"lifetime_{decisions['P2']['selected']}_{fs}")
+    print(f"  Lifetime: macro-F1 {life['metrics']['macro_f1']:.3f}, accuracy "
+          f"{life['metrics']['accuracy']:.3f}, within one bin {life['within_one_bin']:.3f}; "
+          f"shares {decisions['lifetime_shares']}")
+    selected = json.loads((ROOT / "configs" / "selected_model.json").read_text(encoding="utf-8"))
+    print(f"  Final settings {selected['params']}; Phase 5 C1 interval "
+          f"{selected['phase5_criteria']['C1_generalization']['interval']}")
 
 
 if __name__ == "__main__":

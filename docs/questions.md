@@ -11,7 +11,7 @@ Status: **Answered**, **Partly answered**, or **Open (phase)**.
 - [Simulation validity](#simulation-validity) (Q1–Q11)
 - [Dataset design](#dataset-design) (Q12–Q27)
 - [Exploration](#exploration-phase-3) (Q28–Q31, Q36–Q38, Q41)
-- [Modeling and evaluation](#modeling-and-evaluation-phases-45) (Q32–Q35, Q39–Q40)
+- [Modeling and evaluation](#modeling-and-evaluation-phases-45) (Q32–Q35, Q39–Q40, Q42–Q46)
 
 ---
 
@@ -88,10 +88,14 @@ displacement. The differences are attributed to chaos rather than numerical inac
 **Q14. How chaotic are the outcomes?** *Answered.*
 A 1 m displacement changed 12 of 100 outcomes after 100 years and 9 of 100 after 10 years.
 
-**Q15. What accuracy can a model be expected to reach?** *Partly answered.*
-The 88% agreement under a 1 m displacement is an indicative bound, not a strict ceiling: when
-outcomes are partly random, an optimal predictor can exceed the agreement between two noisy
-realizations. Model accuracy will be compared against it in Phase 5.
+**Q15. What accuracy can a model be expected to reach?** *Answered.*
+On the dataset's own distribution, a 1 m displacement leaves 92.3% of four-class outcomes unchanged
+(1,500 chaos twins; 98.4% for survival alone). This is a guide rather than a strict ceiling. The
+selected Random Forest reaches 85.0% accuracy out-of-fold, and 89.5% on systems whose outcome is
+unchanged by the nudge. The pilot's 88% (100 systems, different inclination sampling) was a rough
+first estimate.
+Evidence: `src/analyze_models.py`, [chaos_profile.png](figures.md#chaos_profilepng),
+[model_comparison.png](figures.md#model_comparisonpng).
 
 **Q16. Does the start date matter?** *Partly answered.*
 No clear effect: agreement of 27/30 and 26/30 at two other dates, versus 28/30 for a 1 m
@@ -215,24 +219,67 @@ Evidence: [technical report](report.md), Phase 3, "Reading the decision rules"; 
 
 ## Modeling and evaluation (Phases 4–5)
 
-**Q32. How is memorization detected?** *Open (Phase 4).*
-By evaluating on a held-out test set never used for training and comparing training and test
-scores. The test set (2,400 moons, stratified) was frozen before exploration in `configs/split.json`.
+**Q32. How is memorization detected?** *Answered for Phase 4; final check in Phase 5.*
+Every score is out-of-fold under nested cross-validation, so no system is scored by a model that
+saw it, and hyperparameters are never tuned on the systems they are scored on. A label-permutation
+test (shuffled labels give macro-F1 0.235 against 0.662 on real labels) rules out leakage. The
+2,400 test systems, frozen before exploration, give the final check in Phase 5.
 
-**Q33. Which input representation works better: orbital elements or state vectors?** *Open (Phase 4).*
+**Q33. Which input representation works better: orbital elements or state vectors?** *Answered.*
+Orbital elements. Random Forest macro-F1 drops by 0.086 (interval −0.099 to −0.073) when the same
+orbits are described by Earth-relative position and velocity. Elements express the physically
+relevant quantities (size, shape, tilt) directly; a model would have to reconstruct them from
+vectors.
 
 **Q34. How much faster is the surrogate than the simulation?** *Open (Phase 5).*
 Reference: the simulation takes a median of 1.5 s per moon and up to 104 s.
 
-**Q35. Where does the model fail?** *Open (Phase 5).*
-Expected near boundaries between outcome regions, where chaos makes even the simulation
-unpredictable (Q14).
+**Q35. Where does the model fail?** *Partly answered (Phase 5 completes it).*
+Out-of-fold, errors concentrate on chaotic systems: the model is wrong on 53.4% of systems whose
+outcome changes under a 1 m nudge and on 10.5% of the others (rule P5). The remaining confusions are
+ejections versus collisions with Earth near the Moon's orbit, and the `moon_interaction` class,
+which is recognized in 30% of cases. Phase 5 repeats the analysis on the test set.
+Evidence: [confusion_matrix_cv.png](figures.md#confusion_matrix_cvpng),
+[predicted_map.png](figures.md#predicted_mappng).
 
-**Q39. Should the two rare outcomes be merged or sampled more densely?** *Open (Phase 4).*
-Collisions with the Moon (1.4%) and loss of the Moon (1.2%) are concentrated between about 0.5
-and 1.5 lunar distances ([outcome_maps.png](figures.md#outcome_mapspng)), so targeted sampling of
-that region is feasible.
+**Q39. Should the two rare outcomes be merged or sampled more densely?** *Answered.*
+Merged into `moon_interaction` (254 training systems), since both are close encounters with the
+Moon in the same region. The model recognizes 30.3% of them (interval 25% to 36%), just above the
+pre-registered 30% threshold, so targeted sampling was not triggered. The flat learning curve
+(recall 29% with 768 systems, 30% with 7,680) supports this: more data of the same kind would
+help little.
 
-**Q40. Do derived geometric features help?** *Open (Phase 4).*
-Periapsis, apoapsis relative to the Moon's orbit and inclination relative to 90° separate the
-outcome regions in Phase 3 and are candidate features.
+**Q40. Do derived geometric features help?** *Answered.*
+Slightly. Adding periapsis, apoapsis, a Moon-crossing flag, |cos *i*|, the Lidov–Kozai quantity and
+the starting angle to the Moon raises Random Forest macro-F1 by 0.006 (interval +0.0001 to
++0.014), just enough to meet rule P1. A forest can largely derive these quantities from the
+elements itself; their main value is interpretability (see the importance groups).
+
+**Q42. Which model works best, and why?** *Answered.*
+A Random Forest (macro-F1 0.723, accuracy 85.0%), closely followed by XGBoost (0.715, 85.0%);
+logistic regression (0.658) and the neural network (0.653) trail. The outcome regions have sharp,
+non-linear boundaries (near-polar band, Moon-crossing line), which tree ensembles capture
+naturally; a small tabular dataset does not favor neural networks.
+
+**Q43. Are the predicted probabilities trustworthy?** *Answered (training data).*
+Yes. The expected calibration error of P(survived) is 0.019, below the 0.05 limit of rule P6, and
+the reliability diagram follows the diagonal. As a survival classifier the model reaches a ROC AUC
+of 0.985. Calibration on the test set is checked in Phase 5.
+Evidence: [calibration.png](figures.md#calibrationpng).
+
+**Q44. Do the starting conditions also predict when a system fails?** *Answered.*
+Roughly. The lifetime class (lost within 1 year, 1–10 years, 10–100 years, or surviving) is
+predicted with 76.7% accuracy (majority 37.9%), and 98.6% of predictions are correct or one class
+off.
+Evidence: [lifetime_confusion.png](figures.md#lifetime_confusionpng).
+
+**Q45. Would more simulations improve the model?** *Answered.*
+Little. A tenfold increase in training data raises macro-F1 from 0.700 to 0.723. The limit is the
+chaotic component of the outcomes, not the amount of data.
+Evidence: [learning_curve.png](figures.md#learning_curvepng).
+
+**Q46. Does the model use the physics found in Phase 3?** *Answered.*
+Yes. Shuffling the distance group of inputs lowers macro-F1 by 0.31 and the inclination group by
+0.24, against 0.075 for mass and almost nothing for the orientation angles. Even the depth-3
+physics rule, given only apoapsis and |cos *i*|, rediscovers the Phase 3 regions.
+Evidence: [feature_importance.png](figures.md#feature_importancepng).

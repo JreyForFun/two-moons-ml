@@ -22,6 +22,14 @@ Color convention: **blue** for the Moon, surviving systems or the reference simu
 | [survival_by_direction.png](#survival_by_directionpng) | 3 | `src/plot_dataset.py` |
 | [survival_curve_full.png](#survival_curve_fullpng) | 3 | `src/survival_curve.py` |
 | [first_moon_long_term.png](#first_moon_long_termpng) | 3 | `src/long_run.py` |
+| [model_comparison.png](#model_comparisonpng) | 4 | `src/plot_models.py` |
+| [confusion_matrix_cv.png](#confusion_matrix_cvpng) | 4 | `src/plot_models.py` |
+| [calibration.png](#calibrationpng) | 4 | `src/plot_models.py` |
+| [chaos_profile.png](#chaos_profilepng) | 4 | `src/plot_models.py` |
+| [feature_importance.png](#feature_importancepng) | 4 | `src/plot_models.py` |
+| [predicted_map.png](#predicted_mappng) | 4 | `src/plot_models.py` |
+| [learning_curve.png](#learning_curvepng) | 4 | `src/plot_models.py` |
+| [lifetime_confusion.png](#lifetime_confusionpng) | 4 | `src/plot_models.py` |
 
 ---
 
@@ -307,3 +315,159 @@ stable over at least 1,000 years.
 
 **Caveats.** A single system. Osculating elements include short-period variations, which the
 running mean smooths out.
+
+---
+
+## model_comparison.png
+
+![Out-of-fold scores of all models](../figures/model_comparison.png)
+
+**Content.** Out-of-fold macro-F1 (left) and accuracy (right) of the two baselines and the four
+candidate models on the 9,600 training systems, with 95% bootstrap intervals (mostly smaller than
+the markers). The selected model is orange. The dashed line in the accuracy panel is the chaos
+reference: the share of twin pairs whose outcome is unchanged by a 1 m displacement.
+
+**Reading.** The Random Forest has the highest macro-F1 (0.723) and shares the highest accuracy
+with XGBoost (0.850). The physics rule (0.597 macro-F1, 0.795 accuracy) already beats logistic
+regression in accuracy; the neural network trails the tree ensembles. All models remain below the
+chaos reference of 0.923.
+
+**Interpretation.** Tree ensembles capture the sharp, non-linear outcome boundaries best. The gap
+between the best model and the chaos reference is small compared with the gap to the baselines.
+
+**Caveats.** Cross-validated on training data, with the feature set chosen on the same data, so
+slightly optimistic. Macro-F1 has no direct chaos reference, so the reference is shown only for
+accuracy.
+
+---
+
+## confusion_matrix_cv.png
+
+![Out-of-fold confusion matrix of the Random Forest](../figures/confusion_matrix_cv.png)
+
+**Content.** Out-of-fold predictions of the selected Random Forest: rows are simulated outcomes,
+columns predicted outcomes; each cell gives the row share and the count.
+
+**Reading.** Survivors are recognized in 92% of cases, ejections in 87% and collisions with Earth
+in 79%. The largest confusions are collisions with Earth predicted as ejections (12%) and Moon
+interactions predicted as ejections (46%). Only 30% of Moon interactions are recognized.
+
+**Interpretation.** The three common outcomes are well separated. Moon interactions occur in the
+same region as ejections (around the Moon's orbit) and are often decided by chaos, so they are
+hard to distinguish from the starting conditions.
+
+**Caveats.** Shares in the bottom row rest on 254 systems.
+
+---
+
+## calibration.png
+
+![Reliability diagram of the predicted survival probability](../figures/calibration.png)
+
+**Content.** Predicted survival probability (10 bins of width 0.1, bins with at least 20 systems)
+against the observed share of survivors in each bin; the dashed diagonal marks perfect
+calibration.
+
+**Reading.** The points follow the diagonal closely; in the middle range observed survival is a
+few points above the prediction. The expected calibration error is 0.019.
+
+**Interpretation.** The probabilities can be read at face value: a system given 70% survives about
+70% of the time, slightly more. No calibration step is needed (rule P6).
+
+**Caveats.** Out-of-fold, training systems only; calibration on the test set is checked in Phase 5.
+
+---
+
+## chaos_profile.png
+
+![Share of twin pairs with different outcomes](../figures/chaos_profile.png)
+
+**Content.** Share of the 1,500 twin pairs whose outcome changed when the second moon was
+displaced by 1 m, by semi-major axis (left, six logarithmic bins) and inclination (right, six
+bins of 30°), with 95% Wilson intervals.
+
+**Reading.** No pair changed inside 0.31 lunar distances. The share rises to 20.3% between 0.55
+and 0.97 lunar distances and 17.2% between 0.97 and 1.70, then falls to 2.7% beyond. By
+inclination, chaos ranges from 3.5% (90°–120°) to 11.9% (120°–150°).
+
+**Interpretation.** Chaos is concentrated around the Moon's orbit, where close encounters amplify
+small differences. Close-in systems, and near-polar systems that collide with Earth reliably, are
+predictable.
+
+**Caveats.** About 225–275 pairs per bin; the inclination profile is noisier than the distance
+profile.
+
+---
+
+## feature_importance.png
+
+![Grouped permutation importance](../figures/feature_importance.png)
+
+**Content.** Drop in out-of-fold macro-F1 when a group of related inputs is shuffled together,
+averaged over 5 folds (error bars: standard deviation). Groups: distance (log semi-major axis,
+periapsis, apoapsis, crossing flag), inclination (cos *i*, |cos *i*|, the Lidov–Kozai quantity),
+mass, orientation and phase (angles, starting angle to the Moon), eccentricity.
+
+**Reading.** Shuffling the distance group lowers macro-F1 by 0.31 and the inclination group by
+0.24; mass follows with 0.075. Orientation, phase and eccentricity alone contribute almost nothing.
+
+**Interpretation.** The model relies on the same two drivers as the physics: distance relative to
+the Moon's orbit and inclination relative to 90°. Mass matters through its effect on the Moon.
+
+**Caveats.** Eccentricity appears unimportant because periapsis and apoapsis, which contain it,
+belong to the distance group. Importance describes this model, not causation.
+
+---
+
+## predicted_map.png
+
+![Simulated versus predicted survival map](../figures/predicted_map.png)
+
+**Content.** Three panels on the stability-map grid: simulated survival share, mean out-of-fold
+predicted P(survived), and their difference (orange: predicted higher; blue: lower).
+
+**Reading.** The predicted map reproduces the simulated one: the survival regions inside
+0.5 lunar distances, the near-polar band and the retrograde region beyond the Moon. The
+differences are small (largest 0.13) and lie along the edges of the survival regions.
+
+**Interpretation.** The surrogate has learned the structure of the stability map from the starting
+conditions alone; its largest deviations are on region boundaries, where chaos is also strongest.
+
+**Caveats.** Cell averages hide individual errors; see the confusion matrix.
+
+---
+
+## learning_curve.png
+
+![Learning curve](../figures/learning_curve.png)
+
+**Content.** Out-of-fold macro-F1 (left) and `moon_interaction` recall (right) of the selected
+model trained on 10%, 20%, 40%, 70% and 100% of each training fold (768 to 7,680 systems), mean
+± standard deviation over 5 folds.
+
+**Reading.** Macro-F1 rises only from 0.700 to 0.723 over a tenfold increase in data; the
+`moon_interaction` recall stays between 28% and 30%.
+
+**Interpretation.** More simulations would improve the model little. Performance is limited by the
+chaotic component of the outcomes rather than by the amount of data.
+
+**Caveats.** The fold-to-fold spread of the recall is large.
+
+---
+
+## lifetime_confusion.png
+
+![Confusion matrix of lifetime classes](../figures/lifetime_confusion.png)
+
+**Content.** Out-of-fold confusion matrix of the secondary task, the lifetime class: lost within
+1 year, within 1–10 years, within 10–100 years, or surviving 100 years.
+
+**Reading.** 92% of survivors, 74% of the 1–10 year class, 67% of the under-1-year class and 58% of
+the 10–100 year class are classified correctly; nearly all errors fall in a neighbouring class
+(98.6% of predictions are correct or one class off).
+
+**Interpretation.** The starting conditions predict roughly when a system fails, not only whether
+it does. Neighbouring classes overlap because lifetimes are continuous and partly chaotic.
+
+**Caveats.** The class boundaries (1, 10 and 100 years) are fixed choices; survivors' true
+lifetimes beyond 100 years are unknown.

@@ -7,8 +7,8 @@ the outcome from the starting conditions alone.
 Inspired by SPOCK (Tamayo et al., 2020), which uses machine learning to predict the stability of
 planetary systems.
 
-**Status:** Phase 3 of 6 finished (12,000 simulated second moons, stability maps). Next: Phase 4,
-surrogate models.
+**Status:** Phase 4 of 6 finished (surrogate model selected, cross-validated). Next: Phase 5,
+evaluation on the held-out test set.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -26,6 +26,10 @@ surrogate models.
   orbits are driven into Earth (99.1%), consistent with Lidov–Kozai cycles; orbits reaching the
   Moon's are ejected or collide. Beyond the Moon's orbit, only retrograde moons survive.
 - **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
+- **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting values
+  with 85.0% cross-validated accuracy (physics rule 79.5%, majority class 37.9%) and calibrated
+  survival probabilities (ROC AUC 0.985). Its errors concentrate on systems whose outcome a 1 m
+  nudge changes; on reproducible systems it is right 89.5% of the time.
 
 ## Documentation
 
@@ -37,6 +41,7 @@ surrogate models.
 | [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
 | [notebooks/01_first_simulation.ipynb](notebooks/01_first_simulation.ipynb) | Setup, validation and a first second moon |
 | [notebooks/02_dataset_exploration.ipynb](notebooks/02_dataset_exploration.ipynb) | Stability maps, decision rules and long-term survival |
+| [notebooks/03_models.ipynb](notebooks/03_models.ipynb) | Surrogate models, chaos reference and the selected model |
 | [paper/](paper/README.md) | Manuscript draft (AASTeX) |
 | [notes.md](notes.md) | Lab notes and key numbers |
 
@@ -107,6 +112,13 @@ command again.
 |---|---|
 | `venv\Scripts\python src\select_twins.py` | Chooses 1,500 training moons to re-simulate with a 1 m nudge (run once) |
 | `venv\Scripts\python src\generate_dataset.py configs\twins_1m.json` | Simulates the chaos twins (about 40 minutes) |
+| `venv\Scripts\python src\train_models.py baselines` | Majority-class and physics-rule baselines |
+| `venv\Scripts\python src\train_models.py features` | Rule P1: chooses the input feature set |
+| `venv\Scripts\python src\train_models.py compare` | Rules P2, P3, P6: nested comparison of four models (about 1 hour) |
+| `venv\Scripts\python src\train_models.py final` | Final settings of the selected model for Phase 5 |
+| `venv\Scripts\python src\train_models.py lifetime` | Secondary task: predicts the lifetime class |
+| `venv\Scripts\python src\analyze_models.py` | Chaos reference, rules P4 and P5, learning curve, importance, Phase 5 criteria |
+| `venv\Scripts\python src\plot_models.py` | Draws the Phase 4 figures |
 
 ### Checks (each prints PASS or FAIL)
 
@@ -136,12 +148,16 @@ Shared modules used by the scripts above:
 | `src/labels.py` | Outcome labels |
 | `src/generate_dataset.py` | Parallel, resumable batch runner |
 | `src/explore.py` | Loading the training data, binned shares, reweighting, bootstrap |
+| `src/features.py` | Model inputs (feature sets F1–F3) and targets |
+| `src/models.py` | Model pipelines and hyperparameter search spaces |
+| `src/cv.py` | Nested cross-validation, metrics and paired bootstrap comparisons |
 | `src/plot_style.py` | Shared figure style |
 
 ## Data and reproducibility
 
 - Generated data in `data/` is not stored in Git; every file can be regenerated with the commands
-  above. `configs/dataset_manifest.json` and `configs/survivors_1000yr_manifest.json` record the
+  above. `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json` and
+  `configs/twins_1m_manifest.json` record the
   SHA-256 checksum, outcome counts, computing time and package versions of each dataset.
 - Every random draw uses a fixed seed stored in its configuration file, and every second moon has
   its own generator, so results do not depend on the order in which simulations finish.

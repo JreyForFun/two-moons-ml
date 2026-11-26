@@ -29,7 +29,15 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
 - Heaviest second moons knock out the real Moon in 7.4% of systems.
 - 21.4% of 100-year survivors are lost by 1,000 years; ~30% of moons would last 1,000 years.
 
-_Planned: model accuracy, speedup of ML vs. simulation._
+- Phase 4: Random Forest predicts the outcome with 85.0% accuracy (macro-F1 0.723) out-of-fold,
+  vs 79.5% for a 2-variable physics rule and 37.9% for always guessing "survived".
+- Survival probabilities calibrated (ECE 0.019); survived-or-not ROC AUC 0.985, accuracy 93.8%.
+- Chaos twins: a 1 m nudge leaves 92.3% of outcomes unchanged; the model is right 89.5% of the
+  time on those stable systems and wrong 53.4% of the time on chaotic ones.
+- Lifetime class predicted with 76.7% accuracy, 98.6% within one class.
+- Total simulations so far: 14,365 (12,360 distinct random second moons).
+
+_Planned: test-set accuracy and speedup of ML vs. simulation (Phase 5)._
 
 ## Checks passed
 
@@ -98,6 +106,16 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - First moon over 1,000 years: eccentricity cycles (~17 years), no growth.
 - Maps agree between independent halves of the data (r = 0.99).
 
+## Phase 4 (2026-11-26 to 27, `src/train_models.py`, rules P1–P6 set before training)
+
+- Test set still untouched; everything is out-of-fold on 9,600 training moons, nested CV.
+- P1: orbital elements beat position/velocity by 0.086 macro-F1; physics features add +0.006.
+- P2: Random Forest selected (0.723); XGBoost 0.715, logistic 0.658, neural net 0.653.
+- P3: beats the physics rule by +0.116 balanced accuracy. P6: no calibration needed.
+- P4: Moon-interaction recall 30.3% (just above the 30% line). P5: errors sit on chaotic moons.
+- Learning curve nearly flat (0.700 -> 0.723 with 10x data): chaos, not data, is the limit.
+- Shuffled-label test: 0.235 vs 0.662 macro-F1, so no leakage.
+
 ## Story moments
 
 - Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
@@ -118,6 +136,12 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
   retrograde advantage only appears farther out. Choosing what to measure is the hard part of
   pre-registration.
 
+- A depth-3 decision tree given only two numbers (apoapsis and |cos i|) rediscovered the whole
+  Phase 3 stability map on its own and reached 79.5% accuracy.
+
+- The model's mistakes are mostly on moons whose fate flips with a 1 meter nudge: it fails
+  where the universe itself is unpredictable.
+
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
 
@@ -130,6 +154,9 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - `figures/survival_by_direction.png`: only retrograde moons survive beyond the Moon.
 - `figures/outcome_maps.png`: what happens instead, region by region.
 - `figures/first_moon_long_term.png`: 1,000 years of the first second moon.
+- `figures/predicted_map.png`: the model reproduces the stability map from starting values alone.
+- `figures/model_comparison.png`: models vs baselines vs the chaos reference.
+- `figures/chaos_profile.png`: where a 1 m nudge changes the outcome.
 - `figures/pilot_outcomes.png`, `figures/pilot_survival.png`: pilot results.
 - `figures/two_moons.gif`: 60 days of both moons.
 - `figures/two_moons_distance.png`: the second moon's orbit stretching over 10 years.
@@ -161,11 +188,17 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Backward orbits: same outer 10% survival edge, but only they survive beyond the Moon.
 - Orbit stretching: a bounded ~17-year cycle.
 
-## Questions for Phase 4
+## Phase 4 answers
 
-- Merge the two rare outcomes or sample their region (near the Moon's orbit) more densely?
-- Orbital elements, state vectors, or derived features (periapsis, apoapsis vs the Moon, tilt vs 90°)?
-- How far above the 38% majority baseline can a model get, given 12% chaos?
+- Rare outcomes merged into "Moon interaction"; recall 30%; targeted sampling not needed.
+- Orbital elements plus physics features; vectors are much worse.
+- 85.0% accuracy vs 38% baseline; chaos reference 92.3%.
+
+## Questions for Phase 5
+
+- Does the test-set macro-F1 land in the cross-validated interval 0.708–0.737?
+- How much faster is the model than the simulation?
+- Which test systems does it get wrong, and are they the chaotic ones?
 
 ## Limitations to state in a paper
 
