@@ -331,6 +331,25 @@ halves of the run, and the osculating eccentricity never exceeds 0.055. The semi
 within 153,580 to 154,973 km. The growth seen over the first 10 years was part of this bounded
 oscillation.
 
+### Reading the decision rules
+
+Each rule states a claim, the quantity that measures it and a pass criterion, all fixed before the
+analysis, so the outcome of the data cannot shape the criterion. A rule that is *not met* means the
+evidence did not reach the criterion; it does not show the claim to be false.
+
+- **R3** was met: the interval of the mass difference lies entirely below zero.
+- **R1 and R4** are near misses with quantified partial effects: the inclination change explains
+  about 8 of the 20 points of the pilot gap, and 21.4% of 100-year survivors are lost by 1,000
+  years against the 17.4% required for levelling off.
+- **R2** is not shown by its criterion: the bootstrap interval of the edge difference includes
+  zero. The criterion measured where survival first drops below 10%, which the Moon fixes for both
+  directions, and did not capture the recovery of retrograde survival beyond the Moon's orbit. That
+  difference (11.4% versus 0.3% beyond one lunar distance) was identified after inspecting the data
+  and is reported as descriptive.
+
+Findings based on a met criterion carry more weight than descriptive ones, which are hypotheses
+for future tests rather than confirmed results.
+
 ### Findings
 
 - Three regions dominate: close, low-inclination orbits survive; near-polar orbits are driven into
@@ -360,12 +379,21 @@ oscillation.
 > to 100 years and labeled by its first terminal event (collision or ejection); systems surviving
 > to the limit are right-censored. A pilot study shows that a 1 m perturbation changes 12% of
 > outcomes, more than tightening the integrator tolerance (6%). The final dataset contains 12,000
-> systems.
+> systems. A stratified 20% test set is held out before exploration. On the remaining 9,600
+> systems, survival is concentrated on close, low-inclination orbits; near-polar orbits collide
+> with Earth, consistent with Lidov–Kozai cycles, and orbits reaching the Moon's are ejected or
+> collide. Of 500 random 100-year survivors integrated to 1,000 years, 21.4% are lost.
 
 ## Limitations
 
 - Newtonian point-mass gravity with finite-radius collisions: no tides, no Earth oblateness, no
   general relativity, no other planets.
-- `survived` means surviving 100 years, not long-term stability.
+- `survived` means surviving 100 years, not long-term stability; about a fifth of 100-year
+  survivors are lost by 1,000 years.
 - A single start date, supported by a 30-moon test.
 - Class shares depend on the chosen parameter ranges and distributions.
+- The R2 criterion (outer 10% survival edge) did not capture survival beyond the Moon's orbit. A
+  criterion based on survival beyond one lunar distance is recommended for future tests of the
+  prograde-retrograde difference.
+- The Lidov–Kozai mechanism is inferred from outcome patterns; individual orbits were not traced.
+- Survival between 100 and 1,000 years rests on a sample of 500 systems.

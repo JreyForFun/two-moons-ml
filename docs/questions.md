@@ -10,7 +10,7 @@ Status: **Answered**, **Partly answered**, or **Open (phase)**.
 
 - [Simulation validity](#simulation-validity) (Q1–Q11)
 - [Dataset design](#dataset-design) (Q12–Q27)
-- [Exploration](#exploration-phase-3) (Q28–Q31, Q36–Q38)
+- [Exploration](#exploration-phase-3) (Q28–Q31, Q36–Q38, Q41)
 - [Modeling and evaluation](#modeling-and-evaluation-phases-45) (Q32–Q35, Q39–Q40)
 
 ---
@@ -165,7 +165,7 @@ Evidence: [stability_map.png](figures.md#stability_mappng),
 [stability_map_eccentricity.png](figures.md#stability_map_eccentricitypng).
 
 **Q29. Are retrograde orbits more stable than prograde ones?** *Partly answered.*
-Not at the inner edge: by rule R2, both directions fall below 10% survival in the same bin, just
+Not at the outer survival edge: by rule R2, both directions fall below 10% survival in the same bin, just
 inside the Moon's orbit (0.22 Hill radii). Beyond the Moon's orbit, yes (descriptive): 11.4% of
 retrograde moons survive against 0.3% of prograde moons, up to about 17% between 0.5 and 0.78 Hill
 radii. Overall, retrograde moons survive 41.2% and prograde 34.8%; since all parameters were drawn
@@ -200,6 +200,16 @@ Earth's surface. The mechanism is inferred from the pattern; individual orbits w
 It is a reproducible but censored label: all 500 extended survivors repeated their first 100
 years exactly, but about a fifth were lost by 1,000 years. Models trained on it predict survival
 for 100 years, not long-term stability.
+
+**Q41. What does it mean when a pre-registered rule is not met?** *Answered.*
+The evidence did not reach the criterion fixed before the analysis; the claim is not shown false.
+Of the four Phase 3 rules, R3 (mass) was met; R1 (pilot gap) and R4 (levelling off) were near
+misses with quantified partial effects; R2 (outer edge) was not shown because its criterion
+measured where survival first drops, which the Moon fixes for both directions. The
+prograde-retrograde difference beyond the Moon's orbit is a descriptive finding, recommended as a
+pre-registered test in future work.
+Evidence: [technical report](report.md), Phase 3, "Reading the decision rules"; glossary entries
+"Criterion met / not met" and "Descriptive (post-hoc) finding".
 
 ---
 

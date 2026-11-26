@@ -75,6 +75,18 @@ method, including a perfect simulation with imperfect inputs, can predict long-t
 **Pre-registered rules.** Decision criteria written down before seeing the data, so that results
 cannot influence the choice of criteria.
 
+**Criterion met / not met.** A pre-registered rule is *met* when the evidence reaches its pass
+criterion. *Not met* means the evidence fell short; it does not show the claim to be false. A
+near miss, where the result lies just outside the criterion, often indicates a partial effect.
+
+**Deciding with an interval.** A rule about a difference is met when the 95% interval of that
+difference excludes zero: in nearly all resamples the difference has the same sign. An interval
+that includes zero means the data are compatible with no difference.
+
+**Descriptive (post-hoc) finding.** A pattern noticed after inspecting the data rather than tested
+by a pre-registered rule. It may be real, but it carries less weight, because the comparison was
+chosen after seeing the result; it is a hypothesis for a future test.
+
 **Log-uniform distribution.** Values whose logarithm is uniformly distributed, so that each
 factor of 10 is equally represented. Used for quantities spanning several orders of magnitude.
 
