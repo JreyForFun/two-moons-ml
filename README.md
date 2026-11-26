@@ -1,15 +1,44 @@
 # What if Earth had 2 moons?
 
 Simulating Earth, the Moon and a hypothetical second moon with N-body gravity
-([REBOUND](https://rebound.readthedocs.io/)), then training a machine learning
-model to predict the outcome from the starting conditions alone.
+([REBOUND](https://rebound.readthedocs.io/)), then training a machine learning model to predict
+the outcome from the starting conditions alone.
 
-Inspired by SPOCK (Tamayo et al., 2020), which uses ML to predict the stability
-of planetary systems.
+Inspired by SPOCK (Tamayo et al., 2020), which uses machine learning to predict the stability of
+planetary systems.
 
-**Status:** Phase 3 finished (stability maps of 12,000 simulated second moons). Next: Phase 4, surrogate models.
+**Status:** Phase 3 of 6 finished (12,000 simulated second moons, stability maps). Next: Phase 4,
+surrogate models.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
+
+## Results so far
+
+![Which second moons survive 100 years](figures/stability_map.png)
+
+- **Validated setup:** starting from NASA JPL Horizons data, the simulated Moon stays within
+  10.3 km of its real position over a year (55,535 km if the Sun is left out).
+- **12,000 random second moons**, from 0.001 to 1 lunar masses and 0.1 to 3 lunar distances,
+  prograde and retrograde, each followed for up to 100 years: 38.0% survive, 32.0% are ejected,
+  27.4% collide with Earth, 1.4% collide with the Moon, and in 1.2% the Moon itself is lost.
+- **Chaos limits prediction:** moving a second moon by 1 meter changes 12% of outcomes.
+- **Where second moons survive:** close, low-inclination orbits (96.5% survive). Near-polar
+  orbits are driven into Earth (99.1%), consistent with Lidov–Kozai cycles; orbits reaching the
+  Moon's are ejected or collide. Beyond the Moon's orbit, only retrograde moons survive.
+- **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
+
+## Documentation
+
+| Document | Contents |
+|---|---|
+| [docs/report.md](docs/report.md) | Technical report: methods, results and decisions, phase by phase |
+| [docs/questions.md](docs/questions.md) | Design decisions and open questions, with evidence |
+| [docs/figures.md](docs/figures.md) | How to read every figure |
+| [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
+| [notebooks/01_first_simulation.ipynb](notebooks/01_first_simulation.ipynb) | Setup, validation and a first second moon |
+| [notebooks/02_dataset_exploration.ipynb](notebooks/02_dataset_exploration.ipynb) | Stability maps, decision rules and long-term survival |
+| [paper/](paper/README.md) | Manuscript draft (AASTeX) |
+| [notes.md](notes.md) | Lab notes and key numbers |
 
 ## Setup
 
@@ -31,59 +60,107 @@ venv/bin/python -m pip install -r requirements.txt
 
 `requirements-lock.txt` lists every installed package version on the development computer (Windows).
 
-## Run
+## Reproducing the results
 
-From the project folder (on macOS / Linux use `venv/bin/python` and `/`):
+Run from the project folder. On macOS / Linux use `venv/bin/python` and `/` instead of
+`venv\Scripts\python` and `\`. Long batch runs can be stopped and resumed by running the same
+command again.
+
+### Phase 1: setup and validation
 
 | Command | What it does |
 |---|---|
-| `venv\Scripts\python src\check_setup.py` | Checks the packages by simulating one simple orbit |
-| `venv\Scripts\python src\check_initial_state.py` | Checks the saved NASA data (add `--online` to ask NASA again) |
-| `venv\Scripts\python src\horizons.py` | Downloads the NASA data if it is not saved yet |
+| `venv\Scripts\python src\horizons.py` | Downloads the NASA starting data if it is not saved yet |
+| `venv\Scripts\python src\fetch_reference.py` | Downloads NASA's Moon positions for the validation |
 | `venv\Scripts\python src\simulate.py` | Simulates the real Sun, Earth and Moon for one year |
-| `venv\Scripts\python src\check_events.py` | Checks collision and ejection detection |
-| `venv\Scripts\python src\fetch_reference.py` | Downloads NASA's Moon positions if not saved yet |
 | `venv\Scripts\python src\validate_real_system.py` | Compares the simulated Moon with NASA's |
-| `venv\Scripts\python src\plot_real_system.py` | Saves charts to `figures/` |
+| `venv\Scripts\python src\plot_real_system.py` | Draws the validation figures |
 | `venv\Scripts\python src\simulate.py configs\single_run.json` | Simulates 10 years with a second moon |
-| `venv\Scripts\python src\check_second_moon.py` | Checks the second moon's setup, collisions and ejection |
-| `venv\Scripts\python src\plot_single_run.py` | Saves charts of the run with a second moon |
-| `venv\Scripts\python src\animate.py` | Saves the orbit GIF (takes a few minutes) |
-| `venv\Scripts\python src\check_summary.py` | Checks the lightweight simulation mode and its settings |
-| `venv\Scripts\python src\check_sampling.py` | Checks the random second moons and labels |
-| `venv\Scripts\python src\check_generate.py` | Checks the batch runner |
-| `venv\Scripts\python src\generate_dataset.py configs\pilot.json` | Simulates many random second moons (can be stopped and resumed) |
-| `venv\Scripts\python src\analyze_pilot.py` | Summarizes the pilot runs |
-| `venv\Scripts\python src\generate_dataset.py configs\dataset.json` | Makes the full dataset (about 5 hours with 4 workers) |
-| `venv\Scripts\python src\make_manifest.py configs\dataset.json` | Records the dataset's SHA-256, counts and versions |
-| `venv\Scripts\python src\check_dataset.py configs\dataset.json` | Checks the dataset and reruns 20 random moons |
-| `venv\Scripts\python src\paper_numbers.py` | Prints the derived numbers quoted in the paper |
+| `venv\Scripts\python src\plot_single_run.py` | Draws the figures of that run |
+| `venv\Scripts\python src\animate.py` | Saves the orbit GIF (a few minutes) |
+
+### Phase 2: dataset generation
+
+| Command | What it does |
+|---|---|
+| `venv\Scripts\python src\generate_dataset.py configs\pilot.json` | Pilot: 100 random second moons (also `pilot_strict`, `pilot_shift`, `pilot_2026-05-01`, `pilot_2026-09-01`) |
+| `venv\Scripts\python src\analyze_pilot.py` | Applies the pilot decision rules and draws the pilot figures |
+| `venv\Scripts\python src\generate_dataset.py configs\dataset.json` | Full dataset: 12,000 second moons (about 5 hours with 4 workers) |
+| `venv\Scripts\python src\make_manifest.py configs\dataset.json` | Records the dataset's SHA-256, counts and package versions |
+
+### Phase 3: exploration
+
+| Command | What it does |
+|---|---|
 | `venv\Scripts\python src\split.py` | Sets aside the held-out test set (run once) |
-| `venv\Scripts\python src\check_explore.py` | Checks the test split and exploration helpers |
 | `venv\Scripts\python src\plot_dataset.py` | Applies rules R1–R3 and draws the stability maps |
 | `venv\Scripts\python src\compare_pilot.py` | Investigates the pilot-versus-dataset survival gap |
-| `venv\Scripts\python src\select_survivors.py` | Chooses 500 survivors to integrate for 1,000 years (run once) |
-| `venv\Scripts\python src\generate_dataset.py configs\survivors_1000yr.json` | Integrates those survivors to 1,000 years (about 4.5 hours) |
+| `venv\Scripts\python src\select_survivors.py` | Chooses 500 survivors to follow for 1,000 years (run once) |
+| `venv\Scripts\python src\generate_dataset.py configs\survivors_1000yr.json` | Follows those survivors to 1,000 years (about 4.5 hours) |
 | `venv\Scripts\python src\survival_curve.py` | Applies rule R4 and draws survival to 1,000 years |
 | `venv\Scripts\python src\long_run.py` | Follows the first second moon for 1,000 years |
+| `venv\Scripts\python src\paper_numbers.py` | Prints every derived number quoted in the paper |
 
-Walkthroughs: `notebooks/01_first_simulation.ipynb` (setup and validation) and
-`notebooks/02_dataset_exploration.ipynb` (stability maps and long-term survival).
+### Checks (each prints PASS or FAIL)
+
+| Command | What it checks |
+|---|---|
+| `venv\Scripts\python src\check_setup.py` | The packages, by simulating one simple orbit |
+| `venv\Scripts\python src\check_initial_state.py` | The saved NASA data (add `--online` to ask NASA again) |
+| `venv\Scripts\python src\check_events.py` | Collision and ejection detection |
+| `venv\Scripts\python src\check_second_moon.py` | The second moon's setup, collisions and ejection |
+| `venv\Scripts\python src\check_summary.py` | The lightweight simulation mode and its settings |
+| `venv\Scripts\python src\check_sampling.py` | The random second moons and outcome labels |
+| `venv\Scripts\python src\check_generate.py` | The batch runner: workers, resuming, chosen ids |
+| `venv\Scripts\python src\check_dataset.py configs\dataset.json` | The finished dataset, including 20 re-simulated moons |
+| `venv\Scripts\python src\check_explore.py` | The test split and the exploration helpers |
+
+## Code layout
+
+Shared modules used by the scripts above:
+
+| Module | Contents |
+|---|---|
+| `src/horizons.py` | JPL Horizons download and loading of the starting state |
+| `src/simulate.py` | Building and running a simulation; collision and ejection detection |
+| `src/second_moon.py` | Turning orbital elements into a second moon |
+| `src/sampling.py` | Random second-moon parameters and the Roche-limit rule |
+| `src/labels.py` | Outcome labels |
+| `src/generate_dataset.py` | Parallel, resumable batch runner |
+| `src/explore.py` | Loading the training data, binned shares, reweighting, bootstrap |
+| `src/plot_style.py` | Shared figure style |
+
+## Data and reproducibility
+
+- Generated data in `data/` is not stored in Git; every file can be regenerated with the commands
+  above. `configs/dataset_manifest.json` and `configs/survivors_1000yr_manifest.json` record the
+  SHA-256 checksum, outcome counts, computing time and package versions of each dataset.
+- Every random draw uses a fixed seed stored in its configuration file, and every second moon has
+  its own generator, so results do not depend on the order in which simulations finish.
+- 2,400 systems (20%, `configs/split.json`) are held out for the final model evaluation and are
+  not used for exploration or model development.
 
 ## Folders
 
 | Folder | Contents |
 |---|---|
-| `docs/` | Technical report, design decisions, figure guide, glossary |
-| `paper/` | Manuscript draft (AASTeX) and bibliography |
-| `configs/` | Starting conditions and simulation settings |
-| `src/` | Reusable code |
-| `notebooks/` | Exploration |
+| `configs/` | Starting conditions, simulation settings, manifests and the test split |
+| `src/` | Simulation, analysis and figure code |
+| `notebooks/` | Walkthroughs |
 | `figures/` | Charts and animations |
-| `data/` | Generated simulation results (not stored in Git; `configs/dataset_manifest.json` describes them) |
+| `docs/` | Technical report, design decisions, figure guide, glossary |
+| `paper/` | Manuscript draft and bibliography |
+| `data/` | Generated simulation results (not stored in Git) |
 
 ## Known limitations
 
-Bodies are treated with Newtonian gravity only. Other planets, tides, Earth's equatorial bulge
-and relativity are not modeled, so results should not be read as predictions
-over millions of years.
+- Newtonian gravity only: other planets, tides, Earth's equatorial bulge and relativity are not
+  modeled, so results should not be read as predictions over millions of years.
+- "Survived" means surviving 100 years, not permanent stability.
+- Outcome shares depend on the chosen parameter ranges and sampling distributions.
+
+## Acknowledgments
+
+Starting conditions and reference positions come from the
+[NASA JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) system. Simulations use
+[REBOUND](https://rebound.readthedocs.io/) with the IAS15 integrator.

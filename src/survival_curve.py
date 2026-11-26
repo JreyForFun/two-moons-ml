@@ -32,7 +32,7 @@ def alive_share(years, t, weights=None):
 
 def load_extended():
     ids = json.loads(CONFIG.read_text(encoding="utf-8"))["ids"]
-    ext = pd.read_csv(EXTENDED, float_precision="round_trip", keep_default_na=False,
+    ext = pd.read_csv(EXTENDED, keep_default_na=False,
                       na_values={"result_survival_days": [""]})
     ext = ext.sort_values("id").reset_index(drop=True)
     ext["survival_years"] = ext["result_survival_days"] / explore.YEAR_DAYS

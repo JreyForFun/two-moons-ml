@@ -21,7 +21,7 @@ from pathlib import Path
 
 import numpy as np
 
-from horizons import ROOT, STATE_FILE, load_state
+from horizons import ROOT, STATE_FILE
 from labels import make_label
 from sampling import build_case
 from simulate import DAY_S, load_config, run_summary

@@ -46,7 +46,7 @@ def load_dataset(part="train"):
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     if sha256(DATASET) != manifest["data_sha256"]:
         raise ValueError("data/dataset.csv does not match configs/dataset_manifest.json")
-    df = pd.read_csv(DATASET, float_precision="round_trip", keep_default_na=False,
+    df = pd.read_csv(DATASET, keep_default_na=False,
                      na_values={"result_survival_days": [""], "result_computing_s": [""]})
     test = set(json.loads(SPLIT_FILE.read_text(encoding="utf-8"))["test_ids"])
     in_test = df["id"].isin(test)

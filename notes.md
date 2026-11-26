@@ -81,8 +81,8 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - `src/check_dataset.py` passed: no repeated or missing ids, all inputs in range and rebuilt
   exactly from the seed, labels match outcomes, and 20 random moons rerun gave identical results.
 - `configs/dataset_manifest.json` holds the CSV's SHA-256 (37add84e...), counts and versions.
-- Survived 38% here vs 18% in the pilot (95% interval about 12% to 27%). The tilt sampling
-  changed between them, giving more nearly flat orbits. Whether that explains it is a Phase 3 question.
+- Survived 38% here vs 18% in the pilot (95% interval about 12% to 27%). Explained in Phase 3:
+  tilt sampling, the pilot's particular moons and outcome noise (see Phase 3 below).
 - Hit the Moon (1.4%) and real Moon lost (1.2%) are under the 2% rule set in the plan:
   merge them or sample more of their region. Decide in Phase 4.
 - Survivors are censored: "survived" means at least 100 years, not forever.
@@ -90,7 +90,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 ## Phase 3 (2026-11-26, `src/plot_dataset.py`, rules R1–R4 set before the analysis)
 
 - Test set frozen first (`configs/split.json`) so exploration cannot leak into model evaluation.
-- R1 failed: reweighting explains only part of the pilot gap (29.7% vs pilot 12–27%). Reruns of
+- R1 not met: reweighting explains only part of the pilot gap (29.7% vs pilot 12–27%). Reruns of
   pilot moons were identical; the rest is the pilot's unlucky draws and noise (2.1 sigma).
 - R2 not shown as defined (same 10% edge for both directions), but retrograde moons clearly
   survive beyond the Moon's orbit while prograde ones do not (descriptive).
@@ -109,10 +109,14 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - The stability map has a dead band at 90° tilt: even very close moons crash into Earth when
   their orbits are near-polar (Lidov–Kozai). Tilt matters as much as distance.
 
-- A pre-registered rule failed (R1). Instead of changing the rule, the gap was investigated and
+- A pre-registered rule was not met (R1). Instead of changing the rule, the gap was investigated and
   explained step by step, which is the honest version of the story.
 
 - A pandas quirk (rounded bin labels) was caught by an automated check before any result used it.
+
+- Rule R2 measured the wrong feature: both directions lose survival at the Moon's orbit, and the
+  retrograde advantage only appears farther out. Choosing what to measure is the hard part of
+  pre-registration.
 
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
@@ -136,7 +140,8 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 - Starting positions: NASA JPL Horizons, fixed date 2026-01-01, saved to `configs/`.
 - Ejected means farther than 4.5 million km from Earth (about 3 Hill radii) and not bound
-  to it, checked every 6 hours. Collisions are checked along the path of every step.
+  to it, checked at every output (6 hours in Phase 1, 24 hours in the dataset). Collisions are
+  checked along the path of every step.
 - The second moon has the Moon's density. Its settings describe an orbit around Earth alone;
   inclination is measured from the ecliptic. Distance unit: 384,400 km.
 - The Sun is included because it limits how far from Earth a moon can stay bound.
@@ -153,7 +158,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 - 38% vs 18%: tilt sampling (−8.2 points), the pilot's particular moons (−4.3), noise (−7.4).
 - Safe orbits: close and low-tilt; near-polar and Moon-crossing orbits fail.
-- Backward orbits: same inner edge, but only they survive beyond the Moon.
+- Backward orbits: same outer 10% survival edge, but only they survive beyond the Moon.
 - Orbit stretching: a bounded ~17-year cycle.
 
 ## Questions for Phase 4
@@ -166,4 +171,8 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 - Newtonian gravity only: no tides, no Earth equatorial bulge, no relativity. Other
   planets are left out too.
-- "Stable" will mean "survived to the chosen time limit", not stable forever.
+- "Survived" means survived 100 years, not stable forever; about a fifth of 100-year
+  survivors are lost by 1,000 years.
+- One start date (tested with 30 moons); class shares depend on the sampling design.
+- The R2 criterion missed survival beyond the Moon; recommend a beyond-one-lunar-distance test.
+- Lidov–Kozai is inferred from outcome patterns, not traced in individual orbits.

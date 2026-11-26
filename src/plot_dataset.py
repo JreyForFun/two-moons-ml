@@ -14,11 +14,10 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.lines import Line2D
 
 import explore
-from horizons import ROOT
+from horizons import ROOT, load_state
 from plot_style import (BLUE, GRID, INK, MUTED_INK, ORANGE, SURFACE, add_legend, new_chart,
                         save, set_titles)
 from sampling import roche_limit_km
-from horizons import load_state
 from second_moon import LUNAR_DISTANCE_KM
 
 RESULTS = ROOT / "data" / "phase3_results.json"
