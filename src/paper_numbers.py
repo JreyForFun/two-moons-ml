@@ -161,6 +161,66 @@ def phase4():
     selected = json.loads((ROOT / "configs" / "selected_model.json").read_text(encoding="utf-8"))
     print(f"  Final settings {selected['params']}; Phase 5 C1 interval "
           f"{selected['phase5_criteria']['C1_generalization']['interval']}")
+    phase5()
+
+
+def phase5():
+    """Phase 5 numbers, read from the committed results in results/."""
+    folder = ROOT / "results"
+    names = ("phase5_test", "phase5_analysis", "phase5_speed")
+    if not all((folder / f"{n}.json").exists() for n in names):
+        print("\nPHASE 5: run evaluate_test.py, analyze_test.py and benchmark_speed.py first")
+        return
+    test, analysis, speed = (json.loads((folder / f"{n}.json").read_text(encoding="utf-8"))
+                             for n in names)
+    p, c = test["provenance"], test["criteria"]
+    print(f"\nPHASE 5 (held-out test set, {test['moons']['evaluated']:,} moons; commit "
+          f"{p['commit'][:7]}, {p['evaluated_at']})")
+    for name in ("selected", "physics_rule", "majority"):
+        m, i = test["metrics"][name], test["intervals"][name]
+        print(f"  {name:13s} macro-F1 {m['macro_f1']:.3f} {[round(v, 3) for v in i['macro_f1']]}, "
+              f"accuracy {m['accuracy']:.3f} {[round(v, 3) for v in i['accuracy']]}, "
+              f"balanced {m['balanced_accuracy']:.3f}")
+    m = test["metrics"]["selected"]
+    print(f"  Selected: recall {[round(v, 3) for v in m['recall']]}, precision "
+          f"{[round(v, 3) for v in m['precision']]}, log loss {m['log_loss']:.3f}")
+    print(f"  Survival: AUC {m['survived_auc']:.3f}, accuracy {m['survived_accuracy']:.3f}, "
+          f"ECE {m['survived_ece']:.3f}; per-class ECE "
+          + ", ".join(f"{k} {v:.3f}" for k, v in test["per_class_ece"].items()))
+    print(f"  C1 {c['C1']['value']:.3f} in {[round(v, 3) for v in c['C1']['interval']]}: {c['C1']['passed']}")
+    print(f"  C1b difference {c['C1b']['difference']:+.3f} {[round(v, 3) for v in c['C1b']['interval']]}: "
+          f"{c['C1b']['passed']}")
+    print(f"  C2 gain {c['C2']['gain']:+.3f} {[round(v, 3) for v in c['C2']['interval']]}: {c['C2']['passed']}")
+    print(f"  C3 ECE {c['C3']['ece']:.3f}: {c['C3']['passed']}")
+    print(f"  C4 recall {c['C4']['recall']:.3f} {[round(v, 3) for v in c['C4']['interval']]} "
+          f"({c['C4']['moons']} moons)")
+    iso = test["metrics_isotropic"]
+    print(f"  Isotropic-weighted: macro-F1 {iso['macro_f1']:.3f}, accuracy {iso['accuracy']:.3f}")
+    print(f"  Seed luck: {[round(v, 3) for v in test['seed_luck']['macro_f1']]}")
+    life = test["lifetime"]
+    print(f"  Lifetime: accuracy {life['accuracy']:.3f}, macro-F1 {life['macro_f1']:.3f}, "
+          f"within one {life['within_one_class']:.3f}")
+    t5 = analysis["T5"]
+    print(f"  T5 twins {t5['twins']}: agreement {t5['agreement']:.3f}, binary {t5['binary_agreement']:.3f}, "
+          f"chaotic {t5['chaotic_moons']}; error chaotic {t5['error_chaotic']:.3f}, stable "
+          f"{t5['error_stable']:.3f}, interval {[round(v, 3) for v in t5['difference_interval']]}")
+    cov = {round(pt["coverage"], 1): pt["accuracy"] for pt in analysis["coverage_accuracy"]}
+    print(f"  Coverage-accuracy: 50% {cov[0.5]:.3f}, 80% {cov[0.8]:.3f}, 90% {cov[0.9]:.3f}")
+    worst = max((cell for cell in analysis["error_map"]["cells"] if cell["moons"] >= 20),
+                key=lambda cell: cell["error_rate"])
+    print(f"  Worst error cell: a {worst['a_low']:.2f}-{worst['a_high']:.2f}, i "
+          f"{worst['i_low']:.0f}-{worst['i_high']:.0f}: {worst['error_rate']:.3f} ({worst['moons']} moons)")
+    s, sim, mod = speed["speedup"], speed["simulation"], speed["model"]
+    print(f"  Speed: model {mod['latency_median_s'] * 1000:.1f} ms one moon, "
+          f"{mod['batch_per_moon_s'] * 1e6:.0f} us per moon in batch, training {mod['training_seconds']:.0f} s; "
+          f"simulation median {sim['median_s']:.2f} s, mean {sim['mean_s']:.2f} s "
+          f"(reproduced: {sim['all_outcomes_reproduced']})")
+    print(f"  Speedups: pre-registered {s['preregistered_median']:.0f}x, median {s['same_machine_median']:.0f}x, "
+          f"mean {s['same_machine_mean']:.0f}x, batch {s['batch_vs_mean']:,.0f}x; break-even "
+          f"{speed['break_even_predictions']:,.0f} predictions; 12,000 moons in "
+          f"{speed['time_for_12000_moons']['model_batch_s']:.1f} s")
+    print("  Simulation by outcome: " + ", ".join(
+        f"{k} {v['median_s']:.2f} s ({v['moons']})" for k, v in speed["simulation"]["by_outcome"].items()))
 
 
 if __name__ == "__main__":

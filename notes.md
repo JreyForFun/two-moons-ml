@@ -37,7 +37,13 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
 - Lifetime class predicted with 76.7% accuracy, 98.6% within one class.
 - Total simulations so far: 14,365 (12,360 distinct random second moons).
 
-_Planned: test-set accuracy and speedup of ML vs. simulation (Phase 5)._
+- Phase 5 (held-out test, 2,400 moons, evaluated once): 85.1% accuracy, macro-F1 0.711
+  (cross-validated 85.0%, 0.723); physics rule 78.9%; all pre-registered criteria met.
+- Survival ROC AUC 0.988, ECE 0.019; most confident half of predictions 98.2% correct.
+- Speed: 111 ms per prediction vs 2.67 s median simulation (24x); 133 µs per moon in batches
+  (about 80,000x vs mean simulation); 12,000 moons in 1.6 s vs 20.8 CPU-hours; break-even
+  after about 7,000 predictions.
+- Total simulations so far: 15,065 (12,360 distinct random second moons).
 
 ## Checks passed
 
@@ -116,6 +122,15 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Learning curve nearly flat (0.700 -> 0.723 with 10x data): chaos, not data, is the limit.
 - Shuffled-label test: 0.235 vs 0.662 macro-F1, so no leakage.
 
+## Phase 5 (2026-11-27 to 28, `src/evaluate_test.py`, criteria fixed in Phase 4)
+
+- Protocol frozen and tagged (`phase5-evaluated-model`) before the test set was opened; the
+  script verified the criteria and split were unchanged and refuses a second run.
+- C1 met by 0.003 (0.711 vs floor 0.708); C1b (added before opening for test-set noise) met.
+- C2 (beats physics rule by +0.115), C3 (ECE 0.019) met; C4 rare recall 27%.
+- T5: test errors 53.8% on chaotic moons vs 11.3% on stable ones; errors near the Moon's orbit.
+- predict.py and a model card make the model usable.
+
 ## Story moments
 
 - Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
@@ -142,6 +157,11 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - The model's mistakes are mostly on moons whose fate flips with a 1 meter nudge: it fails
   where the universe itself is unpredictable.
 
+- The test-set score landed 0.003 above the pass line. Spotting beforehand that the line was
+  too strict for a 2,400-moon test, and adding C1b before opening it, kept the result honest.
+
+- Cross-validation said 85.0% accuracy; the never-seen test moons gave 85.1%.
+
 - Leaving out the Sun made the Moon's position thousands of times worse (55,535 km vs
   10.3 km). "Just Earth and two moons" would not have been a fair simulation.
 
@@ -157,6 +177,9 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - `figures/predicted_map.png`: the model reproduces the stability map from starting values alone.
 - `figures/model_comparison.png`: models vs baselines vs the chaos reference.
 - `figures/chaos_profile.png`: where a 1 m nudge changes the outcome.
+- `figures/speedup.png`: model vs simulation, 24x to 80,000x faster.
+- `figures/test_vs_cv.png`: test set confirms cross-validation.
+- `figures/coverage_accuracy.png`: confident predictions are almost always right.
 - `figures/pilot_outcomes.png`, `figures/pilot_survival.png`: pilot results.
 - `figures/two_moons.gif`: 60 days of both moons.
 - `figures/two_moons_distance.png`: the second moon's orbit stretching over 10 years.
@@ -194,11 +217,16 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Orbital elements plus physics features; vectors are much worse.
 - 85.0% accuracy vs 38% baseline; chaos reference 92.3%.
 
-## Questions for Phase 5
+## Phase 5 answers
 
-- Does the test-set macro-F1 land in the cross-validated interval 0.708–0.737?
-- How much faster is the model than the simulation?
-- Which test systems does it get wrong, and are they the chaotic ones?
+- Test macro-F1 0.711, inside 0.708–0.737 (just); difference from CV within noise.
+- 24x faster per prediction, about 80,000x in batches; break-even after about 7,000 predictions.
+- Wrong mostly near the Moon's orbit, on chaotic moons (T5 met).
+
+## For Phase 6
+
+- Final README polish, notebook tidy, paper finishing (UAT keywords, Zenodo DOI, references check,
+  acknowledgments and disclosures required by the venue), condensed RNAAS version, LinkedIn post.
 
 ## Limitations to state in a paper
 

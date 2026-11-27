@@ -4,8 +4,8 @@ A record of the project, phase by phase: methods, results, decisions and revisio
 defined in the [glossary](glossary.md); figures are described in the [figure guide](figures.md);
 design decisions and open questions are collected in [questions.md](questions.md).
 
-**Status (2026-11-27):** Phase 4 (surrogate models) complete. Phase 5 (test-set evaluation) next.
-A manuscript draft covering Phases 1 to 4 is in [`paper/`](../paper/README.md).
+**Status (2026-11-28):** Phase 5 (test-set evaluation) complete. Phase 6 (cleanup and final
+write-up) next. A manuscript draft covering Phases 1 to 5 is in [`paper/`](../paper/README.md).
 
 ## Key findings
 
@@ -14,7 +14,7 @@ Evidence strength:
 - **Rule met** or **rule not met:** a pre-registered criterion, reported either way.
 - **Descriptive:** a pattern identified after inspecting the data.
 
-Model scores are cross-validated on the training set and await the Phase 5 test evaluation.
+Model scores are confirmed on the held-out test set (Phase 5) unless marked cross-validated.
 
 | # | Finding | Key numbers | Evidence | Figure |
 |---|---|---|---|---|
@@ -29,13 +29,15 @@ Model scores are cross-validated on the training set and await the Phase 5 test 
 | 9 | The pilot-versus-dataset survival gap is explained without a code change | 37.9% → 29.7% (sampling) → 25.4% (pilot draws) → 18% (noise, 2.1σ) | R1 not met; investigated | — |
 | 10 | A two-variable physics rule already captures the main structure | Depth-3 tree on apoapsis and \|cos *i*\|: 79.5% accuracy | Verified (cross-validated) | — |
 | 11 | Orbital elements are far better model inputs than state vectors | Macro-F1 lower by 0.086 for vectors; physics features add 0.006 | Rule P1 met | — |
-| 12 | A Random Forest predicts the outcome from the starting conditions alone | 85.0% accuracy, macro-F1 0.723 (physics rule 0.597, majority 0.138) | Rules P2, P3 met | [model_comparison](figures.md#model_comparisonpng) |
-| 13 | Its survival probabilities are trustworthy | ECE 0.019; ROC AUC 0.985 | Rule P6 met | [calibration](figures.md#calibrationpng) |
-| 14 | Its errors concentrate on chaotic systems; more data would help little | Error 53.4% on chaotic vs 10.5% on stable systems; macro-F1 0.700 → 0.723 with 10× data | Rule P5 met; learning curve | [learning_curve](figures.md#learning_curvepng) |
+| 12 | A Random Forest predicts the outcome from the starting conditions alone, and generalizes | Test: 85.1% accuracy, macro-F1 0.711 (cross-validated 85.0%, 0.723); physics rule 78.9%, majority 38.0% | Rules P2, P3 met; criteria C1, C1b, C2 met on test | [test_vs_cv](figures.md#test_vs_cvpng) |
+| 13 | Its survival probabilities are trustworthy | Test ECE 0.019 (every class ≤ 0.030); ROC AUC 0.988 | Rule P6 and criterion C3 met | [test_calibration](figures.md#test_calibrationpng) |
+| 14 | Its errors concentrate on chaotic systems near the Moon's orbit; more data would help little | Test error 53.8% on chaotic vs 11.3% on stable systems; macro-F1 0.700 → 0.723 with 10× data (cross-validated) | Rules P5 and T5 met; learning curve | [error_map](figures.md#error_mappng) |
 | 15 | The model relies on the same physics: distance and inclination | Importance 0.31 (distance), 0.24 (inclination), 0.075 (mass) | Descriptive | [feature_importance](figures.md#feature_importancepng) |
-| 16 | Collisions with the Moon remain hard to predict | `moon_interaction` recall 30.3% (collisions with the Moon 14.6%) | Rule P4 met narrowly | [confusion_matrix_cv](figures.md#confusion_matrix_cvpng) |
-| 17 | The starting conditions also predict roughly when a system fails | Lifetime class: 76.7% accuracy, 98.6% within one class | Descriptive (cross-validated) | [lifetime_confusion](figures.md#lifetime_confusionpng) |
+| 16 | Collisions with the Moon remain hard to predict | `moon_interaction` recall 27.0% on test (30.3% cross-validated; collisions with the Moon 14.6%) | Rule P4 met narrowly; C4 reported | [test_confusion](figures.md#test_confusionpng) |
+| 17 | The starting conditions also predict roughly when a system fails | Lifetime class on test: 76.9% accuracy, 98.4% within one class | Descriptive | [lifetime_confusion](figures.md#lifetime_confusionpng) |
 | 18 | A stable-looking second moon can oscillate without growing | Phase 1 moon: eccentricity cycles (~17 years), bounded over 1,000 years | Descriptive (one system) | [first_moon_long_term](figures.md#first_moon_long_termpng) |
+| 19 | The surrogate is far faster than simulation | 111 ms vs 2.67 s median (24×); about 80,000× in batches; repays its training data after about 7,000 predictions | Verified (same-machine benchmark) | [speedup](figures.md#speeduppng) |
+| 20 | Its confidence tells when to trust it | Most confident 50% of test predictions: 98.2% correct | Descriptive (test set) | [coverage_accuracy](figures.md#coverage_accuracypng) |
 
 ## Simulation log
 
@@ -49,11 +51,13 @@ Model scores are cross-validated on the training set and await the Phase 5 test 
 | 2026-11-26 | Full dataset: 12,000 new moons, 100 years | 12,000 | 20.77 | 12,360 |
 | 2026-11-26 | Phase 3: the Phase 1 second moon for 1,000 years | 1 | 0.01 | 12,360 |
 | 2026-11-26 | Phase 3: 500 training survivors re-integrated to 1,000 years | 500 | 17.94 | 12,360 |
-| 2026-11-26 | Phase 4: chaos twins, 1,500 training moons displaced by 1 m | 1,500 | 2.66 | **12,360** |
+| 2026-11-26 | Phase 4: chaos twins, 1,500 training moons displaced by 1 m | 1,500 | 2.66 | 12,360 |
+| 2026-11-27 | Phase 5: speed benchmark, 100 training moons in one process | 100 | 0.30 | 12,360 |
+| 2026-11-28 | Phase 5: test chaos twins, 600 test moons displaced by 1 m | 600 | 1.58 | **12,360** |
 
 Short simulations inside the automated checks and verification reruns (20 dataset moons, 20 pilot
-moons) are not counted. The re-integrated survivors and the chaos twins are existing dataset
-moons, so the cumulative count of distinct random second moons is unchanged.
+moons) are not counted. The re-integrated survivors, the chaos twins and the benchmark runs are
+existing dataset moons, so the cumulative count of distinct random second moons is unchanged.
 
 ---
 
@@ -563,6 +567,145 @@ test set is opened:
 
 ---
 
+## Phase 5: evaluation on the held-out test set (2026-11-27 to 2026-11-28)
+
+**Objective:** a single, verifiable evaluation of the selected model on the 2,400 test systems held
+out since Phase 3, a fair speed comparison with direct simulation, and an analysis of failures.
+
+### Work
+
+| Step | Content | Commit |
+|---|---|---|
+| 5.1 | Protocol (`configs/phase5_protocol.json`), evaluation script (`src/evaluate_test.py`), checks (`src/check_evaluation.py`) | `5a93769` |
+| 5.2 | Dry run on a training holdout | `5a93769` |
+| 5.3 | The single test evaluation (from tag `phase5-evaluated-model`) | `d4f404c` |
+| 5.4 | Speed benchmark (`src/benchmark_speed.py`) | `0ad5d7d`, `69cefc4` |
+| 5.5 | Test chaos twins and failure analysis (`src/analyze_test.py`) | `0ad5d7d`, `69cefc4` |
+| 5.6 | Figures (`src/plot_test.py`) | `6245f8f` |
+| 5.7 | Prediction tool (`src/predict.py`) and model card (`docs/model_card.md`) | `69cefc4`, see Git history |
+| 5.8 | `notebooks/04_evaluation.ipynb` and documentation | see Git history |
+
+### Protocol
+
+- **Criteria** fixed at the end of Phase 4 (`configs/selected_model.json`, commit `975d7fb`):
+  - C1: test macro-F1 inside 0.708–0.737;
+  - C2: balanced-accuracy gain over the physics rule with an interval above 0;
+  - C3: ECE of P(survived) at most 0.05;
+  - C4: `moon_interaction` recall reported with a Wilson interval.
+- **Amendment before opening the test set (C1b).** The C1 interval reflects the uncertainty of
+  the score on 9,600 systems; on 2,400 test systems the score scatters about twice as widely, so a
+  perfectly generalizing model would miss C1 about one time in three. C1 is kept unchanged. C1b
+  additionally requires the 95% interval of (test − cross-validated macro-F1) to include 0, with
+  both samples bootstrapped independently.
+- **All descriptive analyses** fixed in `configs/phase5_protocol.json` before opening: seed
+  variability, per-class calibration, isotropic weighting, lifetime classes, error map,
+  coverage–accuracy curve, test chaos twins with rule T5. The consequence of each possible verdict
+  was also fixed, and model switching ruled out.
+- **Safeguards.** `src/evaluate_test.py` is the only analysis script that loads the test set. It
+  runs only if:
+  - the Git tree is clean;
+  - the criteria are unchanged since `975d7fb` and the split since `ccb9bbc`;
+  - the dataset matches its manifest;
+  - no results exist yet.
+
+  It records the commit and file checksums with the results and refuses a second run (verified).
+  A dry run on a training holdout exercised the full pipeline first.
+- **Final models:** the selected Random Forest (final settings, seed 20261201), the physics rule
+  and the majority class, trained on all 9,600 training systems.
+
+### Results
+
+**Criteria.**
+
+| Criterion | Result | Verdict |
+|---|---|---|
+| C1 | Test macro-F1 0.711 (interval 0.683–0.738) inside 0.708–0.737 | Met |
+| C1b | Difference from cross-validation −0.012 (interval −0.045 to +0.018) | Met |
+| C2 | Balanced-accuracy gain over the physics rule +0.115 (interval +0.088 to +0.144) | Met |
+| C3 | ECE of P(survived) 0.019 | Met |
+| C4 | `moon_interaction` recall 27.0% (Wilson interval 17.6% to 39.0%, 63 systems) | Reported |
+
+**Test performance.**
+
+| Model | Macro-F1 | Accuracy | Balanced accuracy |
+|---|---:|---:|---:|
+| Random Forest | 0.711 | 0.851 (0.837–0.865) | 0.712 |
+| Physics rule | 0.591 | 0.789 | 0.597 |
+| Majority class | 0.138 | 0.380 | 0.250 |
+
+Every test metric agrees with its cross-validated value:
+- accuracy 0.851 versus 0.850;
+- survival ROC AUC 0.988 versus 0.985;
+- survival accuracy 94.1% versus 93.8%;
+- log loss 0.400 versus 0.405;
+- ECE 0.019 versus 0.019.
+
+Per-class recall on test is 92% (survived), 87% (ejected), 79% (hit Earth) and 27% (Moon
+interaction). Per-class calibration errors are all at most 0.030. Five other seeds give test
+macro-F1 of 0.709–0.716. With isotropic weights, macro-F1 is 0.687 and accuracy 84.0%. The lifetime
+class is predicted with 76.9% accuracy (macro-F1 0.732), and 98.4% of predictions are within one
+class.
+
+**Failure analysis.** 600 random test systems were re-simulated with a 1 m displacement after the
+evaluation was committed:
+- 91.3% of outcomes are unchanged (97.8% for survival alone);
+- **rule T5 is met:** the model errs on 53.8% of the 52 chaotic systems and on 11.3% of the
+  others (difference interval +0.28 to +0.56);
+- the test error map places the failures near the Moon's orbit, with error rates of 26–45%
+  between 0.55 and 1.7 lunar distances (highest, 45%, at 0.55–0.97 lunar distances and 120°–150°),
+  while close-in systems are almost never misclassified;
+- ranked by confidence, the most confident 50% of test predictions are 98.2% correct and the most
+  confident 80% are 91.8% correct.
+
+**Speed** (single process, same machine, plugged in):
+
+| | Seconds per system |
+|---|---:|
+| Simulation, mean (100 training systems) | 10.72 |
+| Simulation, median | 2.67 |
+| Model, one prediction (median of 1,000) | 0.111 |
+| Model, per system in a batch of 2,400 | 0.000133 |
+
+- Survivors take a median of 19.7 s to simulate, failures 0.1–1.1 s.
+- The model is 24 times faster than the median simulation and 97 times faster than the mean for
+  single predictions, and about 80,000 times faster than the mean in batches.
+- All 12,000 systems would be classified in 1.6 s, against 20.8 CPU-hours of simulation.
+- Counting the training data and 44 s of model training, the surrogate repays its cost after
+  about 7,000 predictions.
+- The pre-registered comparison, against the 1.456 s median recorded with four parallel workers
+  during dataset generation, gives a factor of 13.
+- All 100 re-simulated benchmark systems reproduced their dataset outcomes.
+
+**Prediction tool and model card.** `src/predict.py` returns outcome and lifetime probabilities for
+any second moon, warns outside the training ranges and inside the Roche limit, and reproduces the
+evaluated predictions exactly. `docs/model_card.md` summarizes intended use, performance, speed,
+limits and failure modes.
+
+### Reading the decision rules
+
+All pre-registered criteria (C1–C3) and rule T5 were met. C1 was met by a margin of 0.003; the
+amendment C1b, fixed before opening, confirms that the test score is consistent with the
+cross-validated estimate within test-set noise. The near-identical test and cross-validated scores
+indicate that the selection optimism noted in Phase 4 is small.
+
+### Findings
+
+- The surrogate generalizes: on systems never used for any decision, it reaches 85.1% accuracy,
+  matching cross-validation, and beats the physics rule.
+- Its probabilities are calibrated on new systems, and its confidence identifies the predictions to
+  trust: half of the test set is predicted with 98% accuracy.
+- Its failures sit where the dynamics are chaotic, near the Moon's orbit.
+- It is 24 to 80,000 times faster than direct simulation, depending on use, and repays its training
+  data after about 7,000 predictions.
+
+### Revisions
+
+- The planned size of the committed predictions file (about 150 KB) was underestimated; including
+  the input columns needed for the failure analysis, it is 1.2 MB.
+- Speedups are quoted to two significant figures; the timing ratios are not more precise.
+
+---
+
 ## Method summary
 
 > We integrate the Sun, Earth, Moon and a hypothetical second moon with REBOUND's IAS15
@@ -581,7 +724,10 @@ test set is opened:
 > nested cross-validation, a Random Forest on orbital elements and physics features predicts
 > the four-class outcome with macro-F1 0.723 and accuracy 85.0% (physics-rule baseline 0.597
 > and 79.5%), with calibrated survival probabilities (ECE 0.019). A 1 m perturbation leaves
-> 92.3% of outcomes unchanged, and model errors concentrate on the chaotic systems.
+> 92.3% of outcomes unchanged, and model errors concentrate on the chaotic systems. On the
+> 2,400 held-out systems, evaluated once under criteria fixed in advance, the model reaches
+> 85.1% accuracy (macro-F1 0.711) with calibrated probabilities, and is 24 times faster than
+> the median simulation per prediction and about 80,000 times faster in batches.
 
 ## Limitations
 
@@ -596,6 +742,7 @@ test set is opened:
   prograde-retrograde difference.
 - The Lidov–Kozai mechanism is inferred from outcome patterns; individual orbits were not traced.
 - Survival between 100 and 1,000 years rests on a sample of 500 systems.
-- Phase 4 scores are cross-validated on the training set; the feature set was chosen on the same
-  data, so they are slightly optimistic until the Phase 5 test evaluation.
+- The feature set was chosen on the training data; the held-out test scores, close to the
+  cross-validated ones, indicate that the resulting optimism is small.
 - Collisions with the Moon are rarely predicted (recall 14.6% within the merged class).
+- Speed was measured on one laptop; absolute times depend on hardware, ratios less so.

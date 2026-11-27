@@ -7,8 +7,8 @@ the outcome from the starting conditions alone.
 Inspired by SPOCK (Tamayo et al., 2020), which uses machine learning to predict the stability of
 planetary systems.
 
-**Status:** Phase 4 of 6 finished (surrogate model selected, cross-validated). Next: Phase 5,
-evaluation on the held-out test set.
+**Status:** Phase 5 of 6 finished (surrogate model evaluated on the held-out test set). Next:
+Phase 6, final cleanup and write-up.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -27,10 +27,22 @@ evaluation on the held-out test set.
   Moon's are ejected or collide. Beyond the Moon's orbit, survivors are almost all retrograde (11.4% of
   retrograde vs 0.3% of prograde moons survive).
 - **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
-- **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting values
-  with 85.0% cross-validated accuracy (physics rule 79.5%, majority class 37.9%) and calibrated
-  survival probabilities (ROC AUC 0.985). Its errors concentrate on systems whose outcome a 1 m
-  nudge changes; on reproducible systems it is right 89.5% of the time.
+- **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting values.
+  On 2,400 held-out systems, evaluated once under criteria fixed in advance, it reaches 85.1%
+  accuracy (physics rule 78.9%, majority class 38.0%) with calibrated survival probabilities
+  (ROC AUC 0.988). Its errors concentrate on chaotic systems near the Moon's orbit.
+- **Speed:** 24 times faster than a median simulation per prediction, about 80,000 times faster
+  in batches; it repays the cost of its training simulations after about 7,000 predictions.
+
+## Try it
+
+```powershell
+venv\Scripts\python src\predict.py --mass 0.1 --distance 0.4 --eccentricity 0.0 --inclination 90
+```
+
+Mass in lunar masses, semi-major axis in lunar distances, inclination in degrees (above 90 is
+retrograde). The tool prints the probabilities of each outcome and of each lifetime class; see the
+[model card](docs/model_card.md) for valid ranges and limits.
 
 ## Documentation
 
@@ -39,10 +51,12 @@ evaluation on the held-out test set.
 | [docs/report.md](docs/report.md) | Technical report: key findings, then methods, results and decisions phase by phase |
 | [docs/questions.md](docs/questions.md) | Design decisions and open questions, with evidence |
 | [docs/figures.md](docs/figures.md) | How to read every figure |
+| [docs/model_card.md](docs/model_card.md) | The prediction model: use, performance, limits |
 | [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
 | [notebooks/01_first_simulation.ipynb](notebooks/01_first_simulation.ipynb) | Setup, validation and a first second moon |
 | [notebooks/02_dataset_exploration.ipynb](notebooks/02_dataset_exploration.ipynb) | Stability maps, decision rules and long-term survival |
 | [notebooks/03_models.ipynb](notebooks/03_models.ipynb) | Surrogate models, chaos reference and the selected model |
+| [notebooks/04_evaluation.ipynb](notebooks/04_evaluation.ipynb) | Held-out test evaluation, failures and speed |
 | [paper/](paper/README.md) | Manuscript draft (AASTeX) |
 | [notes.md](notes.md) | Lab notes and key numbers |
 
@@ -127,6 +141,12 @@ command again.
 |---|---|
 | `venv\Scripts\python src\evaluate_test.py --dry-run` | Rehearses the evaluation on a training holdout (no test moons) |
 | `venv\Scripts\python src\evaluate_test.py` | The single evaluation on the held-out test set (refuses to run twice) |
+| `venv\Scripts\python src\benchmark_speed.py` | Times the model and the simulation on the same machine (about 15 minutes) |
+| `venv\Scripts\python src\select_twins.py --test` | Chooses 600 test moons for the failure analysis (after the evaluation) |
+| `venv\Scripts\python src\generate_dataset.py configs\twins_test_1m.json` | Simulates the test chaos twins (about 25 minutes) |
+| `venv\Scripts\python src\analyze_test.py` | Rule T5, error map, coverage-accuracy curve, cross-validated versus test |
+| `venv\Scripts\python src\plot_test.py` | Draws the Phase 5 figures |
+| `venv\Scripts\python src\predict.py --mass ... --distance ... --eccentricity ... --inclination ...` | Predicts the fate of any second moon |
 
 ### Checks (each prints PASS or FAIL)
 
@@ -160,13 +180,14 @@ Shared modules used by the scripts above:
 | `src/features.py` | Model inputs (feature sets F1–F3) and targets |
 | `src/models.py` | Model pipelines and hyperparameter search spaces |
 | `src/cv.py` | Nested cross-validation, metrics and paired bootstrap comparisons |
+| `src/predict.py` | The evaluated model as a prediction tool (also importable) |
 | `src/plot_style.py` | Shared figure style |
 
 ## Data and reproducibility
 
 - Generated data in `data/` is not stored in Git; every file can be regenerated with the commands
   above. `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json` and
-  `configs/twins_1m_manifest.json` record the
+  `configs/twins_1m_manifest.json`, `configs/twins_test_1m_manifest.json` record the
   SHA-256 checksum, outcome counts, computing time and package versions of each dataset.
 - Every random draw uses a fixed seed stored in its configuration file, and every second moon has
   its own generator, so results do not depend on the order in which simulations finish.

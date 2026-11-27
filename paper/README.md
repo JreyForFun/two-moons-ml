@@ -35,16 +35,16 @@ Text in red brackets marks content that depends on later phases.
 
 | Section | Status |
 |---|---|
-| Abstract | Drafted (Phases 1–4); test-set scores and speedup pending |
+| Abstract | Drafted |
 | Introduction | Drafted |
 | Methods: simulation, sampling, outcomes, pilot | Drafted |
 | Methods: surrogate models | Drafted |
 | Methods: exploration (test split, decision rules R1–R4) | Drafted |
 | Results: validation, pilot, dataset | Drafted |
 | Results: stability maps, pilot gap, long-term survival | Drafted |
-| Results: surrogate performance | Drafted (cross-validated); test-set scores pending (Phase 5) |
-| Discussion | Drafted (Phases 1–4) |
-| Conclusions | Pending |
+| Results: surrogate performance, held-out test set, speed | Drafted |
+| Discussion | Drafted |
+| Conclusions | Drafted |
 | Author and affiliation | Done |
 | Data DOI | Pending |
 

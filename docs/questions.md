@@ -11,7 +11,7 @@ Status: **Answered**, **Partly answered**, or **Open (phase)**.
 - [Simulation validity](#simulation-validity) (Q1–Q11)
 - [Dataset design](#dataset-design) (Q12–Q27)
 - [Exploration](#exploration-phase-3) (Q28–Q31, Q36–Q38, Q41)
-- [Modeling and evaluation](#modeling-and-evaluation-phases-45) (Q32–Q35, Q39–Q40, Q42–Q46)
+- [Modeling and evaluation](#modeling-and-evaluation-phases-45) (Q32–Q35, Q39–Q40, Q42–Q49)
 
 ---
 
@@ -220,11 +220,13 @@ Evidence: [technical report](report.md), Phase 3, "Reading the decision rules"; 
 
 ## Modeling and evaluation (Phases 4–5)
 
-**Q32. How is memorization detected?** *Answered for Phase 4; final check in Phase 5.*
-Every score is out-of-fold under nested cross-validation, so no system is scored by a model that
-saw it, and hyperparameters are never tuned on the systems they are scored on. A label-permutation
-test (shuffled labels give macro-F1 0.235 against 0.662 on real labels) rules out leakage. The
-2,400 test systems, frozen before exploration, give the final check in Phase 5.
+**Q32. How is memorization detected?** *Answered.*
+Every Phase 4 score is out-of-fold under nested cross-validation, and a label-permutation test rules
+out leakage (macro-F1 0.235 on shuffled labels). The decisive check is the held-out test set, frozen
+before exploration and opened once: accuracy 85.1% versus 85.0% in cross-validation, macro-F1 0.711
+versus 0.723 (difference within test-set noise). A memorizing model would score far lower on the
+test set.
+Evidence: `results/phase5_test.json`, [test_vs_cv.png](figures.md#test_vs_cvpng).
 
 **Q33. Which input representation works better: orbital elements or state vectors?** *Answered.*
 Orbital elements. Random Forest macro-F1 drops by 0.086 (interval −0.099 to −0.073) when the same
@@ -232,16 +234,22 @@ orbits are described by Earth-relative position and velocity. Elements express t
 relevant quantities (size, shape, tilt) directly; a model would have to reconstruct them from
 vectors.
 
-**Q34. How much faster is the surrogate than the simulation?** *Open (Phase 5).*
-Reference: the simulation takes a median of 1.5 s per moon and up to 104 s.
+**Q34. How much faster is the surrogate than the simulation?** *Answered.*
+Measured single-threaded on the same machine: one prediction takes 111 ms against a median of 2.67 s
+and a mean of 10.72 s for one simulation, a factor of 24 (median) to 97 (mean). In batches the model
+needs 133 µs per system, about 80,000 times faster than the mean simulation; all 12,000 systems would
+take 1.6 s instead of 20.8 CPU-hours. Counting its training data, the surrogate pays off after about
+7,000 predictions. Against the pre-registered reference (1.456 s, measured with four parallel
+workers), the factor is 13.
+Evidence: `results/phase5_speed.json`, [speedup.png](figures.md#speeduppng).
 
-**Q35. Where does the model fail?** *Partly answered (Phase 5 completes it).*
-Out-of-fold, errors concentrate on chaotic systems: the model is wrong on 53.4% of systems whose
-outcome changes under a 1 m nudge and on 10.5% of the others (rule P5). The remaining confusions are
-ejections versus collisions with Earth near the Moon's orbit, and the `moon_interaction` class,
-which is recognized in 30% of cases. Phase 5 repeats the analysis on the test set.
-Evidence: [confusion_matrix_cv.png](figures.md#confusion_matrix_cvpng),
-[predicted_map.png](figures.md#predicted_mappng).
+**Q35. Where does the model fail?** *Answered.*
+Near the Moon's orbit. On the test set, error rates reach 26–45% between 0.55 and 1.7 lunar
+distances and stay below 10% inside 0.31 lunar distances. Rule T5 confirms that test errors
+concentrate on chaotic systems (53.8% error on systems whose outcome a 1 m nudge changes, against
+11.3% on the others). The main confusions are ejection versus collision with Earth, and Moon
+interactions, of which 27% are recognized.
+Evidence: [error_map.png](figures.md#error_mappng), [test_confusion.png](figures.md#test_confusionpng).
 
 **Q39. Should the two rare outcomes be merged or sampled more densely?** *Answered.*
 Merged into `moon_interaction` (254 training systems), since both are close encounters with the
@@ -284,3 +292,19 @@ Yes. Shuffling the distance group of inputs lowers macro-F1 by 0.31 and the incl
 0.24, against 0.075 for mass and almost nothing for the orientation angles. Even the depth-3
 physics rule, given only apoapsis and |cos *i*|, rediscovers the Phase 3 regions.
 Evidence: [feature_importance.png](figures.md#feature_importancepng).
+
+**Q47. Did the model pass its pre-registered test?** *Answered.*
+Yes. C1 (test macro-F1 0.711 inside 0.708–0.737, by a margin of 0.003), C1b (difference from
+cross-validation −0.012, interval −0.045 to +0.018), C2 (gain over the physics rule +0.115) and C3
+(ECE 0.019) were met; C4 reports a `moon_interaction` recall of 27.0%. C1b was added before the test
+set was opened, because C1 alone would fail about one time in three from test-set noise.
+
+**Q48. Can the model tell when it is likely to be wrong?** *Answered.*
+Yes. Ranked by confidence, the most confident 50% of test predictions are 98.2% correct and the most
+confident 80% are 91.8% correct. Low confidence marks the systems worth simulating.
+Evidence: [coverage_accuracy.png](figures.md#coverage_accuracypng).
+
+**Q49. How can the model be used?** *Answered.*
+`src/predict.py` returns outcome and lifetime probabilities for any second moon, from the command line
+or as a Python function, and warns outside the training ranges. `docs/model_card.md` describes its
+intended use, performance and limits.

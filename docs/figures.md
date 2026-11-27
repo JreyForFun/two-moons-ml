@@ -30,6 +30,12 @@ Color convention: **blue** for the Moon, surviving systems or the reference simu
 | [predicted_map.png](#predicted_mappng) | 4 | `src/plot_models.py` |
 | [learning_curve.png](#learning_curvepng) | 4 | `src/plot_models.py` |
 | [lifetime_confusion.png](#lifetime_confusionpng) | 4 | `src/plot_models.py` |
+| [test_vs_cv.png](#test_vs_cvpng) | 5 | `src/plot_test.py` |
+| [test_confusion.png](#test_confusionpng) | 5 | `src/plot_test.py` |
+| [test_calibration.png](#test_calibrationpng) | 5 | `src/plot_test.py` |
+| [error_map.png](#error_mappng) | 5 | `src/plot_test.py` |
+| [coverage_accuracy.png](#coverage_accuracypng) | 5 | `src/plot_test.py` |
+| [speedup.png](#speeduppng) | 5 | `src/plot_test.py` |
 
 ---
 
@@ -471,3 +477,118 @@ it does. Neighbouring classes overlap because lifetimes are continuous and partl
 
 **Caveats.** The class boundaries (1, 10 and 100 years) are fixed choices; survivors' true
 lifetimes beyond 100 years are unknown.
+
+---
+
+## test_vs_cv.png
+
+![Cross-validated versus test scores](../figures/test_vs_cv.png)
+
+**Content.** Macro-F1, accuracy, balanced accuracy and survival ROC AUC of the selected Random
+Forest, out-of-fold on the 9,600 training systems (blue) and on the 2,400 held-out test systems
+(orange), with 95% bootstrap intervals. The shaded band in the macro-F1 row is criterion C1.
+
+**Reading.** Each test value lies close to its cross-validated value: macro-F1 0.711 versus 0.723,
+accuracy 0.851 versus 0.850, balanced accuracy 0.712 versus 0.719, survival AUC 0.988 versus 0.985.
+The test intervals are about twice as wide, reflecting the smaller sample. The test macro-F1 falls
+just inside the C1 band.
+
+**Interpretation.** The model generalizes to systems never used for any decision, and the selection
+optimism expected from choosing features on the training data is small.
+
+**Caveats.** One test set of 2,400 systems; its sampling noise is about ±0.03 in macro-F1.
+
+---
+
+## test_confusion.png
+
+![Test confusion matrix](../figures/test_confusion.png)
+
+**Content.** Confusion matrix of the selected model on the 2,400 test systems: rows are simulated
+outcomes, columns predicted outcomes, with row shares and counts.
+
+**Reading.** Survivors are recognized in 92% of cases, ejections in 87%, collisions with Earth in
+79% and Moon interactions in 27% (17 of 63). Collisions with Earth predicted as ejections (11%) and
+Moon interactions predicted as ejections (49%) are the largest confusions.
+
+**Interpretation.** The pattern matches the cross-validated confusion matrix almost cell by cell.
+
+**Caveats.** The bottom row rests on 63 systems.
+
+---
+
+## test_calibration.png
+
+![Test reliability diagram](../figures/test_calibration.png)
+
+**Content.** Predicted survival probability (10 bins; bins with at least 10 test systems) against
+the observed share of survivors, on the test set (orange) and out-of-fold on the training set
+(blue).
+
+**Reading.** The test curve follows the diagonal and the cross-validated curve, with more scatter in
+the middle bins, which hold few systems. The test ECE is 0.019.
+
+**Interpretation.** The survival probabilities remain honest on new systems (criterion C3). Every
+class's one-vs-rest calibration error on the test set is at most 0.030.
+
+**Caveats.** Middle bins contain few test systems; their scatter is mostly sampling noise.
+
+---
+
+## error_map.png
+
+![Test error rate by orbit](../figures/error_map.png)
+
+**Content.** Error rate of the selected model on the test set in a 6 × 6 grid of semi-major axis
+(logarithmic) and inclination; each cell shows the error rate and the number of systems (49 to 82).
+Dashed line: the Moon's orbit.
+
+**Reading.** Systems inside 0.31 lunar distances are almost never misclassified (0–9%). The error
+rate rises to 26–45% between 0.55 and 1.7 lunar distances, highest at 0.55–0.97 lunar distances and
+120°–150° (45%), and falls again beyond 1.7 lunar distances.
+
+**Interpretation.** Failures coincide with the chaotic region around the Moon's orbit
+(`chaos_profile.png`); rule T5 confirms that test errors concentrate on systems whose outcome a
+1 m nudge changes.
+
+**Caveats.** Each cell's error rate has a Wilson interval of roughly ±10 points.
+
+---
+
+## coverage_accuracy.png
+
+![Coverage-accuracy curve](../figures/coverage_accuracy.png)
+
+**Content.** Accuracy on the test systems kept when predictions are ranked by confidence (the
+largest predicted probability) and only the most confident share is kept, with 95% Wilson
+intervals. Dashed line: test twin agreement (91.3%).
+
+**Reading.** The most confident 10–30% of predictions are essentially always right; keeping 50%
+gives 98.2%, 80% gives 91.8% and all systems 85.1%.
+
+**Interpretation.** The predicted probability is a reliable signal of when to trust the surrogate.
+A workflow that simulates only the least confident systems would combine high accuracy with a large
+saving in computation.
+
+**Caveats.** Test set only; the curve's shape depends on the class mix of the sampled parameters.
+
+---
+
+## speedup.png
+
+![Model versus simulation time per system](../figures/speedup.png)
+
+**Content.** Seconds per system on a logarithmic axis, measured single-threaded in one process on
+the same machine: simulation mean and median (100 re-simulated training systems), and the model for
+one prediction and per system in a batch of 2,400.
+
+**Reading.** A simulation takes 2.67 s (median) or 10.72 s (mean); the model takes 0.11 s for one
+prediction and 133 µs per system in a batch.
+
+**Interpretation.** The surrogate is about 24 times faster than the median simulation for single
+predictions and about 80,000 times faster than the mean simulation in batches. Counting the 20.8
+CPU-hours of training simulations, it pays off after about 7,000 predictions.
+
+**Caveats.** Absolute times depend on the hardware. Simulation time depends strongly on the outcome
+(survivors about 20 s, failures under 1.1 s). Single-prediction latency is dominated by per-call
+overhead.

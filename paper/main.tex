@@ -31,13 +31,14 @@ second moon by 1~m changes 12\% of outcomes, setting an empirical limit on predi
 Second moons survive mainly on close, low-inclination orbits; near-polar orbits are driven into
 Earth, consistent with Lidov--Kozai cycles, and orbits reaching the Moon's are ejected or collide.
 The Moon, rather than the Sun, sets the outer limit, and nearly all survivors beyond the
-Moon's orbit are retrograde. About a fifth of 100-year survivors are lost by 1,000 years. A Random Forest
-trained on the initial parameters predicts the outcome with 85.0\% cross-validated accuracy
-(macro-F1 0.72), against 79.5\% for a two-variable physics rule and 37.9\% for the majority class,
-with calibrated survival probabilities (ROC AUC 0.985). Re-simulating 1,500 systems with a 1~m
-displacement leaves 92.3\% of outcomes unchanged, and the model's errors concentrate on the
-chaotic systems \pending{Phase 5: held-out test accuracy and speedup over direct integration}.
-The dataset and code are publicly available.
+Moon's orbit are retrograde. About a fifth of 100-year survivors are lost by 1,000 years. A Random
+Forest trained on the initial parameters predicts the outcome of 2,400 held-out systems, evaluated
+once under criteria fixed in advance, with 85.1\% accuracy (macro-F1 0.71), matching its
+cross-validated estimate and exceeding a two-variable physics rule (78.9\%) and the majority class
+(38.0\%); its survival probabilities are calibrated (ROC AUC 0.988). Re-simulating systems with a
+1~m displacement leaves about 92\% of outcomes unchanged, and the model's errors concentrate on the
+chaotic systems near the Moon's orbit. The surrogate is 24 times faster than a median simulation per
+prediction and about 80,000 times faster in batches. The dataset and code are publicly available.
 \end{abstract}
 
 \keywords{Natural satellites (Solar system) --- Orbital dynamics --- N-body simulations ---
@@ -159,6 +160,17 @@ rules fixed in advance select the input set (a replacement for the elements must
 with an interval above zero), the model (the simplest model whose gap to the best includes zero),
 and test whether the selected model beats the physics rule. As a chaos reference, 1,500 random
 training systems were re-integrated with the second moon displaced by 1~m.
+
+The selected model, retrained on all 9,600 training systems, was evaluated once on the 2,400 held-out
+systems. Its pass criteria were fixed before the test set was opened: a test macro-F1 within the
+cross-validated 95\% interval (0.708--0.737); a balanced-accuracy gain over the physics rule with an
+interval above zero; and an ECE of the survival probability of at most 0.05. Because the test score
+scatters about twice as widely as the cross-validated one, we added, also before opening the test
+set, the supplementary criterion that the interval of the difference between test and
+cross-validated macro-F1 include zero. The evaluation script verified that the criteria and the test
+split were unchanged and recorded the code version with the results. After the evaluation, 600 test
+systems were re-integrated with a 1~m displacement to analyze failures, and the speed of the model
+and of direct integration was measured in a single process on the same computer.
 
 \section{Results} \label{sec:results}
 
@@ -319,7 +331,31 @@ the simulation. Grouped permutation importance attributes the predictions mainly
 (semi-major axis, periapsis, apoapsis) and inclination, followed by mass. A tenfold increase in
 training data raises macro-F1 only from 0.700 to 0.723, and the same model predicts the lifetime
 class (lost within 1, 1--10 or 10--100 years, or surviving) with 76.7\% accuracy, 98.6\% within
-one class. \pending{Phase 5: held-out test-set scores and speedup.}
+one class.
+
+\subsection{Held-out test set} \label{sec:test}
+
+On the 2,400 held-out systems the Random Forest reaches an accuracy of 85.1\% (interval
+83.7--86.5\%) and a macro-F1 of 0.711 (0.683--0.738), against 78.9\% and 0.591 for the physics rule
+and 38.0\% for the majority class. All criteria are met: the test macro-F1 lies inside the
+cross-validated interval (by 0.003), its difference from the cross-validated value is $-0.012$
+(interval $-0.045$ to $+0.018$), the balanced-accuracy gain over the physics rule is 0.115
+(0.088--0.144), and the ECE of the survival probability is 0.019. The survival ROC AUC is 0.988,
+every class is calibrated to within 0.03, and retraining with five other random seeds gives test
+macro-F1 between 0.709 and 0.716. Moon interactions are recognized in 27\% of cases (17 of 63), and
+the lifetime class with 76.9\% accuracy.
+
+The 600 re-integrated test systems confirm the role of chaos: 91.3\% of their outcomes are unchanged
+by the 1~m displacement, and the model errs on 53.8\% of the chaotic systems against 11.3\% of the
+others. Test error rates reach 26--45\% between 0.55 and 1.7 lunar distances and stay below 10\%
+inside 0.31 lunar distances. Ranked by confidence, the most confident half of the test predictions
+is 98.2\% correct.
+
+A single prediction takes 0.11~s and a batch prediction 133~$\mu$s per system, against a median of
+2.7~s and a mean of 10.7~s for a direct integration (about 20~s for survivors, which run the full
+100 years). The surrogate is therefore 24 times faster than the median integration for single
+predictions and about 80,000 times faster than the mean in batches; including the 20.8 CPU-hours of
+training simulations, it pays off after about 7,000 predictions.
 
 \section{Discussion} \label{sec:discussion}
 
@@ -330,8 +366,11 @@ that predicts the most probable outcome can exceed the agreement between two noi
 The surrogate approaches it: its errors are concentrated on the systems whose outcome a 1~m nudge
 changes, and the nearly flat learning curve shows that more simulations of the same kind would
 help little. The same holds for collisions with the Moon, the hardest outcome to predict.
-Because the input set was chosen on the training data, the cross-validated scores are slightly
-optimistic; the held-out test evaluation provides the unbiased estimate.
+Because the input set was chosen on the training data, the cross-validated scores could be
+optimistic; the held-out test scores, nearly identical to them, show that this optimism is small.
+In practice, the surrogate's confidence suggests a hybrid strategy: accept its confident
+predictions, which are almost always right, and simulate only the uncertain systems near the
+Moon's orbit.
 
 Outcome shares depend on the sampling design. They describe this dataset rather than the
 probability that an arbitrary second moon survives, and the difference between the pilot and the
@@ -359,7 +398,18 @@ Finally, a single start date is used, supported by a 30-system test.
 
 \section{Conclusions} \label{sec:conclusions}
 
-\pending{To be completed after Phase 5.}
+We simulated 12,000 hypothetical second moons of Earth, starting from the real Sun--Earth--Moon
+system, and trained a surrogate model to predict their fate. Three conclusions follow. First, a
+second moon survives a century mainly on a close, low-inclination orbit: near-polar orbits are driven
+into Earth, orbits reaching the Moon's are destabilized, and beyond the Moon's orbit nearly all
+survivors are retrograde. The Moon, rather than the Sun, sets the outer limit. Second, a Random
+Forest predicts these outcomes from the initial parameters alone with 85\% accuracy on held-out
+systems and calibrated probabilities, close to the limit set by chaos: about 8\% of outcomes change
+when the starting position is displaced by 1~m, and the model's errors concentrate on those systems.
+Third, the surrogate is orders of magnitude faster than direct integration, making it practical to
+map second-moon stability across parameter space and to reserve simulations for the uncertain,
+chaotic cases. Extensions could include tides and Earth's oblateness, other start dates, and longer
+integrations to refine the long-term survival estimate.
 
 \section*{Data availability}
 
