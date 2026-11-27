@@ -723,9 +723,10 @@ changes, and the test evaluation is not repeated.
 |---|---|---|
 | 6.1 | Release checklist as code (`src/check_release.py`): frozen results, links, imports, run-table coverage, documented figures, wording, headline numbers across documents | `f14b7aa` |
 | 6.2 | Fresh-clone test (`src/check_fresh_clone.py`); README section on reproducing everything | `47fca00`, `494d5d4` |
-| 6.3 | All four notebooks re-executed from fresh kernels; every text output identical to the committed version | this step |
+| 6.3 | All four notebooks re-executed from fresh kernels; every text output identical to the committed version | `22b3d5a` |
 | 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | `494d5d4` |
-| 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | this step |
+| 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | `22b3d5a` |
+| 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | this step |
 
 ### Reproducibility
 
@@ -764,6 +765,13 @@ written in completion order and include each run's computing time.
   into 8 pages without undefined references or overfull lines; each page was inspected.
   `src/package_paper.py` also writes an upload bundle including the generated `.bbl` file, which
   arXiv requires because it does not run BibTeX.
+- A condensed version for Research Notes of the AAS (`paper/rnaas.tex`) follows the journal's
+  current preparation guidelines: 1,500 words including title, headers, captions and references
+  (150 reserved for the abstract), a single figure or table that fits on one page, and the first
+  person singular for single-author notes. It has a 139-word abstract, about 1,250 words in
+  total (counted from the source and, independently, from the compiled PDF) and one two-panel
+  figure: the stability map and the test-versus-cross-validation comparison. Its headline
+  numbers are checked against the result files like those of the full paper.
 
 ---
 

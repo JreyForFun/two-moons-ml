@@ -3,6 +3,7 @@
 Run:  venv/Scripts/python src/plot_paper.py            (needs the generated data in data/)
       venv/Scripts/python src/plot_paper.py --preview  (also PNG copies in tools/build/previews/)
 
+Also draws the single two-panel figure of the Research Note version (rnaas_figure.pdf).
 Reuses the data and axis helpers of the screen figures, without titles (the captions carry them)
 and with text of 6.5 to 8 pt at the printed size. Saves vector PDFs to paper/figures/. The screen
 figures in figures/ are unchanged.
@@ -79,9 +80,9 @@ def validation():
     return fig
 
 
-def stability_map():
+def map_panel(fig, ax):
+    """Survival share by semi-major axis and inclination; returns the line-style handles."""
     df = explore.load_dataset("train")
-    fig, ax = chart(PAGE, 3.3)
     mesh, _ = draw_map(ax, df, I_COL)
     distance_axis(ax)
     top = hill_top_axis(ax)
@@ -94,8 +95,13 @@ def stability_map():
                     textcoords="offset points", color=MUTED_INK, fontsize=6.5, va="center",
                     annotation_clip=False)
     colorbar(fig, mesh, ax, "Share surviving 100 years")
-    handles = [Line2D([], [], color=INK, linewidth=1, linestyle=style, label=label)
-               for style, label in (("--", "Moon's orbit"), (":", "Half of Earth's Hill radius"))]
+    return [Line2D([], [], color=INK, linewidth=1, linestyle=style, label=label)
+            for style, label in (("--", "Moon's orbit"), (":", "Half of Earth's Hill radius"))]
+
+
+def stability_map():
+    fig, ax = chart(PAGE, 3.3)
+    handles = map_panel(fig, ax)
     fig.legend(handles=handles, loc="outside lower center", ncols=2, frameon=False,
                labelcolor=INK, fontsize=7)
     return fig
@@ -132,7 +138,8 @@ def survival():
     return fig
 
 
-def test_vs_cv():
+def scores_panel(ax):
+    """Cross-validated and test scores with bootstrap intervals."""
     test, _, _, frame = load_test()
     oof = pd.read_csv(ROOT / "data" / "phase4" / "random_forest_F3_oof.csv")
     sets = ((-0.14, oof["y"].to_numpy(), oof.filter(like="p").to_numpy(), BLUE,
@@ -141,7 +148,6 @@ def test_vs_cv():
              "Held-out test (2,400)"))
     rows = (("Macro-F1", cv.macro_f1), ("Accuracy", accuracy),
             ("Balanced accuracy", cv.balanced_accuracy), ("Survival ROC AUC", survived_auc))
-    fig, ax = chart(COLUMN, 2.2)
     low, high = test["criteria"]["C1"]["interval"]
     ax.axvspan(low, high, ymin=0.77, ymax=0.98, color=BLUE, alpha=0.22, linewidth=0)
     for r, (name, stat) in enumerate(rows):
@@ -156,7 +162,27 @@ def test_vs_cv():
     ax.invert_yaxis()
     ax.set_xlim(0.6, 1.03)
     ax.set_xlabel("Score with 95% bootstrap interval")
+
+
+def test_vs_cv():
+    fig, ax = chart(COLUMN, 2.2)
+    scores_panel(ax)
     below(fig, ax)
+    return fig
+
+
+def rnaas_figure():
+    """One two-panel figure for the Research Note: (a) stability map, (b) test versus CV."""
+    fig, (top, bottom) = chart(PAGE, 5.4, rows=2, height_ratios=[3.2, 2.0])
+    handles = map_panel(fig, top)
+    top.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.13), ncols=2,
+               frameon=False, labelcolor=INK, fontsize=7)
+    scores_panel(bottom)
+    bottom.legend(loc="upper center", bbox_to_anchor=(0.5, -0.25), ncols=2, frameon=False,
+                  labelcolor=INK, fontsize=7)
+    for ax, letter in ((top, "a"), (bottom, "b")):
+        ax.text(-0.09, 1.02, f"({letter})", transform=ax.transAxes, fontsize=8.5,
+                fontweight="bold", color=INK, va="bottom")
     return fig
 
 
@@ -182,7 +208,8 @@ def speed():
 
 
 FIGURES = {"paper_validation": validation, "paper_stability_map": stability_map,
-           "paper_survival": survival, "paper_test_vs_cv": test_vs_cv, "paper_speed": speed}
+           "paper_survival": survival, "paper_test_vs_cv": test_vs_cv, "paper_speed": speed,
+           "rnaas_figure": rnaas_figure}
 
 
 def main():

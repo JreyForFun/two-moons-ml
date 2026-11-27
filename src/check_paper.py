@@ -160,9 +160,19 @@ def expected_numbers():
     return expected
 
 
-def check_numbers(tex):
+RNAAS_NUMBERS = ("test accuracy", "test macro-F1", "physics rule accuracy", "physics rule macro-F1",
+                 "C1 interval", "survival ROC AUC", "error on chaotic test systems",
+                 "error on other test systems", "most confident half", "single-prediction speedup",
+                 "batch speedup", "batch time per system")
+
+
+def check_numbers(name, tex):
     text = re.sub(r"\s+", " ", tex.replace("\\%", "%"))
     expected = expected_numbers()
+    if name == "rnaas.tex":
+        expected = {k: v for k, v in expected.items() if k in RNAAS_NUMBERS}
+        expected["single-prediction speedup"] = expected["single-prediction speedup"].replace(
+            " times", " times and")
     missing = [f"{k} ({v})" for k, v in expected.items() if v not in text]
     return missing, len(expected)
 
@@ -190,12 +200,11 @@ def main():
         print(f"{'PASS' if ok else 'FAIL'}  {name} limits: " + ("; ".join(problems) if problems
                                                               else ", ".join(notes)))
         passed &= ok
-        if name == "main.tex":
-            missing, total = check_numbers(tex)
-            ok = not missing
-            print(f"{'PASS' if ok else 'FAIL'}  {name} headline numbers: "
-                  + (f"{total} numbers match the result files" if ok else "; ".join(missing)))
-            passed &= ok
+        missing, total = check_numbers(name, tex)
+        ok = not missing
+        print(f"{'PASS' if ok else 'FAIL'}  {name} headline numbers: "
+              + (f"{total} numbers match the result files" if ok else "; ".join(missing)))
+        passed &= ok
     unused = sorted(set(entries) - all_cited)
     ok = not unused
     print(f"{'PASS' if ok else 'FAIL'}  Bibliography: "

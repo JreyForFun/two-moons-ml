@@ -186,7 +186,7 @@ moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms ident
 | Command | What it does |
 |---|---|
 | `venv\Scripts\python src\plot_paper.py` | Draws the print-size paper figures (`paper/figures/`) |
-| `venv\Scripts\python src\package_paper.py` | Compiles the paper with Tectonic, saves `paper/main.pdf` and the upload bundle `dist/main_upload.zip` |
+| `venv\Scripts\python src\package_paper.py` | Compiles the paper with Tectonic, saves `paper/main.pdf` and the upload bundle `dist/main_upload.zip` (add `rnaas` for the Research Notes version) |
 
 ### Checks (each prints PASS or FAIL)
 

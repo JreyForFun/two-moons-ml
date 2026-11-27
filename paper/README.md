@@ -8,6 +8,7 @@ Machine-Learning Surrogate.*
 | `main.tex` | Manuscript (AASTeX 6.3.1, two-column) |
 | `references.bib` | Bibliography |
 | `main.pdf` | Compiled manuscript |
+| `rnaas.tex`, `rnaas.pdf` | Condensed version for Research Notes of the AAS |
 | `figures/` | Print-size figures (PDF), drawn by `src/plot_paper.py` |
 
 Figures are read from `paper/figures/`. Every number in the text is printed by
@@ -57,6 +58,7 @@ Text in red brackets marks the dataset DOI, inserted once the data are archived.
 | Author and affiliation | Done |
 | Keywords (Unified Astronomy Thesaurus) | Done |
 | References verified (volume, pages, DOI) | Done |
+| Research Notes version (1,245 words, abstract 139 words, one figure) | Done |
 | Data DOI | Pending |
 
 ## Before submission
@@ -68,7 +70,12 @@ Text in red brackets marks the dataset DOI, inserted once the data are archived.
 
 ## Target venues
 
-- **Research Notes of the AAS:** at most 1,500 words including references, and one figure or
-  table. Requires a condensed version of this draft.
+- **Research Notes of the AAS:** `rnaas.tex`. The journal's limits (1,500 words including title,
+  headers, captions and references, with 150 words reserved for the abstract; one figure or
+  table, which must fit on one page) are checked by `src/check_paper.py`; the editorial office's
+  word count is final. Single-author notes are written in the first person singular. AAS
+  prefers AASTeX 7; the note uses AASTeX 6.3.1 with its `RNAAS` option, which is still accepted
+  and is the version available to the local build. Build with
+  `venv/Scripts/python src/package_paper.py rnaas`.
 - **arXiv (astro-ph.EP):** the full draft as a preprint. First-time submitters need an endorsement.
 - **Zenodo:** preprint and dataset together, with a citable DOI.

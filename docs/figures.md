@@ -609,3 +609,4 @@ full-width map) as vector PDFs with embedded fonts, without titles, since the ca
 | `paper_survival.pdf` | [survival_curve_full](#survival_curve_fullpng) | Replaces the pilot-only survival figure in the paper |
 | `paper_test_vs_cv.pdf` | [test_vs_cv](#test_vs_cvpng) | Legend below the axes |
 | `paper_speed.pdf` | [speedup](#speeduppng) | No speedup title; the ratios are in the text |
+| `rnaas_figure.pdf` | [stability_map](#stability_mappng) and [test_vs_cv](#test_vs_cvpng) | The single two-panel figure of the Research Notes version |
