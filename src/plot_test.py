@@ -105,6 +105,11 @@ def calibration(test, frame):
     return fig
 
 
+def rounded(value):
+    """Two significant figures, as a timing ratio is not more precise than that."""
+    return f"{float(f'{value:.2g}'):,.0f}"
+
+
 def speedup(speed):
     sim, model = speed["simulation"], speed["model"]
     bars = (("Simulation, mean", sim["mean_s"], BLUE), ("Simulation, median", sim["median_s"], BLUE),
@@ -124,8 +129,8 @@ def speedup(speed):
     ax.set_xlim(min(values) / 3, max(values) * 20)
     ax.set_xlabel("Seconds per moon (log scale), single process, same machine", color=MUTED_INK)
     s = speed["speedup"]
-    set_titles(ax, f"The surrogate is about {s['same_machine_median']:,.0f} times faster per moon",
-               f"Batch prediction: about {s['batch_vs_mean']:,.0f} times faster than the mean simulation")
+    set_titles(ax, f"The surrogate is about {rounded(s['same_machine_median'])} times faster per moon",
+               f"Batch prediction: about {rounded(s['batch_vs_mean'])} times faster than the mean simulation")
     return fig
 
 
@@ -199,7 +204,7 @@ def main():
     y, prob = frame["y"].to_numpy(), probs(frame, "selected")
     save(test_vs_cv(test, frame), "test_vs_cv.png")
     save(confusion(y, prob.argmax(axis=1), [LABELS[c] for c in config()["classes"]],
-                   "Held-out test set: where the model is right and wrong",
+                   "Test set: right and wrong predictions",
                    f"{len(y):,} test moons, rows sum to 100%"), "test_confusion.png")
     save(calibration(test, frame), "test_calibration.png")
     save(speedup(speed), "speedup.png")
