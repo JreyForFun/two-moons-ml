@@ -14,7 +14,8 @@ Simulations and a Machine-Learning Surrogate*.
 **Data**
 - Pilot study (100 systems under five controlled variations), main dataset of 12,000 systems,
   500 survivors extended to 1,000 years, and 2,100 systems re-simulated with a 1 m displacement;
-  15,065 simulations in total. Archived separately with a data description (`docs/data_archive.md`).
+  15,065 simulations in total. Archived on Zenodo (doi:10.5281/zenodo.24607389) with a data description
+  (`docs/data_archive.md`).
 
 **Analysis**
 - Stability maps and four pre-registered decision rules (R1–R4) on the 9,600 training systems,

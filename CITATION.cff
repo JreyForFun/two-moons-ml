@@ -12,6 +12,10 @@ authors:
   - given-names: "John Rey Ishiguro"
     family-names: "Quizon"
     affiliation: "STI College Legazpi"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.24607389
+    description: "Simulation data (Zenodo)"
 repository-code: "https://github.com/JreyForFun/two-moons-ml"
 license: MIT
 keywords:

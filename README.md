@@ -1,5 +1,8 @@
 # What if Earth had 2 moons?
 
+[![Data DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24607389.svg)](https://doi.org/10.5281/zenodo.24607389)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 What would happen if Earth had a second natural satellite? This project simulates 12,000
 hypothetical second moons with N-body gravity ([REBOUND](https://rebound.readthedocs.io/)),
 starting from the real Sun, Earth and Moon, maps where a second moon can survive, and trains a
@@ -253,8 +256,12 @@ Shared modules used by the scripts above:
 
 ## Data and reproducibility
 
-- Generated data in `data/` is not stored in Git. It is archived with its documentation
-  ([docs/data_archive.md](docs/data_archive.md)) and can be regenerated with the commands above.
+- Generated data in `data/` is not stored in Git. It is archived on Zenodo
+  ([doi:10.5281/zenodo.24607389](https://doi.org/10.5281/zenodo.24607389)) with its documentation ([docs/data_archive.md](docs/data_archive.md)):
+  unzip the archive, copy the files in `simulations/` and the four JSON files in `results/`
+  (`phase3_results`, `compare_pilot`, `survival_curve`, `phase4_analysis`) into `data/`, and the
+  folder `results/phase4/` to `data/phase4/`. `src/predict.py` needs only `data/dataset.csv`.
+  Alternatively, regenerate everything with the commands above.
   The manifests `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json`,
   `configs/twins_1m_manifest.json` and `configs/twins_test_1m_manifest.json` record the SHA-256
   checksum, outcome counts, computing time and package versions of each dataset.
@@ -294,7 +301,8 @@ Starting conditions and reference positions come from the
 
 ## License and citation
 
-Code is released under the [MIT License](LICENSE) and the data under CC BY 4.0. To cite this
+Code is released under the [MIT License](LICENSE) and the data under CC BY 4.0
+([doi:10.5281/zenodo.24607389](https://doi.org/10.5281/zenodo.24607389)). To cite this
 project, use the metadata in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository"
 button).
 

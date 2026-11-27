@@ -784,7 +784,9 @@ manifests, the derived results (including all out-of-fold predictions and the te
 and the run logs, with a data description ([data_archive.md](data_archive.md)) and a `SHA256SUMS`
 file; 83 files, 7.2 MB. The four main data files are checked against the checksums in their
 committed manifests before packaging, and the archive is byte-identical when rebuilt. The data
-are released under CC BY 4.0 and the code under the MIT license.
+are released under CC BY 4.0 and the code under the MIT license. The archive is deposited on
+Zenodo as doi:10.5281/zenodo.24607389; the uploaded file was confirmed byte-identical to the rebuilt archive, and
+the paper cites the dataset in its references (`Quizon2026data`).
 
 ### Communication material
 

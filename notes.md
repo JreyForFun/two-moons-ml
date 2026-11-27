@@ -141,6 +141,7 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - Paper: abstract 288 -> 240 words, UAT keywords, all references verified, compiled locally
   (8 pages, 5 print-size figures, no overfull lines); paper/main.pdf in the repository.
 - Notebooks re-executed from fresh kernels: all 33 text outputs identical to the committed ones.
+- Data archive on Zenodo: doi:10.5281/zenodo.24607389 (83 files, 7.2 MB, CC BY 4.0).
 
 ## Story moments
 

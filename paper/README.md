@@ -1,7 +1,7 @@
 # Paper
 
 *The Fate of a Hypothetical Second Moon of Earth: N-body Simulations and a Machine-Learning
-Surrogate.* Final text; only the dataset DOI remains to be inserted.
+Surrogate.* Final text.
 
 | File | Contents |
 |---|---|
@@ -39,7 +39,7 @@ pdflatex main
 If `aastex631.cls` is missing, download it from the
 [AAS journals author resources](https://journals.aas.org/aastex-package-for-manuscript-preparation/).
 
-Text in red brackets marks the dataset DOI, inserted once the data are archived.
+The dataset is cited as `Quizon2026data` (Zenodo).
 
 ## Status
 
@@ -59,14 +59,14 @@ Text in red brackets marks the dataset DOI, inserted once the data are archived.
 | Keywords (Unified Astronomy Thesaurus) | Done |
 | References verified (volume, pages, DOI) | Done |
 | Research Notes version (1,245 words, abstract 139 words, one figure) | Done |
-| Data DOI | Pending |
+| Data DOI (10.5281/zenodo.24607389) | Done |
 
 ## Before submission
 
 - Check the target venue's current author guidelines, including length, figure limits and
   disclosure requirements.
-- Archive the dataset (for example on Zenodo) and insert its DOI; then
-  `src/check_paper.py --final` must pass.
+- Run `src/check_paper.py --final` (no placeholders allowed) and rebuild with
+  `src/package_paper.py` after any change.
 
 ## Target venues
 

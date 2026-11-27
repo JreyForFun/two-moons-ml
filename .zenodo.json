@@ -18,5 +18,13 @@
     "machine learning",
     "surrogate model",
     "REBOUND"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.24607389",
+      "relation": "isSupplementedBy",
+      "resource_type": "dataset",
+      "scheme": "doi"
+    }
   ]
 }
