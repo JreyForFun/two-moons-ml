@@ -732,7 +732,7 @@ changes, and the test evaluation is not repeated.
 | 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | `a4aec08` |
 | 6.10 | Dataset DOI cited in both papers, README, CITATION.cff and `.zenodo.json`; tag v1.0.0 | `02067b5` |
 | 6.11 | Pre-release audit: figure order, introduction, limitation wording, metadata | `f8b9f3f` |
-| 6.12 | Code documentation: docstrings and comments in `src/` rewritten; code guide (`docs/code_guide.md`) | this step |
+| 6.12 | Code documentation: docstrings and comments in `src/` rewritten; code guide (`docs/code_guide.md`) | `6793df4` |
 
 ### Reproducibility
 
