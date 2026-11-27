@@ -211,6 +211,7 @@ moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms ident
 | `venv\Scripts\python src\plot_paper.py` | Draws the print-size paper figures (`paper/figures/`) |
 | `venv\Scripts\python src\package_paper.py` | Compiles the paper with Tectonic, saves `paper/main.pdf` and the upload bundle `dist/main_upload.zip` (add `rnaas` for the Research Notes version) |
 | `venv\Scripts\python src\package_data.py` | Builds the data archive `dist/two-moons-ml-data-v1.0.zip` (simulations, configurations, results, logs, `SHA256SUMS`), checked against the manifests |
+| `venv\Scripts\python src\make_post_figures.py` | Draws the post images (`figures/post/`) and converts the animation to `figures/two_moons.mp4` |
 
 ### Checks (each prints PASS or FAIL)
 

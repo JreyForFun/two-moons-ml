@@ -181,6 +181,8 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 ## Best figures
 
+- For the post: `figures/post/slide1.png` to `slide5.png` (carousel, also `carousel.pdf`),
+  `figures/post/cover.png`, `figures/two_moons.mp4` (video of the orbits).
 - `figures/stability_map.png`: the headline figure (where second moons survive).
 - `figures/survival_by_direction.png`: beyond the Moon, survivors are almost all retrograde.
 - `figures/outcome_maps.png`: what happens instead, region by region.

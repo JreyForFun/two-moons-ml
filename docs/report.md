@@ -728,7 +728,8 @@ changes, and the test evaluation is not repeated.
 | 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | `22b3d5a` |
 | 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | `5d07f8d` |
 | 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | `2f9a38f` |
-| 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | this step |
+| 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | `1f2484a` |
+| 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | this step |
 
 ### Reproducibility
 
@@ -784,6 +785,14 @@ and the run logs, with a data description ([data_archive.md](data_archive.md)) a
 file; 83 files, 7.2 MB. The four main data files are checked against the checksums in their
 committed manifests before packaging, and the archive is byte-identical when rebuilt. The data
 are released under CC BY 4.0 and the code under the MIT license.
+
+### Communication material
+
+`src/make_post_figures.py` draws five 1080 x 1350 pixel slides and a 1200 x 627 cover that restate
+the main results in plain language (the question, the stability map, chaos, test accuracy, speed),
+with numbers read from the same result files as the paper, and converts the orbit animation to an
+H.264 video. `imageio-ffmpeg` 0.8.1, which bundles ffmpeg, was added to the pinned requirements;
+the newest release (0.8.2, published the day before) was not used.
 
 ---
 

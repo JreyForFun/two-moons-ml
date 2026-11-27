@@ -10,6 +10,7 @@ Color convention: **blue** for the Moon, surviving systems or the reference simu
 | Figure | Phase | Script |
 |---|---|---|
 | [two_moons.gif](#two_moonsgif) | 1 | `src/animate.py` |
+| [two_moons.mp4](#two_moonsgif) | 6 | `src/make_post_figures.py` |
 | [real_moon_orbit.png](#real_moon_orbitpng) | 1 | `src/plot_real_system.py` |
 | [real_moon_error.png](#real_moon_errorpng) | 1 | `src/plot_real_system.py` |
 | [two_moons_distance.png](#two_moons_distancepng) | 1 | `src/plot_single_run.py` |
@@ -55,6 +56,9 @@ figures below.
 
 **Caveats.** Distances are to scale; body sizes are not. The frame is centered on Earth, so
 Earth's motion around the Sun is not shown.
+
+`two_moons.mp4` is the same animation as an H.264 video (20 frames per second, 12 s), made by
+`src/make_post_figures.py` for platforms that do not play GIFs.
 
 ---
 
@@ -610,3 +614,23 @@ full-width map) as vector PDFs with embedded fonts, without titles, since the ca
 | `paper_test_vs_cv.pdf` | [test_vs_cv](#test_vs_cvpng) | Legend below the axes |
 | `paper_speed.pdf` | [speedup](#speeduppng) | No speedup title; the ratios are in the text |
 | `rnaas_figure.pdf` | [stability_map](#stability_mappng) and [test_vs_cv](#test_vs_cvpng) | The single two-panel figure of the Research Notes version |
+
+---
+
+## Post images (`figures/post/`)
+
+Drawn by `src/make_post_figures.py` for a social-media post: five carousel slides of 1080 x 1350
+pixels (`slide1.png` to `slide5.png`, and all five in `carousel.pdf`) and a 1200 x 627 cover
+(`cover.png`). They restate results shown above in plain language, with the same numbers:
+
+| Slide | Content | Source figure |
+|---|---|---|
+| 1 | The question, with 60 days of both orbits | [two_moons.gif](#two_moonsgif) |
+| 2 | Where a second moon survives 100 years | [stability_map](#stability_mappng) |
+| 3 | Share of outcomes changed by a 1 m displacement, by distance | [chaos_profile](#chaos_profilepng) |
+| 4 | Test accuracy of the majority class, the physics rule and the model | [test_vs_cv](#test_vs_cvpng) |
+| 5 | Time per moon for simulation and model | [speedup](#speeduppng) |
+
+Slide 2 labels inclinations in words ("flat", "on its side", "flat, backwards" for 0, 90 and 180
+degrees), and slide 5 compares the model with the median simulation and states the batch speedup
+against the mean simulation, as in the paper.
