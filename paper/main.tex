@@ -1,6 +1,7 @@
 % The fate of a hypothetical second moon of Earth.
 % AASTeX 6.3.1. Build instructions: paper/README.md.
-% Numbers quoted here are printed by src/paper_numbers.py and src/analyze_pilot.py.
+% Numbers quoted here are printed by src/paper_numbers.py and src/analyze_pilot.py;
+% src/check_paper.py checks the structure, limits and headline numbers.
 
 \documentclass[twocolumn]{aastex631}
 
@@ -20,29 +21,26 @@ N-body Simulations and a Machine-Learning Surrogate}
 \affiliation{STI College Legazpi, Legazpi City, Albay, Philippines}
 
 \begin{abstract}
-What would happen if Earth had a second natural satellite? We integrate the Sun, Earth, Moon and
-a hypothetical second moon from real initial conditions (JPL Horizons, DE440) and study 12,000
-randomly drawn second moons spanning $10^{-3}$ to 1 lunar masses and 0.1 to 3 lunar distances,
-on prograde and retrograde orbits, for up to 100 years. The setup reproduces the lunar
-ephemeris to within 10.3~km over one year. In the full sample, 38.0\% of second moons survive
-100 years, 32.0\% are ejected, 27.4\% collide with Earth and 1.4\% collide with the Moon; in
-1.2\% of systems the Moon itself is lost. A controlled pilot study shows that displacing the
-second moon by 1~m changes 12\% of outcomes, setting an empirical limit on predictability.
-Second moons survive mainly on close, low-inclination orbits; near-polar orbits are driven into
-Earth, consistent with Lidov--Kozai cycles, and orbits reaching the Moon's are ejected or collide.
-The Moon, rather than the Sun, sets the outer limit, and nearly all survivors beyond the
-Moon's orbit are retrograde. About a fifth of 100-year survivors are lost by 1,000 years. A Random
-Forest trained on the initial parameters predicts the outcome of 2,400 held-out systems, evaluated
-once under criteria fixed in advance, with 85.1\% accuracy (macro-F1 0.71), matching its
-cross-validated estimate and exceeding a two-variable physics rule (78.9\%) and the majority class
-(38.0\%); its survival probabilities are calibrated (ROC AUC 0.988). Re-simulating systems with a
-1~m displacement leaves about 92\% of outcomes unchanged, and the model's errors concentrate on the
-chaotic systems near the Moon's orbit. The surrogate is 24 times faster than a median simulation per
-prediction and about 80,000 times faster in batches. The dataset and code are publicly available.
+What would happen if Earth had a second natural satellite? Starting from the real Sun, Earth and
+Moon (JPL Horizons, DE440), we integrate 12,000 randomly drawn second moons of $10^{-3}$ to 1 lunar
+masses at 0.1 to 3 lunar distances, on prograde and retrograde orbits, for up to 100 years. The
+setup reproduces the lunar ephemeris to within 10.3~km over one year. Overall, 38.0\% of second
+moons survive 100 years, 32.0\% are ejected, 27.4\% collide with Earth and 1.4\% with the Moon; in
+1.2\% of systems the Moon itself is lost. Survival is concentrated on close orbits near the
+ecliptic plane, prograde or retrograde: near-polar orbits are driven into Earth, consistent with Lidov--Kozai cycles, and orbits reaching
+the Moon's are destabilized. The Moon, rather than the Sun, sets the outer limit, and nearly all
+survivors beyond the Moon's orbit are retrograde. Displacing a second moon by 1~m changes about 8\%
+of outcomes, an empirical limit on predictability. A Random Forest trained on the initial parameters
+predicts the outcome of 2,400 held-out systems, evaluated once under criteria fixed in advance,
+with 85.1\% accuracy (macro-F1 0.71), matching cross-validation and exceeding a two-variable physics
+rule (78.9\%). Its survival probabilities are calibrated (ROC AUC 0.988), and its errors concentrate
+on chaotic systems near the Moon's orbit. The surrogate is 24 times faster than a median simulation
+per prediction and about 80,000 times faster in batches. The dataset and code are publicly
+available.
 \end{abstract}
 
-\keywords{Natural satellites (Solar system) --- Orbital dynamics --- N-body simulations ---
-Astronomy data analysis \pending{add Unified Astronomy Thesaurus identifiers}}
+\keywords{Natural satellites (Solar system) (1089) --- Natural satellite dynamics (2212) ---
+Earth-moon system (436) --- Astronomical simulations (1857) --- Astronomy data analysis (1858)}
 
 \section{Introduction} \label{sec:intro}
 
@@ -55,14 +53,22 @@ question of orbital stability in a system perturbed by both the Moon and the Sun
 For satellites of planets, the Sun's tidal field limits stable orbits to a fraction of the
 planet's Hill radius, with retrograde orbits remaining stable to larger distances than prograde
 ones \citep{Domingos2006, Shen2008}. Near the Moon, mutual perturbations and close encounters add
-further instabilities. Mapping these outcomes requires many direct N-body integrations, each of
-which can take minutes when close encounters force small time steps.
+further instabilities. N-body simulations of packed systems of equal-mass moons around an
+Earth-mass planet find that only a few Moon-mass satellites can coexist stably
+\citep{Satyal2022}. Here we ask instead what happens to a single additional moon of the present
+Earth--Moon system, drawn over a wide range of masses and orbits, with the real Moon and Sun as
+perturbers. Mapping these outcomes requires many direct N-body integrations, each of which can take
+minutes when close encounters force small time steps.
 
-Machine-learning surrogates offer a faster alternative. \citet{Tamayo2020} showed that a
-classifier trained on short integrations predicts the long-term stability of compact planetary
-systems orders of magnitude faster than direct integration. Here we apply a similar approach to a
-hypothetical second moon of Earth. We (i) validate an N-body setup against the real lunar
-ephemeris, (ii) quantify the sensitivity of outcomes to numerical tolerance, initial conditions
+Machine-learning surrogates offer a faster alternative. \citet{Tamayo2016} showed that classifiers
+trained on N-body integrations can predict the stability of tightly packed planetary systems;
+\citet{Tamayo2020} extended this to a classifier that predicts long-term stability from short
+integrations orders of magnitude faster than direct integration, and \citet{Cranmer2021} to
+probabilistic predictions of instability times with a Bayesian neural network.
+\citet{Pinheiro2025} used gradient-boosted trees to map stable orbits of test particles around a
+planet. To our knowledge, the fate of a hypothetical second moon of the Earth--Moon system has not
+been mapped or emulated in this way. We apply a similar approach to that problem: we (i) validate
+an N-body setup against the real lunar ephemeris, (ii) quantify the sensitivity of outcomes to numerical tolerance, initial conditions
 and start date in a pilot study, (iii) generate a reproducible dataset of 12,000 integrations, and
 (iv) train surrogate models that predict the outcome from the initial parameters.
 
@@ -176,8 +182,8 @@ and of direct integration was measured in a single process on the same computer.
 
 \subsection{Validation}
 
-Over one year, the simulated Moon remains within 10.3~km of the Horizons ephemeris (mean 5.6~km,
-about 0.003\% of the Earth--Moon distance; Figure~\ref{fig:validation}), and its mean orbital
+Over one year, the simulated Moon remains within 10.3~km of the Horizons ephemeris (about
+0.003\% of the Earth--Moon distance; mean 5.6~km; Figure~\ref{fig:validation}), and its mean orbital
 period differs by 0.6~s. Omitting the Sun increases the maximum error to 55,535~km. The
 relative energy error stays at the $10^{-15}$ level.
 
@@ -352,8 +358,8 @@ inside 0.31 lunar distances. Ranked by confidence, the most confident half of th
 is 98.2\% correct.
 
 A single prediction takes 0.11~s and a batch prediction 133~$\mu$s per system, against a median of
-2.7~s and a mean of 10.7~s for a direct integration (about 20~s for survivors, which run the full
-100 years). The surrogate is therefore 24 times faster than the median integration for single
+2.7~s and a mean of 10.7~s for a direct integration (a median of about 20~s for survivors, which
+run the full 100 years). The surrogate is therefore 24 times faster than the median integration for single
 predictions and about 80,000 times faster than the mean in batches; including the 20.8 CPU-hours of
 training simulations, it pays off after about 7,000 predictions.
 
@@ -365,7 +371,8 @@ predict every outcome. This bound is indicative rather than strict, since an opt
 that predicts the most probable outcome can exceed the agreement between two noisy realizations.
 The surrogate approaches it: its errors are concentrated on the systems whose outcome a 1~m nudge
 changes, and the nearly flat learning curve shows that more simulations of the same kind would
-help little. The same holds for collisions with the Moon, the hardest outcome to predict.
+help little. Moon interactions, the hardest class, are both rare (254 training systems) and
+confined to this chaotic region, which limits their recall.
 Because the input set was chosen on the training data, the cross-validated scores could be
 optimistic; the held-out test scores, nearly identical to them, show that this optimism is small.
 In practice, the surrogate's confidence suggests a hybrid strategy: accept its confident
@@ -393,14 +400,16 @@ The physical model has several limitations. Bodies interact through Newtonian po
 tides, Earth's oblateness, general relativity and the other planets are omitted. These effects
 are small over the 100-year integrations, as the validation error shows, but they would matter
 over longer timescales and for orbits close to Earth. ``Survived'' denotes survival for 100 years,
-not long-term stability; in the pilot, the surviving fraction was still declining at that limit.
+not long-term stability: about a fifth of the 100-year survivors integrated further were lost by
+1,000 years.
 Finally, a single start date is used, supported by a 30-system test.
 
 \section{Conclusions} \label{sec:conclusions}
 
 We simulated 12,000 hypothetical second moons of Earth, starting from the real Sun--Earth--Moon
 system, and trained a surrogate model to predict their fate. Three conclusions follow. First, a
-second moon survives a century mainly on a close, low-inclination orbit: near-polar orbits are driven
+second moon survives a century mainly on a close orbit near the ecliptic plane, prograde or
+retrograde: near-polar orbits are driven
 into Earth, orbits reaching the Moon's are destabilized, and beyond the Moon's orbit nearly all
 survivors are retrograde. The Moon, rather than the Sun, sets the outer limit. Second, a Random
 Forest predicts these outcomes from the initial parameters alone with 85\% accuracy on held-out
@@ -414,15 +423,17 @@ integrations to refine the long-term survival estimate.
 \section*{Data availability}
 
 Code, configuration files and the dataset manifest (including the SHA-256 checksum of the dataset)
-are available at \url{https://github.com/JreyForFun/two-moons-ml} under the MIT license. The dataset is archived at \pending{Zenodo DOI} and can be
-regenerated from the code.
+are available at \url{https://github.com/JreyForFun/two-moons-ml} under the MIT license. The
+dataset is archived at \pending{Zenodo DOI} and can be regenerated from the code.
 
 \begin{acknowledgments}
-This work made use of the JPL Horizons on-line solar system data service.
+This work made use of the JPL Horizons on-line solar system data service. The author used an AI
+assistant (Claude, Anthropic) for help with code development and manuscript drafting; all
+analyses, results and text were reviewed and verified by the author.
 \end{acknowledgments}
 
 \software{REBOUND \citep{Rein2012}, scikit-learn \citep{Pedregosa2011}, XGBoost \citep{Chen2016},
-astroquery \citep{Ginsburg2019}, Astropy \citep{Astropy2022},
+pandas \citep{pandas}, astroquery \citep{Ginsburg2019}, Astropy \citep{Astropy2022},
 NumPy \citep{Harris2020}, Matplotlib \citep{Hunter2007}}
 
 \bibliography{references}{}

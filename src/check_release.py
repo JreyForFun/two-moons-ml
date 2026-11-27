@@ -26,6 +26,9 @@ DOCS = ["README.md", "notes.md", "docs/report.md", "docs/questions.md", "docs/fi
 STALE = [r"(?i)phase 5 next", r"(?i)results so far", r"(?i)checked in phase 5",
          r"(?i)until the phase 5", r"(?i)await the phase 5", r"(?i)\bso far:"]
 BANNED_VARIANTS = ["81,000", "80,521", "7,100 predictions", "7,055 predictions"]
+DISCLOSURE = ("The author used an AI assistant (Claude, Anthropic) for help with code development "
+              "and manuscript drafting; all analyses, results and text were reviewed and verified "
+              "by the author.")
 
 
 def git(*args):
@@ -114,8 +117,9 @@ def check_wording():
     for rel in allowed:
         path = ROOT / rel
         if path.exists():
-            hits = [line for line in path.read_text(encoding="utf-8").splitlines() if pattern.search(line)]
-            if any("AI assistant" not in line for line in hits) or len(hits) > 2:
+            text = " ".join(path.read_text(encoding="utf-8").split())
+            rest = text.replace(DISCLOSURE, "", 1)
+            if pattern.search(rest):
                 problems.append(f"{rel}: AI wording outside the disclosure sentence")
     return not problems, "no stale phrases or wording issues" if not problems else "; ".join(problems[:6])
 

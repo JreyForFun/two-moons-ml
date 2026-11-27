@@ -21,7 +21,7 @@ Model scores are confirmed on the held-out test set (Phase 5) unless marked cros
 | 1 | The simulation reproduces the real Moon, and the Sun is essential | 10.3 km error after one year; 55,535 km without the Sun | Verified | [real_moon_error](figures.md#real_moon_errorpng) |
 | 2 | Most random second moons do not last; the share depends on the sampling design | 38.0% survive 100 years (29.7% with isotropic inclinations); 32.0% ejected; 27.4% hit Earth | Verified | [stability_map](figures.md#stability_mappng) |
 | 3 | Chaos limits predictability, mainly near the Moon's orbit | A 1 m nudge changes 7.7% of outcomes (20.3% at 0.55–0.97 lunar distances, none inside 0.31) | Verified (1,500 twins) | [chaos_profile](figures.md#chaos_profilepng) |
-| 4 | Survival requires a close, low-inclination orbit | 96.5% survive inside 0.5 lunar distances below 45° or above 135° inclination; 3.0% of Moon-crossing orbits survive | Descriptive (maps reproducible, r = 0.99) | [stability_map_eccentricity](figures.md#stability_map_eccentricitypng) |
+| 4 | Survival is concentrated on close orbits near the ecliptic plane, prograde or retrograde | 96.5% survive inside 0.5 lunar distances below 45° or above 135° inclination; 3.0% of Moon-crossing orbits survive | Descriptive (maps reproducible, r = 0.99) | [stability_map_eccentricity](figures.md#stability_map_eccentricitypng) |
 | 5 | Near-polar orbits are driven into Earth, consistent with Lidov–Kozai cycles | 99.1% of close near-polar moons collide with Earth | Descriptive; mechanism inferred | [outcome_maps](figures.md#outcome_mapspng) |
 | 6 | The Moon, not the Sun, sets the outer limit; beyond it, survivors are almost all retrograde | Both directions drop below 10% survival at 0.22 Hill radii; beyond the Moon 11.4% retrograde vs 0.3% prograde survive | R2 not met (edge); difference descriptive | [survival_by_direction](figures.md#survival_by_directionpng) |
 | 7 | Heavier second moons survive less, partly by destabilizing the Moon | 30.9% vs 42.3% survival (heaviest vs lightest bin); Moon lost in 7.4% vs 0% | R3 met | — |
@@ -707,6 +707,53 @@ indicate that the selection optimism noted in Phase 4 is small.
 - The planned size of the committed predictions file (about 150 KB) was underestimated; including
   the input columns needed for the failure analysis, it is 1.2 MB.
 - Speedups are quoted to two significant figures; the timing ratios are not more precise.
+
+---
+
+## Phase 6: release, final paper and archive (2026-11-28)
+
+**Objective:** a repository that can be installed, understood and reproduced by others, a
+submission-ready paper, and an archived release. Results are frozen: no file under `results/` and
+none of `configs/split.json`, `configs/selected_model.json` or `configs/phase5_protocol.json`
+changes, and the test evaluation is not repeated.
+
+### Work
+
+| Step | Content | Commit |
+|---|---|---|
+| 6.1 | Release checklist as code (`src/check_release.py`): frozen results, links, imports, run-table coverage, documented figures, wording, headline numbers across documents | `f14b7aa` |
+| 6.2 | Fresh-clone test (`src/check_fresh_clone.py`); README section on reproducing everything | `47fca00`, this step |
+| 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | this step |
+
+### Reproducibility
+
+The fresh-clone test clones the public repository into a temporary folder, creates a new virtual
+environment, installs `requirements.txt` and runs the eight checks that need no generated data;
+all pass, and `src/predict.py` explains how to obtain the data when it is missing. Regenerating
+every result requires about 44 CPU-hours of simulation (dataset 20.8, 1,000-year survivors 17.9,
+chaos twins 2.7 and 1.6, pilot runs 0.7, speed benchmark 0.3). Regenerated data files reproduce
+the archived inputs, outcomes and survival times, but not their checksums, because rows are
+written in completion order and include each run's computing time.
+
+### Paper
+
+- All references were checked against the publisher records (volume, pages, DOI); DOIs were
+  added for Domingos et al. (2006) and Shen & Tremaine (2008), and pandas was added to the
+  software citations.
+- Related work added: N-body moon packing around an Earth-mass planet (Satyal et al. 2022), the
+  first machine-learned stability classifier (Tamayo et al. 2016), instability-time prediction
+  with a Bayesian neural network (Cranmer et al. 2021) and gradient-boosted maps of stable orbits
+  around planets (Pinheiro et al. 2025). No prior study of a second moon of the present
+  Earth–Moon system was found, so the novelty statement is qualified ("to our knowledge").
+- Keywords carry Unified Astronomy Thesaurus identifiers (1089, 2212, 436, 1857, 1858).
+- The abstract was shortened from 288 to 233 words (limit 250). It now quotes the chaos limit
+  from the 1,500 chaos twins (about 8%) rather than the 100-system pilot (12%).
+- Wording corrections: survival is "concentrated on close orbits near the ecliptic plane,
+  prograde or retrograde" rather than "requires a close, low-inclination orbit"; the 0.003%
+  validation error refers to the maximum, not the mean; the survivor simulation time is a median.
+- `src/check_paper.py` checks citations, labels, figure files, balanced environments, the
+  abstract length, placeholders and 32 headline numbers recomputed from the committed result files
+  and manifests. Only the dataset DOI placeholder remains.
 
 ---
 

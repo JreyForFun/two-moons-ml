@@ -21,8 +21,10 @@ Phase 6, final cleanup and write-up.
 - **12,000 random second moons**, from 0.001 to 1 lunar masses and 0.1 to 3 lunar distances,
   prograde and retrograde, each followed for up to 100 years: 38.0% survive, 32.0% are ejected,
   27.4% collide with Earth, 1.4% collide with the Moon, and in 1.2% the Moon itself is lost.
-- **Chaos limits prediction:** moving a second moon by 1 meter changes 12% of outcomes.
-- **Where second moons survive:** close, low-inclination orbits (96.5% survive). Near-polar
+- **Chaos limits prediction:** moving a second moon by 1 meter changes about 8% of outcomes
+  (7.7% of 1,500 re-simulated moons; 12% in the 100-moon pilot).
+- **Where second moons survive:** close orbits near the ecliptic plane, prograde or retrograde
+  (96.5% survive inside 0.5 lunar distances). Near-polar
   orbits are driven into Earth (99.1%), consistent with Lidov–Kozai cycles; orbits reaching the
   Moon's are ejected or collide. Beyond the Moon's orbit, survivors are almost all retrograde (11.4% of
   retrograde vs 0.3% of prograde moons survive).
@@ -85,6 +87,37 @@ venv/bin/python -m pip install -r requirements.txt
 Run from the project folder. On macOS / Linux use `venv/bin/python` and `/` instead of
 `venv\Scripts\python` and `\`. Long batch runs can be stopped and resumed by running the same
 command again.
+
+### Reproducing everything
+
+The code installs and runs from a fresh clone: `src/check_fresh_clone.py` clones the repository,
+installs `requirements.txt` into a new virtual environment and runs every check that needs no
+generated data. Regenerating all results from scratch takes about 44 CPU-hours of simulation,
+or about 11 hours with 4 workers. Run the phase tables below in order; steps marked "run once"
+fix a selection with a stored seed and need not be repeated. The four large simulation batches are:
+
+| Output | Moons | CPU-hours |
+|---|---:|---:|
+| `data/dataset.csv` | 12,000 | 20.8 |
+| `data/survivors_1000yr.csv` | 500 | 17.9 |
+| `data/twins_1m.csv` | 1,500 | 2.7 |
+| `data/twins_test_1m.csv` | 600 | 1.6 |
+
+The pilot runs and the speed benchmark add about 1 CPU-hour, and model training and analysis a
+further 1 to 2 hours. SHA-256 checksums of the archived data files:
+
+```text
+37add84e980602cc1c652cf3bdb596812212527ca230a6d64f5da07f7329e01d  data/dataset.csv
+b9757c5389e8523acb531f4f6e00b87ca55a0a4bf6e39221bef7dde512b40bef  data/survivors_1000yr.csv
+e7cc6ee3e50645b43811e353b74795d14edfbf693b72aeeebc916bc6ea35b298  data/twins_1m.csv
+b4960d4d7aa4d36a2bd1815583cce8a558ba7d2269d32ecc099a27faec83bec9  data/twins_test_1m.csv
+```
+
+They are also recorded, with outcome counts and package versions, in the
+`configs/*_manifest.json` files, and identify the archived files exactly. A regenerated file contains the same moons and the same outcomes and
+survival times, but its rows are written in the order the simulations finish and it records each
+run's computing time, so its checksum differs. Compare regenerated files with the archived ones by
+moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms identical outcomes.
 
 ### Phase 1: setup and validation
 
@@ -165,6 +198,7 @@ command again.
 | `venv\Scripts\python src\check_evaluation.py` | Phase 5 safeguards: test access, frozen criteria, determinism, dry run, prediction tool |
 | `venv\Scripts\python src\check_release.py` | Release checklist: frozen results, links, imports, wording, consistent numbers |
 | `venv\Scripts\python src\check_fresh_clone.py` | Installs and tests the project from a fresh clone of GitHub (needs internet) |
+| `venv\Scripts\python src\check_paper.py` | The paper: citations, references, figures, length limits, headline numbers against the result files |
 
 ## Code layout
 

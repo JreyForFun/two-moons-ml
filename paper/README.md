@@ -9,7 +9,8 @@ Machine-Learning Surrogate.*
 | `references.bib` | Bibliography |
 
 Figures are read from the repository's `figures/` folder. Every number in the text is printed by
-`src/paper_numbers.py` or `src/analyze_pilot.py`.
+`src/paper_numbers.py` or `src/analyze_pilot.py`, and `src/check_paper.py` checks citations,
+references, figure files, length limits and the headline numbers against the result files.
 
 ## Building
 
@@ -29,32 +30,33 @@ pdflatex main
 If `aastex631.cls` is missing, download it from the
 [AAS journals author resources](https://journals.aas.org/aastex-package-for-manuscript-preparation/).
 
-Text in red brackets marks content that depends on later phases.
+Text in red brackets marks the dataset DOI, inserted once the data are archived.
 
 ## Status
 
 | Section | Status |
 |---|---|
-| Abstract | Drafted |
-| Introduction | Drafted |
-| Methods: simulation, sampling, outcomes, pilot | Drafted |
-| Methods: surrogate models | Drafted |
-| Methods: exploration (test split, decision rules R1–R4) | Drafted |
-| Results: validation, pilot, dataset | Drafted |
-| Results: stability maps, pilot gap, long-term survival | Drafted |
-| Results: surrogate performance, held-out test set, speed | Drafted |
-| Discussion | Drafted |
-| Conclusions | Drafted |
+| Abstract (233 words) | Final |
+| Introduction, including related work | Final |
+| Methods: simulation, sampling, outcomes, pilot | Edited |
+| Methods: surrogate models | Edited |
+| Methods: exploration (test split, decision rules R1–R4) | Edited |
+| Results: validation, pilot, dataset | Edited |
+| Results: stability maps, pilot gap, long-term survival | Edited |
+| Results: surrogate performance, held-out test set, speed | Edited |
+| Discussion | Edited |
+| Conclusions | Edited |
 | Author and affiliation | Done |
+| Keywords (Unified Astronomy Thesaurus) | Done |
+| References verified (volume, pages, DOI) | Done |
 | Data DOI | Pending |
 
 ## Before submission
 
-- Confirm the volume and pages of `Domingos2006` on ADS.
-- Add Unified Astronomy Thesaurus identifiers to the keywords.
 - Check the target venue's current author guidelines, including length, figure limits and
   disclosure requirements.
-- Archive the dataset (for example on Zenodo) and insert its DOI.
+- Archive the dataset (for example on Zenodo) and insert its DOI; then
+  `src/check_paper.py --final` must pass.
 
 ## Target venues
 

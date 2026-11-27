@@ -250,3 +250,12 @@ performance, limitations and known failure modes.
 **Seed variability.** The spread of results caused only by the random seed of a stochastic model,
 such as a Random Forest. Fixing the primary seed in advance and reporting the spread over other
 seeds separates real effects from luck.
+
+## Release and publication
+
+**Fresh-clone test.** Installing and running a project from its public repository in a new folder
+and a new environment, exactly as an outside reader would; it exposes missing files, unpinned
+packages and dependence on the author's computer.
+
+**Unified Astronomy Thesaurus (UAT).** The controlled vocabulary of astronomy concepts, each with a
+numeric identifier, that AAS journals require for manuscript keywords.
