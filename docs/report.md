@@ -729,7 +729,7 @@ changes, and the test evaluation is not repeated.
 | 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | `5d07f8d` |
 | 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | `2f9a38f` |
 | 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | `1f2484a` |
-| 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | this step |
+| 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | `a4aec08` |
 
 ### Reproducibility
 
