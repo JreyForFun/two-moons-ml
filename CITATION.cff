@@ -1,6 +1,13 @@
 cff-version: 1.2.0
 message: "If you use this software or its data, please cite it as below."
 title: "What if Earth had 2 moons? N-body simulations and a machine-learning surrogate for second-moon stability"
+version: 1.0.0
+date-released: 2026-11-28
+abstract: >-
+  N-body simulations of 12,000 hypothetical second moons of Earth, integrated with the real Sun,
+  Earth and Moon for up to 100 years, and a Random Forest surrogate that predicts their fate
+  (survival, ejection, collision with Earth, or interaction with the Moon) from the initial
+  orbital elements.
 authors:
   - given-names: "John Rey Ishiguro"
     family-names: "Quizon"

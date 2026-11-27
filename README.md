@@ -187,6 +187,7 @@ moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms ident
 |---|---|
 | `venv\Scripts\python src\plot_paper.py` | Draws the print-size paper figures (`paper/figures/`) |
 | `venv\Scripts\python src\package_paper.py` | Compiles the paper with Tectonic, saves `paper/main.pdf` and the upload bundle `dist/main_upload.zip` (add `rnaas` for the Research Notes version) |
+| `venv\Scripts\python src\package_data.py` | Builds the data archive `dist/two-moons-ml-data-v1.0.zip` (simulations, configurations, results, logs, `SHA256SUMS`), checked against the manifests |
 
 ### Checks (each prints PASS or FAIL)
 
@@ -228,8 +229,8 @@ Shared modules used by the scripts above:
 
 ## Data and reproducibility
 
-- Generated data in `data/` is not stored in Git; every file can be regenerated with the commands
-  above. `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json` and
+- Generated data in `data/` is not stored in Git. It is archived with its documentation
+  ([docs/data_archive.md](docs/data_archive.md)) and can be regenerated with the commands above. `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json` and
   `configs/twins_1m_manifest.json`, `configs/twins_test_1m_manifest.json` record the
   SHA-256 checksum, outcome counts, computing time and package versions of each dataset.
 - Every random draw uses a fixed seed stored in its configuration file, and every second moon has

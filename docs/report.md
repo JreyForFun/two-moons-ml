@@ -726,7 +726,8 @@ changes, and the test evaluation is not repeated.
 | 6.3 | All four notebooks re-executed from fresh kernels; every text output identical to the committed version | `22b3d5a` |
 | 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | `494d5d4` |
 | 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | `22b3d5a` |
-| 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | this step |
+| 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | `5d07f8d` |
+| 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | this step |
 
 ### Reproducibility
 
@@ -772,6 +773,16 @@ written in completion order and include each run's computing time.
   total (counted from the source and, independently, from the compiled PDF) and one two-panel
   figure: the stability map and the test-versus-cross-validation comparison. Its headline
   numbers are checked against the result files like those of the full paper.
+
+### Archive
+
+`src/package_data.py` builds the data archive for Zenodo: the 14,960 simulated systems in nine
+batch files, the 1,000-year run of the first second moon, the run records, configurations and
+manifests, the derived results (including all out-of-fold predictions and the test-set results)
+and the run logs, with a data description ([data_archive.md](data_archive.md)) and a `SHA256SUMS`
+file; 83 files, 7.2 MB. The four main data files are checked against the checksums in their
+committed manifests before packaging, and the archive is byte-identical when rebuilt. The data
+are released under CC BY 4.0 and the code under the MIT license.
 
 ---
 
