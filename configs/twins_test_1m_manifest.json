@@ -1,0 +1,50 @@
+{
+  "description": "Chaos twins: 600 random test moons of the dataset displaced by 1 m (selection seed 20261205)",
+  "created": "2026-11-28",
+  "data_file": "data/twins_test_1m.csv",
+  "data_sha256": "b4960d4d7aa4d36a2bd1815583cce8a558ba7d2269d32ecc099a27faec83bec9",
+  "data_bytes": 178253,
+  "rows": 600,
+  "config_file": "configs/twins_test_1m.json",
+  "config_sha256": "3e324692f1ad872642c2358e983f6c381ee5a302f37648bc952896bae4e1ef2c",
+  "state_file": "configs/initial_state.json",
+  "state_sha256": "9b4b825e365338754970c65ada845019f186849ac0d4a276cc63d0745ddd9f77",
+  "fingerprint": "151a6a400d8622a9",
+  "labels": {
+    "survived": 235,
+    "hit_earth": 151,
+    "hit_moon": 5,
+    "ejected": 198,
+    "moon_lost": 11,
+    "other": 0,
+    "timeout": 0,
+    "error": 0
+  },
+  "censored_note": "survived = still there at the time limit (lasted at least that long)",
+  "computing": {
+    "cpu_hours": 1.58,
+    "median_s_per_moon": 2.288,
+    "largest_s": 64.269,
+    "started": "2026-11-28 00:02",
+    "finished": "2026-11-28 00:26",
+    "workers": 4,
+    "times_started": 1
+  },
+  "environment": {
+    "python": "3.14.6",
+    "system": "Windows 11",
+    "machine": "AMD64",
+    "packages": {
+      "rebound": "5.2.3",
+      "astroquery": "0.4.11",
+      "astropy": "8.0.3",
+      "numpy": "2.5.5",
+      "matplotlib": "3.11.2",
+      "pillow": "13.0.0",
+      "jupyter": "1.1.1",
+      "pandas": "3.1.1"
+    },
+    "full_list": "requirements-lock.txt",
+    "full_list_sha256": "16aeb8e553b7002a9c87e58227297a3a7ce549a6faf46a5f5d896e2abd15f39c"
+  }
+}

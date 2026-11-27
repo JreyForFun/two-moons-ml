@@ -222,3 +222,31 @@ with different outcomes measures how much of the outcome is decided by chaos.
 
 **Selection optimism.** Any choice made with the same data that measures performance can make the
 measured score slightly too favorable; an untouched test set removes this bias.
+
+**Held-out evaluation.** Scoring a model once on data that played no part in any choice: not in
+training, tuning, feature selection or model selection. It gives the unbiased estimate of
+performance on new cases.
+
+**Provenance.** The record of exactly which code, data and settings produced a result, here the
+Git commit, file checksums and time stored with the test results.
+
+**Amendment before unblinding.** A change to the evaluation criteria made before the held-out data
+are opened, documented with its reason. Changes made after seeing the data are not legitimate.
+
+**Latency and throughput.** Latency is the time for a single prediction; throughput is the number
+of predictions per unit time when many are made together. Batch prediction is usually much faster
+per case.
+
+**Break-even point.** The number of predictions after which a surrogate model has saved more
+computing time than its training data cost to generate.
+
+**Coverage-accuracy curve.** Accuracy on the most confident predictions, as a function of the
+share of cases kept (the coverage). It shows how much accuracy improves if the model may abstain
+on its least confident cases.
+
+**Model card.** A short standard document describing a model's intended use, training data,
+performance, limitations and known failure modes.
+
+**Seed variability.** The spread of results caused only by the random seed of a stochastic model,
+such as a Random Forest. Fixing the primary seed in advance and reporting the spread over other
+seeds separates real effects from luck.

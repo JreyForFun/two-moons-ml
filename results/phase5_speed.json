@@ -1,0 +1,661 @@
+{
+  "machine": {
+    "system": "Windows 11",
+    "processor": "AMD64 Family 23 Model 104 Stepping 1, AuthenticAMD",
+    "python": "3.14.6"
+  },
+  "model": {
+    "training_seconds": 44.0769037,
+    "latency_median_s": 0.11103459999958432,
+    "latency_mean_s": 0.11172183649998534,
+    "batch_moons": 2400,
+    "batch_seconds": 0.31937870000001567,
+    "batch_per_moon_s": 0.00013307445833333988
+  },
+  "simulation": {
+    "moons": 100,
+    "median_s": 2.6668973999999253,
+    "mean_s": 10.715285278000001,
+    "by_outcome": {
+      "ejected": {
+        "moons": 29,
+        "median_s": 0.2489437000003818,
+        "mean_s": 0.6553585689656255
+      },
+      "hit_earth": {
+        "moons": 25,
+        "median_s": 0.810431900000367,
+        "mean_s": 3.135654323999952
+      },
+      "hit_moon": {
+        "moons": 5,
+        "median_s": 0.13298130000021047,
+        "mean_s": 0.18276778000017657
+      },
+      "moon_lost": {
+        "moons": 2,
+        "median_s": 1.096517699999822,
+        "mean_s": 1.096517699999822
+      },
+      "survived": {
+        "moons": 39,
+        "median_s": 19.705571899999995,
+        "mean_s": 24.89807427948712
+      }
+    },
+    "all_outcomes_reproduced": true,
+    "runs": [
+      {
+        "id": 317,
+        "seconds": 14.46481059999951,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 325,
+        "seconds": 0.2489437000003818,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 540,
+        "seconds": 6.999397099999442,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 667,
+        "seconds": 0.0693727999996554,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 692,
+        "seconds": 51.73896500000046,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 799,
+        "seconds": 23.625605299999734,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 851,
+        "seconds": 0.031032300000333635,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 914,
+        "seconds": 8.704029900000023,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 1073,
+        "seconds": 0.104468800000177,
+        "label": "hit_moon",
+        "matches_dataset": true
+      },
+      {
+        "id": 1136,
+        "seconds": 0.3020574000001943,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 1145,
+        "seconds": 2.0835847999996986,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 1259,
+        "seconds": 0.06562450000001263,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 1398,
+        "seconds": 32.805428500000744,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 1759,
+        "seconds": 0.38467279999986204,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 1780,
+        "seconds": 5.068197300000065,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 1956,
+        "seconds": 0.26548770000044897,
+        "label": "hit_moon",
+        "matches_dataset": true
+      },
+      {
+        "id": 2359,
+        "seconds": 5.666041399999813,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 2629,
+        "seconds": 10.517947399999684,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 2704,
+        "seconds": 1.867047900000216,
+        "label": "moon_lost",
+        "matches_dataset": true
+      },
+      {
+        "id": 2736,
+        "seconds": 19.567116999999598,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 2808,
+        "seconds": 0.5395638999998482,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 2916,
+        "seconds": 0.05470010000044567,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 2963,
+        "seconds": 0.13047689999984868,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 3016,
+        "seconds": 3.8729487999999037,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 3067,
+        "seconds": 0.11182250000001659,
+        "label": "hit_moon",
+        "matches_dataset": true
+      },
+      {
+        "id": 3071,
+        "seconds": 5.368595200000527,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 3257,
+        "seconds": 10.138676999999916,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 3405,
+        "seconds": 2.512883800000054,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 3434,
+        "seconds": 4.402467599999909,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 3467,
+        "seconds": 0.3259874999994281,
+        "label": "moon_lost",
+        "matches_dataset": true
+      },
+      {
+        "id": 3485,
+        "seconds": 0.600914599999669,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 3678,
+        "seconds": 0.13298130000021047,
+        "label": "hit_moon",
+        "matches_dataset": true
+      },
+      {
+        "id": 3717,
+        "seconds": 12.692578400000457,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 4251,
+        "seconds": 0.6515935999996145,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 4290,
+        "seconds": 0.0684891000000789,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 4423,
+        "seconds": 0.03705950000039593,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 4438,
+        "seconds": 24.968355399999382,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 4508,
+        "seconds": 0.9865336000002571,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 4523,
+        "seconds": 22.494802499999423,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 4578,
+        "seconds": 28.5723825999994,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 4686,
+        "seconds": 0.5592418999995061,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 4834,
+        "seconds": 0.29907860000002984,
+        "label": "hit_moon",
+        "matches_dataset": true
+      },
+      {
+        "id": 4838,
+        "seconds": 31.118412999999236,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 4943,
+        "seconds": 0.4604592000005141,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 4993,
+        "seconds": 0.7404329999999391,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 5063,
+        "seconds": 0.04308560000026773,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 5104,
+        "seconds": 50.06386419999944,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 5137,
+        "seconds": 39.54130139999961,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 5141,
+        "seconds": 0.043948700000328245,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 5227,
+        "seconds": 43.51583860000028,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 5295,
+        "seconds": 7.758960900000602,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 5799,
+        "seconds": 0.030851999999867985,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 5967,
+        "seconds": 7.744329600000128,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 5992,
+        "seconds": 2.9504896000007648,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 6225,
+        "seconds": 13.850837899999533,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 6487,
+        "seconds": 19.705571899999995,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 6551,
+        "seconds": 2.8209109999997963,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 6723,
+        "seconds": 0.810431900000367,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 6798,
+        "seconds": 15.514187500000844,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 7216,
+        "seconds": 0.030912199999875156,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 7669,
+        "seconds": 16.54055160000007,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 7780,
+        "seconds": 28.079571400000532,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 7941,
+        "seconds": 31.596459499999582,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 7963,
+        "seconds": 6.310441799999353,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 8526,
+        "seconds": 50.09275440000056,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 8537,
+        "seconds": 4.364148999999998,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 8572,
+        "seconds": 51.85120740000002,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 8696,
+        "seconds": 0.7479407999999239,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 8743,
+        "seconds": 0.36993189999975584,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 8813,
+        "seconds": 10.643919299999652,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 8837,
+        "seconds": 0.3004602999999406,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 8871,
+        "seconds": 1.4195356000000174,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 8878,
+        "seconds": 0.38062300000001414,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 8920,
+        "seconds": 0.2133573000000979,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 9010,
+        "seconds": 11.179533100000299,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 9223,
+        "seconds": 0.017195400000673544,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 9243,
+        "seconds": 7.702993699999752,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 9252,
+        "seconds": 19.531614399999853,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 9288,
+        "seconds": 0.08779070000036882,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 9316,
+        "seconds": 51.88584869999977,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 9413,
+        "seconds": 8.694598899999619,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 9419,
+        "seconds": 0.22732210000049236,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 9424,
+        "seconds": 0.12057919999915612,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 9678,
+        "seconds": 16.36673570000039,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 9881,
+        "seconds": 0.5708091000005879,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 9889,
+        "seconds": 7.720552599999792,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 9957,
+        "seconds": 0.024789399999463058,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 10011,
+        "seconds": 0.07912070000020321,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 10113,
+        "seconds": 15.371730299999399,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 10374,
+        "seconds": 30.388922000000093,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 10390,
+        "seconds": 2.4514631000001827,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 10428,
+        "seconds": 53.041693099999975,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 10915,
+        "seconds": 10.318330600000081,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 10993,
+        "seconds": 32.7764573000004,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 11157,
+        "seconds": 0.9617515999998432,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 11700,
+        "seconds": 56.377272200000334,
+        "label": "survived",
+        "matches_dataset": true
+      },
+      {
+        "id": 11804,
+        "seconds": 0.6919204000005266,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 11879,
+        "seconds": 0.08132250000016938,
+        "label": "ejected",
+        "matches_dataset": true
+      },
+      {
+        "id": 11959,
+        "seconds": 0.9540422999998555,
+        "label": "hit_earth",
+        "matches_dataset": true
+      },
+      {
+        "id": 11996,
+        "seconds": 0.1464405999995506,
+        "label": "ejected",
+        "matches_dataset": true
+      }
+    ]
+  },
+  "speedup": {
+    "preregistered_median": 13.113029632253827,
+    "same_machine_median": 24.01861581894211,
+    "same_machine_mean": 96.50402017065056,
+    "batch_vs_mean": 80520.97609264092
+  },
+  "time_for_12000_moons": {
+    "model_batch_s": 1.5968935000000786,
+    "simulation_cpu_hours": 20.77
+  },
+  "break_even_predictions": 7055.291238909833
+}
