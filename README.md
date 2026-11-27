@@ -164,6 +164,7 @@ command again.
 | `venv\Scripts\python src\check_models.py` | Model inputs, targets and cross-validation: leaks, test-set guard, reproducibility |
 | `venv\Scripts\python src\check_evaluation.py` | Phase 5 safeguards: test access, frozen criteria, determinism, dry run, prediction tool |
 | `venv\Scripts\python src\check_release.py` | Release checklist: frozen results, links, imports, wording, consistent numbers |
+| `venv\Scripts\python src\check_fresh_clone.py` | Installs and tests the project from a fresh clone of GitHub (needs internet) |
 
 ## Code layout
 

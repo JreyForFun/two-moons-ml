@@ -19,6 +19,7 @@ import joblib
 import numpy as np
 import pandas as pd
 
+from explore import DATASET
 from features import add_features, config, feature_columns, training_data
 from horizons import ROOT, load_state
 from make_manifest import sha256
@@ -42,6 +43,11 @@ def load_models():
         cached = joblib.load(CACHE)
         if cached["selected_sha256"] == fingerprint:
             return cached
+    if not DATASET.exists():
+        raise SystemExit(
+            "The model is trained from data/dataset.csv, which is not stored in Git. Download the "
+            "data archive (see 'Data and reproducibility' in the README) into data/, or regenerate "
+            "it with: python src/generate_dataset.py configs/dataset.json")
     train = training_data()
     cols = feature_columns(selected["feature_set"])
     models = {}
