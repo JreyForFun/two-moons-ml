@@ -58,7 +58,7 @@ The dataset is cited as `Quizon2026data` (Zenodo).
 | Author and affiliation | Done |
 | Keywords (Unified Astronomy Thesaurus) | Done |
 | References verified (volume, pages, DOI) | Done |
-| Research Notes version (1,245 words, abstract 139 words, one figure) | Done |
+| Research Notes version (about 1,260 words, abstract 139 words, one figure) | Ready to submit |
 | Data DOI (10.5281/zenodo.24607389) | Done |
 
 ## Before submission
@@ -77,5 +77,7 @@ The dataset is cited as `Quizon2026data` (Zenodo).
   prefers AASTeX 7; the note uses AASTeX 6.3.1 with its `RNAAS` option, which is still accepted
   and is the version available to the local build. Build with
   `venv/Scripts/python src/package_paper.py rnaas`.
-- **arXiv (astro-ph.EP):** the full draft as a preprint. First-time submitters need an endorsement.
-- **Zenodo:** preprint and dataset together, with a citable DOI.
+- **arXiv (astro-ph.EP), optional:** the full paper as a preprint. First-time submitters need an
+  endorsement.
+- **Zenodo:** the dataset is archived (doi:10.5281/zenodo.24607389); the code and paper are archived with each
+  GitHub release.

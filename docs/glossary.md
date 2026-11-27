@@ -257,5 +257,9 @@ seeds separates real effects from luck.
 and a new environment, exactly as an outside reader would; it exposes missing files, unpinned
 packages and dependence on the author's computer.
 
-**Unified Astronomy Thesaurus (UAT).** The controlled vocabulary of astronomy concepts, each with a
+**DOI (Digital Object Identifier).** A permanent identifier for a published object, such as a
+paper, dataset or software release, that keeps resolving to it even if its web address changes.
+Here the dataset is archived on Zenodo under a DOI, and each GitHub release is archived there too.
+
+**Unified Astronomy Thesaurus (UAT). The controlled vocabulary of astronomy concepts, each with a
 numeric identifier, that AAS journals require for manuscript keywords.

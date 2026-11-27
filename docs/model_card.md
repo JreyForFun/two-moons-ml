@@ -106,7 +106,9 @@ the starting parameters can predict every outcome.
 
 ## Provenance
 
-- **Code and data:** <https://github.com/JreyForFun/two-moons-ml> (MIT license).
+- **Code:** <https://github.com/JreyForFun/two-moons-ml> (MIT license).
+- **Training data:** <https://doi.org/10.5281/zenodo.24607389> (CC BY 4.0); `src/predict.py` needs
+  `data/dataset.csv` from this archive (see the README).
 - **Test evaluation:** run once from tagged commit `5a93769`.
 - **Results and predictions:** `results/phase5_test.json` and `results/phase5_test_predictions.csv`.
 - **Author:** John Rey Ishiguro Quizon, STI College Legazpi.

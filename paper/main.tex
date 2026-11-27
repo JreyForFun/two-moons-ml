@@ -5,8 +5,6 @@
 
 \documentclass[twocolumn]{aastex631}
 
-\usepackage{xcolor}
-\newcommand{\pending}[1]{\textcolor{red}{[#1]}}
 \graphicspath{{figures/}}
 
 \shorttitle{A hypothetical second moon of Earth}
@@ -68,9 +66,11 @@ probabilistic predictions of instability times with a Bayesian neural network.
 \citet{Pinheiro2025} used gradient-boosted trees to map stable orbits of test particles around a
 planet. To our knowledge, the fate of a hypothetical second moon of the Earth--Moon system has not
 been mapped or emulated in this way. We apply a similar approach to that problem: we (i) validate
-an N-body setup against the real lunar ephemeris, (ii) quantify the sensitivity of outcomes to numerical tolerance, initial conditions
-and start date in a pilot study, (iii) generate a reproducible dataset of 12,000 integrations, and
-(iv) train surrogate models that predict the outcome from the initial parameters.
+an N-body setup against the real lunar ephemeris, (ii) quantify the sensitivity of outcomes to
+numerical tolerance, initial conditions and start date in a pilot study, (iii) generate a
+reproducible dataset of 12,000 integrations and map where a second moon survives, (iv) train
+surrogate models that predict the outcome from the initial parameters, and (v) evaluate the
+selected model once on held-out systems and measure its speed.
 
 \section{Methods} \label{sec:methods}
 
@@ -117,7 +117,8 @@ years. No run exceeded the computing limit of 600~s or failed.
 \subsection{Pilot study} \label{sec:pilot}
 
 Before generating the full dataset, we simulated 100 moons (drawn with isotropic inclinations,
-i.e.\ uniform in $\cos i$) under controlled variations: (B) a tighter tolerance,
+i.e.\ uniform in $\cos i$) in a reference run (A) and under controlled variations: (B) a tighter
+tolerance,
 $\epsilon = 10^{-11}$; (C) the second moon displaced by 1~m; and (D) two other start dates,
 2026-05-01 and 2026-09-01, for the first 30 moons. Decision rules were fixed before the results
 were examined: keep the default tolerance unless B disagrees with the reference run on more than
@@ -167,10 +168,10 @@ with an interval above zero), the model (the simplest model whose gap to the bes
 and test whether the selected model beats the physics rule. As a chaos reference, 1,500 random
 training systems were re-integrated with the second moon displaced by 1~m.
 
-The selected model, retrained on all 9,600 training systems, was evaluated once on the 2,400 held-out
-systems. Its pass criteria were fixed before the test set was opened: a test macro-F1 within the
-cross-validated 95\% interval (0.708--0.737); a balanced-accuracy gain over the physics rule with an
-interval above zero; and an ECE of the survival probability of at most 0.05. Because the test score
+The selected model, retrained on all 9,600 training systems, was evaluated once on the 2,400
+held-out systems. Its pass criteria were fixed before the test set was opened: a test macro-F1
+within the cross-validated 95\% interval (0.708--0.737); a balanced-accuracy gain over the physics
+rule with an interval above zero; and an ECE of the survival probability of at most 0.05. Because the test score
 scatters about twice as widely as the cross-validated one, we added, also before opening the test
 set, the supplementary criterion that the interval of the difference between test and
 cross-validated macro-F1 include zero. The evaluation script verified that the criteria and the test
@@ -183,8 +184,8 @@ and of direct integration was measured in a single process on the same computer.
 \subsection{Validation}
 
 Over one year, the simulated Moon remains within 10.3~km of the Horizons ephemeris (about
-0.003\% of the Earth--Moon distance; mean 5.6~km; Figure~\ref{fig:validation}), and its mean orbital
-period differs by 0.6~s. Omitting the Sun increases the maximum error to 55,535~km. The
+0.003\% of the Earth--Moon distance; mean 5.6~km; Figure~\ref{fig:validation}), and its mean
+orbital period differs by 0.6~s. Omitting the Sun increases the maximum error to 55,535~km. The
 relative energy error stays at the $10^{-15}$ level.
 
 \begin{figure}
@@ -197,8 +198,7 @@ with (blue) and without (orange) the Sun; logarithmic axis. \label{fig:validatio
 
 In the reference pilot run, 42 of 100 second moons collided with Earth, 38 were ejected, 18
 survived 100 years, one collided with the Moon and in one system the Moon was lost. The surviving
-fraction declines steadily with time: 45\% at 10 years, 28\% at 30 years and 18\% at 100 years
-(Figure~\ref{fig:survival}).
+fraction declines steadily with time: 45\% at 10 years, 28\% at 30 years and 18\% at 100 years.
 
 Displacing the second moon by 1~m changed the outcome of 12 of 100 systems at 100 years
 (agreement 88\%, 95\% interval 80--93\%) and 9 at 10 years. Tightening the integrator tolerance
@@ -285,9 +285,9 @@ of Earth's Hill radius. \label{fig:map}}
 Of the 500 survivors integrated to 1,000 years, all repeated their first century exactly and 393
 survived the full integration. The fraction lost between 100 and 1,000 years, 21.4\% (95\%
 interval 18.0--25.2\%), is smaller than the 34.7\% lost between 10 and 100 years but more than
-half of it, so by rule R4 survival does not level off (Figure~\ref{fig:survival}). Combining both
-samples, an estimated 29.8\% of training systems would survive 1,000 years. Most late losses are
-collisions with Earth (69 of 107).
+half of it, so by rule R4 survival does not level off (Figure~\ref{fig:survival}, which also
+shows the pilot). Combining both samples, an estimated 29.8\% of training systems would survive
+1,000 years. Most late losses are collisions with Earth (69 of 107).
 
 \begin{figure}
 \includegraphics[width=\columnwidth]{paper_survival.pdf}
@@ -375,8 +375,9 @@ is 98.2\% correct.
 
 A single prediction takes 0.11~s and a batch prediction 133~$\mu$s per system, against a median of
 2.7~s and a mean of 10.7~s for a direct integration (a median of about 20~s for survivors, which
-run the full 100 years; Figure~\ref{fig:speed}). The surrogate is therefore 24 times faster than the median
-integration for single predictions and about 80,000 times faster than the mean in batches;
+run the full 100 years; Figure~\ref{fig:speed}). The surrogate is therefore 24 times faster than
+the median integration for single predictions and about 80,000 times faster than the mean in
+batches;
 including the 20.8 CPU-hours of training simulations, it pays off after about 7,000 predictions.
 
 \begin{figure}
@@ -394,8 +395,7 @@ that predicts the most probable outcome can exceed the agreement between two noi
 The surrogate approaches it: its errors are concentrated on the systems whose outcome a 1~m nudge
 changes, and the nearly flat learning curve shows that more simulations of the same kind would
 help little. Moon interactions, the hardest class, are both rare (254 training systems) and
-confined to this chaotic region, which limits their recall.
-Because the input set was chosen on the training data, the cross-validated scores could be
+confined to this chaotic region, which limits their recall. Because the input set was chosen on the training data, the cross-validated scores could be
 optimistic; the held-out test scores, nearly identical to them, show that this optimism is small.
 In practice, the surrogate's confidence suggests a hybrid strategy: accept its confident
 predictions, which are almost always right, and simulate only the uncertain systems near the
@@ -418,22 +418,21 @@ the Moon for both orbit directions and therefore misses the retrograde survival 
 orbit, which we report as a descriptive finding. A criterion based on survival beyond one lunar
 distance would be the appropriate test in future work.
 
-The physical model has several limitations. Bodies interact through Newtonian point-mass gravity only:
-tides, Earth's oblateness, general relativity and the other planets are omitted. These effects
-are small over the 100-year integrations, as the validation error shows, but they would matter
-over longer timescales and for orbits close to Earth. ``Survived'' denotes survival for 100 years,
-not long-term stability: about a fifth of the 100-year survivors integrated further were lost by
-1,000 years.
-Finally, a single start date is used, supported by a 30-system test.
+The physical model has several limitations. Bodies interact through Newtonian point-mass gravity
+only: tides, Earth's oblateness, general relativity and the other planets are omitted. Over one
+year these effects are small, as the 10.3~km validation error shows; over 100 years they are
+expected to remain minor for most orbits, but they would matter over longer timescales and for
+orbits close to Earth, where oblateness drives precession. ``Survived'' denotes survival for 100
+years, not long-term stability: about a fifth of the 100-year survivors integrated further were
+lost by 1,000 years. Finally, a single start date is used, supported by a 30-system test.
 
 \section{Conclusions} \label{sec:conclusions}
 
 We simulated 12,000 hypothetical second moons of Earth, starting from the real Sun--Earth--Moon
 system, and trained a surrogate model to predict their fate. Three conclusions follow. First, a
 second moon survives a century mainly on a close orbit near the ecliptic plane, prograde or
-retrograde: near-polar orbits are driven
-into Earth, orbits reaching the Moon's are destabilized, and beyond the Moon's orbit nearly all
-survivors are retrograde. The Moon, rather than the Sun, sets the outer limit. Second, a Random
+retrograde: near-polar orbits are driven into Earth, orbits reaching the Moon's are destabilized,
+and beyond the Moon's orbit nearly all survivors are retrograde. The Moon, rather than the Sun, sets the outer limit. Second, a Random
 Forest predicts these outcomes from the initial parameters alone with 85\% accuracy on held-out
 systems and calibrated probabilities, close to the limit set by chaos: about 8\% of outcomes change
 when the starting position is displaced by 1~m, and the model's errors concentrate on those systems.

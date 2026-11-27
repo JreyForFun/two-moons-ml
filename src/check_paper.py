@@ -72,6 +72,17 @@ def check_structure(name, tex, entries):
     problems += [f"undefined reference {r}" for r in sorted(refs - labels)]
     problems += [f"figure or table never referenced: {l}" for l in sorted(labels - refs)
                  if l.startswith(("fig:", "tab:"))]
+    for kind in ("fig:", "tab:"):
+        floats = [m.group(1) for m in re.finditer(
+            r"\\begin\{(?:figure|table)\*?\}.*?\\label\{([^}]+)\}", tex, re.S)
+            if m.group(1).startswith(kind)]
+        text = re.sub(r"\\begin\{(figure|table)\*?\}.*?\\end\{(figure|table)\*?\}", "", tex,
+                      flags=re.S)
+        order = list(dict.fromkeys(r for r in re.findall(r"\\ref\{([^}]+)\}", text)
+                                   if r.startswith(kind)))
+        if order != [f for f in floats if f in order]:
+            problems.append(f"{kind[:-1]} numbering differs from first-citation order: "
+                            f"placed {floats}, first cited {order}")
     for fig in re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", tex):
         if not any((d / fig).exists() for d in FIGURE_DIRS):
             problems.append(f"missing figure {fig}")

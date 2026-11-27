@@ -1,6 +1,7 @@
 {
   "title": "two-moons-ml: N-body simulations and a machine-learning surrogate for a hypothetical second moon of Earth",
   "upload_type": "software",
+  "access_right": "open",
   "version": "1.0.0",
   "description": "Code for simulating 12,000 hypothetical second moons of Earth with the real Sun, Earth and Moon (REBOUND, JPL Horizons DE440) and for training and evaluating a Random Forest surrogate that predicts their fate from the initial orbital elements. Includes the configurations, manifests, committed test-set results, the paper source and its compiled PDF. The simulation data are archived as a separate dataset record.",
   "creators": [
@@ -9,7 +10,7 @@
       "affiliation": "STI College Legazpi"
     }
   ],
-  "license": "MIT",
+  "license": "mit",
   "keywords": [
     "N-body simulation",
     "orbital stability",

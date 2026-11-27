@@ -237,11 +237,11 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - 24x faster per prediction, about 80,000x in batches; break-even after about 7,000 predictions.
 - Wrong mostly near the Moon's orbit, on chaotic moons (T5 met).
 
-## For Phase 6
+## Phase 6 outcome
 
 - Done: paper finishing (keywords, references, abstract, compiled PDF), notebook re-execution,
-  fresh-clone test. Remaining: condensed RNAAS version, data archive and DOI, final README,
-  LinkedIn post material.
+  fresh-clone test, Research Notes version, data archive with DOI, final README, post material,
+  release v1.0.0. After release: RNAAS submission and the LinkedIn post.
 
 ## Limitations to state in a paper
 

@@ -730,6 +730,8 @@ changes, and the test evaluation is not repeated.
 | 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | `2f9a38f` |
 | 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | `1f2484a` |
 | 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | `a4aec08` |
+| 6.10 | Dataset DOI cited in both papers, README, CITATION.cff and `.zenodo.json`; tag v1.0.0 | `02067b5` |
+| 6.11 | Pre-release audit: figure order, introduction, limitation wording, metadata | this step |
 
 ### Reproducibility
 
@@ -759,7 +761,8 @@ written in completion order and include each run's computing time.
   validation error refers to the maximum, not the mean; the survivor simulation time is a median.
 - `src/check_paper.py` checks citations, labels, figure files, balanced environments, the
   abstract length, placeholders and 32 headline numbers recomputed from the committed result files
-  and manifests. Only the dataset DOI placeholder remains.
+  and manifests. After archiving, the dataset DOI replaced the last placeholder; the `--final`
+  mode, which allows none, passes.
 - Figures are drawn at print size (one column, 3.4 inches; the stability map 6.0 inches) as vector
   PDFs with text of 6 to 8 pt. The survival figure now shows the training systems, the extension
   to 1,000 years, the isotropic reweighting and the pilot, replacing the pilot-only figure; figures
@@ -787,6 +790,22 @@ committed manifests before packaging, and the archive is byte-identical when reb
 are released under CC BY 4.0 and the code under the MIT license. The archive is deposited on
 Zenodo as doi:10.5281/zenodo.24607389; the uploaded file was confirmed byte-identical to the rebuilt archive, and
 the paper cites the dataset in its references (`Quizon2026data`).
+
+### Pre-release audit
+
+Before the release, every document was checked again for stale statements and the paper was
+reread in full. Changes:
+
+- The figures of the full paper were not numbered in the order of first citation (the survival
+  figure was cited in the pilot section before the stability map); the early citation was removed,
+  and `src/check_paper.py` now checks the order of figures and tables.
+- The introduction's list of contributions now includes the single held-out evaluation and the
+  speed measurement; the pilot's reference run is labeled (A).
+- The limitation on omitted physics no longer cites the one-year validation as evidence for 100
+  years; it states that the effects are expected to remain minor for most orbits.
+- `.zenodo.json` uses the lowercase license identifier (`mit`) shown in Zenodo's documentation.
+- The model card, notes, paper README and glossary were brought up to date (data on Zenodo, word
+  counts, the DOI entry).
 
 ### Communication material
 
