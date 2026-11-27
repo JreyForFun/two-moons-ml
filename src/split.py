@@ -1,10 +1,11 @@
-"""Set aside a test set before any exploration or modeling.
+"""Stratified train/test split, made once before any exploration or modeling.
 
-Run once:  venv/Scripts/python src/split.py
+20% of the moons, stratified by label, are written to configs/split.json. Exploration and model
+development use only the training moons; the test moons are used once, for the final
+evaluation.
 
-20% of the moons, stratified by label (each label keeps its share), are written to
-configs/split.json. Exploration and model development use only the remaining training
-moons; the test moons are used once, for the final evaluation.
+Usage:
+    python src/split.py
 """
 
 import json

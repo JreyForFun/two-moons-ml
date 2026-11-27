@@ -1,6 +1,6 @@
-"""Model factories and hyperparameter search spaces for Phase 4.
+"""Model factories and hyperparameter search spaces.
 
-Every model is a scikit-learn Pipeline, so scaling and column selection are fitted inside each
+Every model is a scikit-learn Pipeline, so scaling and column selection are fitted within each
 training fold. Labels are integers 0..K-1.
 """
 

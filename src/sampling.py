@@ -1,7 +1,7 @@
-"""Draw random second moons.
+"""Random second-moon parameters and the Roche-limit rule.
 
-Every moon has its own random generator made from (seed, id), so moon 57 is the
-same no matter which other moons are drawn or in which order.
+Each moon has its own random generator derived from (seed, id), so a moon's parameters do not
+depend on which other moons are drawn or in which order.
 """
 
 import math
@@ -15,7 +15,7 @@ MAX_DRAWS = 10000
 
 
 def roche_limit_km(state):
-    """Closer to Earth than this, a moon with our Moon's density is torn apart."""
+    """Earth's fluid Roche limit for a body of lunar density, in km."""
     earth, moon = state["bodies"]["earth"], state["bodies"]["moon"]
     mass_ratio = earth["gm_km3_s2"] / moon["gm_km3_s2"]
     return ROCHE_FACTOR * moon["radius_km"] * mass_ratio ** (1 / 3)
@@ -26,12 +26,11 @@ def _log_uniform(rng, low, high):
 
 
 def _draw_tilt(rng, ranges):
-    """Tilt in degrees.
+    """Inclination in degrees.
 
-    "isotropic" (the default, used by the pilot): uniform in cos(tilt), so every
-    direction in space is equally likely. Few orbits are then nearly flat.
-    "uniform_degrees": every tilt angle is equally likely, which covers flat
-    orbits better but over-represents them compared with random directions.
+    "isotropic" (the default, used by the pilot) draws uniformly in cos(i);
+    "uniform_degrees" draws uniformly in degrees, which samples near-planar orbits
+    more densely than random orientations.
     """
     low, high = ranges["inclination_deg"]
     rule = ranges.get("tilt_distribution", "isotropic")
@@ -44,7 +43,7 @@ def _draw_tilt(rng, ranges):
 
 
 def _draw(rng, ranges):
-    # The tilt is drawn first. Changing this order would change every moon,
+    # The inclination is drawn first; changing the order would change every moon,
     # including those already simulated in the pilot.
     tilt = _draw_tilt(rng, ranges)
     return {
@@ -76,8 +75,8 @@ def sample_settings(state, config, moon_id):
 def build_case(state, config, moon_id):
     """Return (state with moon2, settings, redraws) for one random moon.
 
-    The optional config key "shift_m" moves moon2 by that many meters along x.
-    It is used to measure how sensitive the outcomes are.
+    The optional config key "shift_m" displaces moon2 by that many meters along x
+    (chaos twins).
     """
     settings, redraws = sample_settings(state, config, moon_id)
     case = add_second_moon(state, settings)

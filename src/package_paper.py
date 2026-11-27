@@ -1,12 +1,12 @@
-"""Compile the paper and build the upload bundle for Overleaf, arXiv or a journal.
+"""Compilation of a manuscript with Tectonic and its upload bundle.
 
-Run:  venv/Scripts/python src/package_paper.py           (main paper)
-      venv/Scripts/python src/package_paper.py rnaas     (Research Notes version)
+Compiles paper/<name>.tex, fails on undefined references or citations and on lines overfull by
+more than 1 pt, copies the PDF to paper/<name>.pdf, and writes dist/<name>_upload.zip with the
+source, bibliography, generated .bbl (arXiv does not run BibTeX) and the figures used. Tectonic
+is taken from tools/tectonic/ or the PATH.
 
-Compiles paper/<name>.tex with Tectonic (tools/tectonic/tectonic.exe, or `tectonic` on the PATH),
-fails on undefined references or citations and on overfull lines wider than 1 pt, copies the
-PDF to paper/<name>.pdf, and writes dist/<name>_upload.zip containing the .tex file, the
-bibliography, the generated .bbl (arXiv does not run BibTeX) and the figures the text uses.
+Usage:
+    python src/package_paper.py [rnaas]
 """
 
 import re

@@ -1,10 +1,12 @@
-"""Phase 4 analysis: chaos reference, rules P4 and P5, learning curve, grouped importance,
-and the pre-registered Phase 5 criteria.
+"""Analyses of the selected model: chaos reference, rules P4 and P5, learning curve,
+grouped permutation importance, and the pass criteria for the test evaluation.
 
-Run after train_models.py compare and final:  venv/Scripts/python src/analyze_models.py
+The learning curve and importances refit the selected model within each outer fold using that
+fold's tuned hyperparameters (stored by train_models.py), so no model is scored on data it was
+trained on. Writes data/phase4_analysis.json and the criteria in configs/selected_model.json.
 
-The learning curve and importance refit the selected model inside each outer fold with that
-fold's tuned settings (the folds saved by train_models.py), so no model sees its test part.
+Usage:
+    python src/analyze_models.py
 """
 
 import json

@@ -1,7 +1,7 @@
-"""Turn how a run ended into one label.
+"""Mapping from the raw outcome of a run to its label.
 
-The raw outcome and the bodies involved are always saved too, so labels can be
-changed later without simulating again.
+The raw outcome and the bodies involved are stored as well, so labels can be redefined without
+new simulations.
 """
 
 LABELS = ("survived", "hit_earth", "hit_moon", "ejected", "moon_lost", "other",

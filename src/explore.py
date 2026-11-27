@@ -1,7 +1,7 @@
-"""Load the dataset for exploration and compute outcome shares with uncertainties.
+"""Dataset loading and binned outcome shares with uncertainties.
 
-Exploration uses only the training moons (configs/split.json). Binning and decision rules
-were fixed before the analysis; see docs/report.md, Phase 3.
+Exploration uses only the training moons (configs/split.json). Bins and decision rules were fixed
+before the analysis (docs/report.md, Phase 3).
 """
 
 import json

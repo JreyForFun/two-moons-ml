@@ -1,10 +1,10 @@
-"""Follow the Phase 1 second moon for 1,000 years and record its orbit around Earth.
+"""1,000-year integration of the example second moon and its orbital evolution.
 
-Run:  venv/Scripts/python src/long_run.py          (about 7 minutes)
-      venv/Scripts/python src/long_run.py --plot   (redraw the figure from saved data)
-
-Saves data/single_run_long.csv (osculating elements every 10 days) and
+Writes data/single_run_long.csv (osculating elements every 10 days) and
 figures/first_moon_long_term.png.
+
+Usage:
+    python src/long_run.py [--plot]    (--plot redraws the figure from the saved data)
 """
 
 import argparse

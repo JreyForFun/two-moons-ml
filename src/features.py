@@ -1,7 +1,7 @@
-"""Model inputs (feature sets F1-F3) and targets for the training moons.
+"""Model inputs (feature sets F1-F3) and targets.
 
-Every feature is computed from `input_*` columns and the fixed starting state only, never from
-`result_*` columns. Only training moons are loaded; a test id raises an error.
+Features are computed from the input_* columns and the fixed starting state only, never from
+result_* columns. Only training moons are returned; a test id raises an error.
 """
 
 import json

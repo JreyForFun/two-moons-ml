@@ -1,6 +1,7 @@
-"""Draw charts of the simulated Moon and its difference from NASA's Moon.
+"""Figures of the validation run: the Moon's orbit and its position error against JPL Horizons.
 
-Run:  venv/Scripts/python src/plot_real_system.py
+Usage:
+    python src/plot_real_system.py
 """
 
 import matplotlib.pyplot as plt
@@ -36,8 +37,7 @@ def plot_orbit(c):
 def plot_error(c):
     days = c["times_s"] / DAY_S
     fig, ax = new_chart(8.5, 5)
-    # The first point is skipped: its error is almost zero, which a log axis
-    # cannot show usefully.
+    # Skip the first point: its error is ~0 and cannot be shown on a log axis.
     for error, color, label in (
         (c["error_without_sun_km"], ORANGE, "Without the Sun"),
         (c["error_km"], BLUE, "With the Sun"),
@@ -59,7 +59,7 @@ def plot_error(c):
 
 
 def main():
-    plt.switch_backend("Agg")  # save files without opening a window
+    plt.switch_backend("Agg")  # non-interactive backend
     comparison = compare()
     save(plot_orbit(comparison), "real_moon_orbit.png")
     save(plot_error(comparison), "real_moon_error.png")

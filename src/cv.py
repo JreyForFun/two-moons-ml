@@ -1,7 +1,7 @@
-"""Cross-validation, metrics and paired bootstrap comparisons for Phase 4.
+"""Cross-validation, metrics and paired bootstrap comparisons.
 
 The outer cross-validation gives every training moon one out-of-fold (OOF) prediction from a
-model that never saw it. With `tune=True`, settings are chosen by a randomized search inside
+model that did not see it. With tune=True, hyperparameters are chosen by randomized search within
 each outer training part (nested cross-validation).
 """
 

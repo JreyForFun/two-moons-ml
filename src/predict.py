@@ -1,14 +1,15 @@
-"""Predict the fate of a hypothetical second moon without simulating it.
-
-Run:  venv/Scripts/python src/predict.py --mass 0.1 --distance 0.4 --eccentricity 0.1 --inclination 20
+"""Prediction of the fate of a second moon with the evaluated surrogate model.
 
 Arguments: mass in lunar masses, semi-major axis in lunar distances (384,400 km), eccentricity,
-inclination to the ecliptic in degrees (above 90 is retrograde), and optionally the node,
-argument of periapsis and starting angle in degrees (default 0).
+inclination to the ecliptic in degrees (above 90 is retrograde) and, optionally, the longitude of
+the ascending node, argument of periapsis and true anomaly in degrees (default 0).
 
-Uses the model evaluated on the held-out test set in Phase 5 (Random Forest trained on the 9,600
-training moons), so its published performance applies. The fitted models are cached in
-data/phase5/ and rebuilt deterministically if missing.
+The model is the Random Forest evaluated on the held-out test set, trained on the 9,600 training
+moons, so its reported performance applies. Fitted models are cached in data/phase5/ and rebuilt
+deterministically when missing.
+
+Usage:
+    python src/predict.py --mass 0.1 --distance 0.4 --eccentricity 0.1 --inclination 20
 """
 
 import argparse

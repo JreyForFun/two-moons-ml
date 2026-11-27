@@ -1,11 +1,11 @@
-"""Shared look for all charts."""
+"""Shared figure style and helpers."""
 
 import matplotlib.pyplot as plt
 
 from horizons import ROOT
 
 FIGURES = ROOT / "figures"
-BLUE, ORANGE = "#2a78d6", "#eb6834"  # checked for color-blind readers
+BLUE, ORANGE = "#2a78d6", "#eb6834"  # color-blind safe pair
 SURFACE, INK, MUTED_INK, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#e1e0d9"
 
 

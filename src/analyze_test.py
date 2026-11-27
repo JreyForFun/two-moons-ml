@@ -1,10 +1,11 @@
-"""Phase 5 failure analysis: test chaos twins (rule T5), error map, coverage-accuracy curve,
-and cross-validated versus test metrics.
+"""Failure analysis of the test evaluation: chaos twins (rule T5), error map,
+coverage-accuracy curve, and cross-validated versus test metrics.
 
-Run after evaluate_test.py and the test twins:  venv/Scripts/python src/analyze_test.py
+Reads the committed test results, the cross-validation results and the test twin simulations;
+the test set itself is not loaded. Writes results/phase5_analysis.json.
 
-Reads only the committed test results (results/), the Phase 4 results and the twin simulations;
-it does not load the test set itself. Saves results/phase5_analysis.json.
+Usage:
+    python src/analyze_test.py
 """
 
 import json

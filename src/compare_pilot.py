@@ -1,14 +1,17 @@
-"""Investigate the pilot-versus-dataset survival gap left unexplained by rule R1.
-
-Run:  venv/Scripts/python src/compare_pilot.py
+"""Investigation of the survival gap between the pilot and the full dataset (rule R1).
 
 Two tests:
-1. Reproducibility: re-simulate pilot moons with the current code. Identical results rule
-   out a code or setting change between the pilot and the full dataset.
-2. Expected survivors: for each pilot moon, the survival share of its nearest neighbours
-   among the training moons (in scaled mass, semi-major axis, eccentricity and inclination).
-   If the expected count is close to the observed 18, the pilot's particular draws explain
-   the gap; if it is close to the training share, outcomes differ for similar inputs.
+1. Reproducibility: pilot moons are integrated again with the final code; identical results
+   exclude a code or configuration change between the pilot and the dataset.
+2. Expected survivors: for each pilot moon, the survival share of its nearest training
+   neighbours (in scaled mass, semi-major axis, eccentricity and inclination). An expected count
+   near the observed 18 attributes the gap to the pilot's draws; a count near the training share
+   indicates different outcomes for similar inputs.
+
+Writes data/compare_pilot.json.
+
+Usage:
+    python src/compare_pilot.py
 """
 
 import json

@@ -1,8 +1,9 @@
-"""Simulate bodies under gravity with REBOUND.
+"""N-body integration of the Sun, Earth, Moon and an optional second moon with REBOUND (IAS15).
 
-Run:  venv/Scripts/python src/simulate.py [configs/real_system.json]
+Units are km and s, with gravitational parameters GM in place of masses (G = 1).
 
-Units: km, seconds, and GM instead of mass (so G = 1).
+Usage:
+    python src/simulate.py [configs/real_system.json]
 """
 
 import argparse
@@ -45,12 +46,12 @@ class Result:
 
 @dataclass
 class Summary:
-    """Only the ending of a run."""
+    """Outcome of a run, without the trajectory."""
 
     outcome: str
     involved: tuple
     end_time_s: float  # simulated time
-    computing_s: float  # time the computer needed
+    computing_s: float  # wall-clock seconds
 
 
 def load_config(path=DEFAULT_CONFIG):
@@ -119,7 +120,7 @@ def _simulate(state, config):
         if not collided:
             collided.append((names[collision.p1], names[collision.p2]))
         sim_pointer.contents.stop()
-        return 0  # keep both bodies
+        return 0  # keep both particles
 
     # "line" checks the path during each step, so fast bodies cannot jump
     # through each other between steps.
@@ -159,7 +160,7 @@ def run(state, config):
 
 
 def run_summary(state, config):
-    """Run one simulation and keep only how it ended (uses little memory)."""
+    """Run one simulation and return only its outcome (no trajectory)."""
     started = time.perf_counter()
     for sim, outcome, involved in _simulate(state, config):
         pass

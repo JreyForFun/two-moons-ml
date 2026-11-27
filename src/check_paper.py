@@ -1,13 +1,13 @@
-"""Check the structure, limits and headline numbers of the paper sources.
+"""Checks of the manuscripts: structure, venue limits and headline numbers.
 
-Run:  venv/Scripts/python src/check_paper.py            (main paper and, if present, the RNAAS note)
-      venv/Scripts/python src/check_paper.py --final    (also fail on the remaining DOI placeholder)
+Verifies citations against the bibliography (every entry cited), labels against references,
+figure and table numbering against first citation, figure files, balanced braces and
+environments, abstract length and placeholders, and a curated list of headline numbers
+recomputed from the committed results and manifests. For the Research Notes version it also
+checks the journal limits (1,500 words including references, one figure or table).
 
-Checks: citations against the bibliography (and every entry cited), labels against references,
-figure files, balanced braces and environments, abstract length, placeholders, and a curated list
-of headline numbers recomputed from the committed result files and manifests. For the Research
-Notes version it also checks the venue limits (1,500 words including references, a 150-word
-abstract, at most one figure or table).
+Usage:
+    python src/check_paper.py [--final]    (--final also rejects any remaining placeholder)
 """
 
 import json

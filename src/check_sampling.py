@@ -1,6 +1,7 @@
-"""Check the random second moons and the labels.
+"""Checks of the second-moon sampler and the outcome labels.
 
-Run:  venv/Scripts/python src/check_sampling.py
+Usage:
+    python src/check_sampling.py
 """
 
 import math
@@ -28,10 +29,10 @@ def check_ranges(state, config, samples):
 
 
 def check_coverage(state, config, samples):
-    """Settings that the Roche rule does not affect should be spread evenly.
+    """Parameters unaffected by the Roche rule follow their sampling distributions.
 
-    Compares with the ideal spread (Kolmogorov-Smirnov distance). For this many
-    samples, more than 0.03 would be very unlikely by chance.
+    Compared by Kolmogorov-Smirnov distance; above 0.03 is very unlikely by chance
+    for this sample size.
     """
     uniform = {
         "tilt": [(1 - math.cos(math.radians(s["inclination_deg"]))) / 2 for s in samples],
@@ -51,7 +52,7 @@ def check_coverage(state, config, samples):
 
 
 def check_uniform_degrees(state, config, samples):
-    """With "uniform_degrees", tilt is spread evenly in degrees instead."""
+    """With "uniform_degrees", inclination is uniform in degrees."""
     ranges = {**config["sampling"], "tilt_distribution": "uniform_degrees"}
     other = {**config, "sampling": ranges}
     tilts = np.sort([sample_settings(state, other, i)[0]["inclination_deg"] / 180
@@ -69,14 +70,14 @@ def check_uniform_degrees(state, config, samples):
 
 
 def check_pilot_unchanged(state, config, samples):
-    """The pilot data was made before tilt rules existed. Moon 0 must be the same."""
+    """The pilot predates the inclination options; moon 0 must be unchanged."""
     expected = "106.85589859387636"  # input_inclination_deg of moon 0 in data/pilot.csv
     value = repr(samples[0]["inclination_deg"])
     return value == expected, f"moon 0 tilt {value}"
 
 
 def check_reproducible(state, config, samples):
-    """Same moon again, in a different order, and different with another seed."""
+    """A moon is the same regardless of drawing order and differs for another seed."""
     again = {i: sample_settings(state, config, i)[0] for i in reversed(range(50))}
     same = all(again[i] == samples[i] for i in range(50))
     other = sample_settings(state, {**config, "seed": config["seed"] + 1}, 0)[0]
@@ -93,7 +94,7 @@ def check_roche(state, config, samples):
 
 
 def check_orbits(state, config, samples):
-    """REBOUND calculates the settings back, for forward and backward orbits."""
+    """Elements recovered by REBOUND match the settings, for prograde and retrograde orbits."""
     names = config["bodies"]
     worst, backward = 0.0, 0
     for i in range(200):

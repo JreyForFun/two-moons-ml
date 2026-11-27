@@ -81,6 +81,7 @@ retrograde). The tool prints the probabilities of each outcome and of each lifet
 | [docs/model_card.md](docs/model_card.md) | The prediction model: use, performance, limits |
 | [docs/data_archive.md](docs/data_archive.md) | The data archive: files and columns |
 | [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
+| [docs/code_guide.md](docs/code_guide.md) | How the code is organized: data flow, modules, script reference, conventions |
 | [notebooks/01_first_simulation.ipynb](notebooks/01_first_simulation.ipynb) | Setup, validation and a first second moon |
 | [notebooks/02_dataset_exploration.ipynb](notebooks/02_dataset_exploration.ipynb) | Stability maps, decision rules and long-term survival |
 | [notebooks/03_models.ipynb](notebooks/03_models.ipynb) | Surrogate models, chaos reference and the selected model |
@@ -237,7 +238,8 @@ moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms ident
 
 ## Code layout
 
-Shared modules used by the scripts above:
+The [code guide](docs/code_guide.md) describes the data flow, every script's inputs, outputs and
+run time, and the conventions the code follows. Shared modules used by the scripts above:
 
 | Module | Contents |
 |---|---|

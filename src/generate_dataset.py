@@ -1,12 +1,11 @@
-"""Simulate many random second moons and save one CSV row per moon.
+"""Parallel, resumable batch runner: integrates second moons and writes one CSV row each.
 
-Run:  venv/Scripts/python src/generate_dataset.py configs/pilot.json
+An interrupted batch resumes when the same command is repeated; only the main process writes the
+file. Columns prefixed input_ describe the initial conditions and may serve as model inputs;
+columns prefixed result_ describe the outcome and must never be used as inputs.
 
-Safe to stop with Ctrl+C: run the same command again and it continues. Only the
-main process writes the file.
-
-Column names: input_* may be used as ML inputs. result_* are what happened and
-must never be used as inputs.
+Usage:
+    python src/generate_dataset.py configs/dataset.json [--workers N]
 """
 
 import argparse
@@ -33,7 +32,7 @@ VECTORS = ("x_km", "y_km", "z_km", "vx_km_s", "vy_km_s", "vz_km_s")
 COLUMNS = (
     ["id"]
     + [f"input_{name}" for name in SETTINGS]
-    + [f"input_{name}" for name in VECTORS]  # starting state seen from Earth
+    + [f"input_{name}" for name in VECTORS]  # geocentric initial state
     + ["result_label", "result_outcome", "result_involved", "result_survival_days",
        "result_computing_s", "result_error", "sampling_redraws"]
 )
@@ -83,7 +82,7 @@ def simulate_one(task):
             "result_survival_days": repr(summary.end_time_s / DAY_S),
             "result_computing_s": f"{summary.computing_s:.3f}",
         })
-    except Exception as error:  # one bad moon must not stop the batch
+    except Exception as error:  # record the error and continue the batch
         row.update({"result_label": "error", "result_outcome": "error",
                     "result_error": f"{type(error).__name__}: {error}"})
     return row
@@ -136,7 +135,7 @@ def generate(config, path, workers=DEFAULT_WORKERS, stop_after=None):
     with open(state_path(config), encoding="utf-8") as f:
         state = json.load(f)
     done = prepare_output(path, config, state)
-    # An optional "ids" list simulates chosen moons (same seed, so the same moons as the
+    # An optional "ids" list runs selected moons (same seed, hence the same draws as the
     # dataset) instead of moons 0 to count-1.
     wanted = config["ids"] if "ids" in config else range(config["count"])
     tasks = [(i, state, config) for i in wanted if i not in done]

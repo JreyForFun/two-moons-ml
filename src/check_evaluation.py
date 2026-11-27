@@ -1,6 +1,7 @@
-"""Check the Phase 5 safeguards, the dry run and (once it exists) the prediction tool.
+"""Checks of the test-evaluation safeguards, the dry run and the prediction tool.
 
-Run:  venv/Scripts/python src/check_evaluation.py      (after evaluate_test.py --dry-run)
+Usage:
+    python src/check_evaluation.py    (after evaluate_test.py --dry-run)
 """
 
 import json

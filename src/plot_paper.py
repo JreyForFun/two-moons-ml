@@ -1,12 +1,11 @@
-"""Figures for the paper, drawn at print size (journal column or page width).
+"""Print-size figures for the manuscripts (paper/figures/).
 
-Run:  venv/Scripts/python src/plot_paper.py            (needs the generated data in data/)
-      venv/Scripts/python src/plot_paper.py --preview  (also PNG copies in tools/build/previews/)
+Figures are drawn at journal column (3.4 in) or page width as vector PDFs, without titles (the
+captions carry them) and with text of 6.5 to 8 pt. Includes the two-panel figure of the Research
+Notes version. The screen figures in figures/ are not changed.
 
-Also draws the single two-panel figure of the Research Note version (rnaas_figure.pdf).
-Reuses the data and axis helpers of the screen figures, without titles (the captions carry them)
-and with text of 6.5 to 8 pt at the printed size. Saves vector PDFs to paper/figures/. The screen
-figures in figures/ are unchanged.
+Usage:
+    python src/plot_paper.py [--preview]    (--preview also writes PNGs to tools/build/previews/)
 """
 
 import sys

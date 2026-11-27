@@ -1,8 +1,9 @@
-"""Compare the simulated Moon with NASA's real Moon over one year.
+"""Validation of the integration against the JPL Horizons ephemeris of the Moon over one year.
 
-Run:  venv/Scripts/python src/validate_real_system.py
+Tolerances were fixed before the first run.
 
-The limits below were chosen before the first run.
+Usage:
+    python src/validate_real_system.py
 """
 
 import sys
@@ -15,13 +16,13 @@ from simulate import DAY_S, load_config, run
 
 REAL_PERIOD_DAYS = 27.32166  # long-term average sidereal month
 MAX_ENERGY_ERROR = 1e-12
-MAX_PERIOD_ERROR_DAYS = 0.1  # one year is too short to average perfectly
+MAX_PERIOD_ERROR_DAYS = 0.1  # one year does not fully average out perturbations
 MAX_PERIOD_DIFFERENCE_DAYS = 0.01  # compared with NASA over the same year
 MAX_POSITION_ERROR_KM = 1000.0
 
 
 def average_period_days(times_s, positions):
-    """Average time per trip around Earth, from the total angle covered."""
+    """Mean orbital period, from the total angle swept."""
     angle = np.unwrap(np.arctan2(positions[:, 1], positions[:, 0]))
     trips = (angle[-1] - angle[0]) / (2 * np.pi)
     return (times_s[-1] - times_s[0]) / DAY_S / trips

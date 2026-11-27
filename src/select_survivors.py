@@ -1,10 +1,12 @@
-"""Choose random training survivors to integrate for 1,000 years.
+"""Selection of random training survivors for 1,000-year integrations.
 
-Run once:  venv/Scripts/python src/select_survivors.py
-Then:      venv/Scripts/python src/generate_dataset.py configs/survivors_1000yr.json
+Writes configs/survivors_1000yr.json: the dataset configuration with a longer duration and an
+ids list, so the same moons are integrated again from the start and their first 100 years repeat
+the original runs.
 
-The new config is the dataset config with a longer duration and an "ids" list, so the same
-moons are integrated again from the start. Their first 100 years repeat the original runs.
+Usage:
+    python src/select_survivors.py
+    python src/generate_dataset.py configs/survivors_1000yr.json
 """
 
 import json

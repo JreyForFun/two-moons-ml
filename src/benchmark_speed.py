@@ -1,9 +1,10 @@
-"""Speed of the surrogate model versus direct simulation (Phase 5).
+"""Timing of the surrogate model against direct integration.
 
-Run:  venv/Scripts/python src/benchmark_speed.py      (about 15 minutes; laptop plugged in)
+Model and simulation run single-threaded in one process on the same machine, on training moons
+only. Writes results/phase5_speed.json.
 
-Uses training moons only. Both the model and the simulation run single-threaded in one process
-on the same machine, so the comparison is fair. Saves results/phase5_speed.json.
+Usage:
+    python src/benchmark_speed.py
 """
 
 import json

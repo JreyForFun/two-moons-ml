@@ -1,8 +1,9 @@
-"""Check that the second moon is set up and simulated correctly.
+"""Checks of the second-moon setup and of its collisions and ejection.
 
-Run:  venv/Scripts/python src/check_second_moon.py
+Tolerances were fixed before the first run.
 
-The limits below were chosen before the first run.
+Usage:
+    python src/check_second_moon.py
 """
 
 import copy
@@ -16,8 +17,8 @@ from second_moon import add_second_moon
 from simulate import DAY_S, build_simulation, load_config, run
 
 CONFIG = ROOT / "configs" / "single_run.json"
-MAX_ELEMENT_ERROR = 1e-9  # relative for size, absolute (radians) for the rest
-MAX_MOON_SHIFT_KM = 0.001  # 1 meter
+MAX_ELEMENT_ERROR = 1e-9  # relative for the semi-major axis, absolute otherwise
+MAX_MOON_SHIFT_KM = 0.001  # 1 m
 
 
 def with_settings(config, **changes):
@@ -28,7 +29,7 @@ def with_settings(config, **changes):
 
 
 def check_orbit_matches_settings(state, config):
-    """Let REBOUND calculate the orbit back from our position and velocity."""
+    """Elements recovered by REBOUND from the state vectors match the settings."""
     settings = {"mass_lunar": 0.3, "distance_lunar": 0.6, "eccentricity": 0.25,
                 "inclination_deg": 20.0, "node_deg": 40.0, "periapsis_deg": 70.0,
                 "true_anomaly_deg": 110.0}
@@ -61,14 +62,14 @@ def check_reruns_identical(state, config):
 
 
 def check_hits_earth(state, config):
-    """A very stretched orbit whose closest point is inside Earth."""
+    """An orbit with periapsis inside Earth ends in a collision with Earth."""
     result = run(state, with_settings(config, eccentricity=0.97, true_anomaly_deg=180.0))
     ok = result.outcome == "collision" and result.involved == ("earth", "moon2")
     return ok, describe(result)
 
 
 def check_hits_moon(state, config):
-    """Start 10,000 km from the Moon with the same velocity, so it falls in."""
+    """A moon started 10,000 km from the Moon with the Moon's velocity collides with it."""
     state = add_second_moon(state, config["second_moon"])
     moon, moon2 = state["bodies"]["moon"], state["bodies"]["moon2"]
     moon2["position_km"] = [moon["position_km"][0] + 10000.0, *moon["position_km"][1:]]
@@ -80,7 +81,7 @@ def check_hits_moon(state, config):
 
 
 def check_ejected(state, config):
-    """Start outside Earth's Hill sphere, where the Sun wins."""
+    """A moon started outside Earth's Hill sphere is ejected."""
     result = run(state, with_settings(config, distance_lunar=6.0))
     ok = result.outcome == "ejection" and result.involved == ("moon2",)
     return ok, describe(result)

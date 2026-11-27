@@ -1,6 +1,7 @@
-"""Check that collisions and ejections are detected and labeled correctly.
+"""Checks of collision and ejection detection and of the resulting labels.
 
-Run:  venv/Scripts/python src/check_events.py
+Usage:
+    python src/check_events.py
 """
 
 import copy
@@ -25,7 +26,7 @@ def moon_with_velocity(state, radial_km_s):
 
 
 def fall_time_days(state):
-    """Exact time for the Moon to fall from rest until the surfaces touch."""
+    """Analytic radial free-fall time of the Moon from rest until the surfaces touch."""
     earth, moon = state["bodies"]["earth"], state["bodies"]["moon"]
     start = math.dist(earth["position_km"], moon["position_km"])
     end = earth["radius_km"] + moon["radius_km"]

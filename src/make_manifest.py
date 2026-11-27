@@ -1,10 +1,11 @@
-"""Record what a finished dataset contains and how it was made.
+"""Manifest of a finished dataset: SHA-256 checksum, outcome counts, computing time and
+package versions.
 
-Run:  venv/Scripts/python src/make_manifest.py configs/dataset.json
+The CSV is not stored in Git; the committed manifest identifies the exact file from which the
+results were produced.
 
-The CSV itself stays out of Git (it is large and can be remade). The manifest is
-small and committed. Its SHA-256 lets anyone confirm that a copy of the CSV is
-exactly the one the results were made from.
+Usage:
+    python src/make_manifest.py configs/dataset.json
 """
 
 import argparse
@@ -54,7 +55,7 @@ def read_log(path):
         "started": found["started"][0] if found["started"] else None,
         "finished": found["finished"][-1] if found["finished"] else None,
         "workers": int(found["workers"][0]) if found["workers"] else None,
-        "times_started": len(found["started"]),  # more than 1 means it was resumed
+        "times_started": len(found["started"]),  # > 1 if the batch was resumed
     }
 
 

@@ -1,6 +1,7 @@
-"""Save a GIF of both moons orbiting Earth.
+"""Animation of the Moon and a second moon orbiting Earth (figures/two_moons.gif).
 
-Run:  venv/Scripts/python src/animate.py
+Usage:
+    python src/animate.py
 """
 
 import matplotlib.pyplot as plt
@@ -14,8 +15,8 @@ from simulate import DAY_S, load_config, run
 CONFIG = ROOT / "configs" / "single_run.json"
 DAYS = 60
 STEP_HOURS = 1
-STEPS_PER_FRAME = 6  # each frame is 6 hours later
-TAIL_STEPS = 120  # 120 hours = 5 days
+STEPS_PER_FRAME = 6  # 6 h per frame
+TAIL_STEPS = 120  # 5-day trail
 FRAMES_PER_SECOND = 20
 
 
@@ -45,7 +46,7 @@ def make_animation(result):
     set_titles(ax, "Earth with two moons",
                "Distances to scale, bodies not to scale. Second moon: 0.1 lunar masses")
 
-    fig.canvas.draw()  # arrange the layout once, not again for every frame
+    fig.canvas.draw()  # fix the layout once, not per frame
     fig.set_layout_engine("none")
 
     def draw(frame):
@@ -62,7 +63,7 @@ def make_animation(result):
 
 
 def main():
-    plt.switch_backend("Agg")  # save files without opening a window
+    plt.switch_backend("Agg")  # non-interactive backend
     config = {**load_config(CONFIG), "duration_days": DAYS,
               "output_interval_hours": STEP_HOURS}
     result = run(load_state(), config)

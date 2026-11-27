@@ -1,14 +1,12 @@
-"""Choose moons to re-simulate with a 1 m nudge ("chaos twins").
+"""Selection of moons for re-integration with a 1 m displacement (chaos twins).
 
-Run once:  venv/Scripts/python src/select_twins.py           1,500 training moons (Phase 4)
-           venv/Scripts/python src/select_twins.py --test    600 test moons (Phase 5, only after
-                                                            the test evaluation is committed)
-Then:      venv/Scripts/python src/generate_dataset.py configs/twins_1m.json
-           venv/Scripts/python src/generate_dataset.py configs/twins_test_1m.json
+The twin of a moon is the same moon displaced by 1 m along x; the share of twins whose outcome
+differs measures the role of chaos. Twin labels serve as a reference only and are never used for
+training. Test twins may be selected only after the test evaluation is committed.
 
-The twin of a moon is the same moon displaced by 1 m along x. Comparing each twin's outcome
-with the original measures how much of the outcome is decided by chaos. Twin labels are a
-reference only; they are never used to train models.
+Usage:
+    python src/select_twins.py [--test]
+    python src/generate_dataset.py configs/twins_1m.json    (or configs/twins_test_1m.json)
 """
 
 import argparse

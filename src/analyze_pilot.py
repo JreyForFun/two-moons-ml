@@ -1,6 +1,10 @@
-"""Summarize the pilot runs and apply the rules chosen before they were made.
+"""Pilot-study analysis: agreement between the pilot variants and the pre-registered rules.
 
-Run:  venv/Scripts/python src/analyze_pilot.py
+Compares the reference run with the tolerance, displacement and start-date variants, estimates
+the computing time of the full dataset, and draws the pilot figures.
+
+Usage:
+    python src/analyze_pilot.py
 """
 
 import math
@@ -73,7 +77,7 @@ def hours_for(rows, years, moons):
 
 
 def plot_outcomes(a):
-    """Where each moon started and whether it survived."""
+    """Initial orbits of the pilot moons and their outcomes."""
     fig, ax = new_chart(8.5, 5.5)
     for title, color, marker, keep in (
         ("Survived 100 years", BLUE, "o", lambda label: label == "survived"),
@@ -102,7 +106,7 @@ def plot_outcomes(a):
 
 
 def plot_survival(a):
-    """Share of moons still there as time passes."""
+    """Share of pilot moons not yet collided or ejected, as a function of time."""
     rows = [r for r in a.values() if r["result_label"] not in ("timeout", "error")]
     ends = sorted(float(r["result_survival_days"]) / YEAR_DAYS for r in rows
                   if r["result_label"] != "survived")
@@ -186,7 +190,7 @@ def main():
         counts = Counter(r["result_label"] for r in rows)
         print(f"  Distance {low}-{high}, {len(rows):2d} moons: {dict(counts.most_common())}")
 
-    plt.switch_backend("Agg")  # save files without opening a window
+    plt.switch_backend("Agg")  # non-interactive backend
     save(plot_outcomes(a), "pilot_outcomes.png")
     save(plot_survival(a), "pilot_survival.png")
 

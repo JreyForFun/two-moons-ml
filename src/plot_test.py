@@ -1,7 +1,7 @@
-"""Phase 5 figures.
+"""Figures of the test evaluation, the failure analysis and the speed benchmark.
 
-Run after evaluate_test.py, benchmark_speed.py and analyze_test.py:
-  venv/Scripts/python src/plot_test.py
+Usage:
+    python src/plot_test.py
 """
 
 import json

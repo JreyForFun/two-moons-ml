@@ -1,11 +1,12 @@
-"""Survival to 1,000 years and rule R4 (does survival level off?).
+"""Survival to 1,000 years and rule R4 (does survival level off after 100 years?).
 
-Run after the extended runs:  venv/Scripts/python src/survival_curve.py
+The surviving fraction after t years is the share of training moons lasting at least t years for
+t <= 100, and S(100) times the share of the 500 extended survivors lasting at least t years for
+t > 100. The extended survivors are a random sample of training survivors, so the product is
+unbiased. Writes data/survival_curve.json and figures/survival_curve_full.png.
 
-The fraction remaining after t years:
-  t <= 100:  share of training moons that lasted at least t years
-  t >  100:  S(100) x share of the 500 extended survivors that lasted at least t years
-The extended survivors are a random sample of training survivors, so the product is unbiased.
+Usage:
+    python src/survival_curve.py
 """
 
 import json

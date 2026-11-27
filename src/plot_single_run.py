@@ -1,6 +1,7 @@
-"""Draw charts of the 10-year run with a second moon.
+"""Figures of the 10-year example run with a second moon.
 
-Run:  venv/Scripts/python src/plot_single_run.py
+Usage:
+    python src/plot_single_run.py
 """
 
 import matplotlib.pyplot as plt
@@ -35,7 +36,7 @@ def plot_distances(result):
 
 
 def plot_energy(result):
-    """How much the total energy drifted. Gravity alone should not change it."""
+    """Relative drift of the total energy, a measure of the integration error."""
     years = result.times_s / DAY_S / DAYS_PER_YEAR
     change = (result.energy - result.energy[0]) / abs(result.energy[0])
     fig, ax = new_chart(8.5, 4)
@@ -59,7 +60,7 @@ def yearly_range_km(result, name):
 
 
 def main():
-    plt.switch_backend("Agg")  # save files without opening a window
+    plt.switch_backend("Agg")  # non-interactive backend
     result = run(load_state(), load_config(CONFIG))
     for name, label, _ in MOONS:
         for year, (closest, farthest) in yearly_range_km(result, name).items():

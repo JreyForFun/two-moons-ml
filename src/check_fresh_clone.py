@@ -1,10 +1,11 @@
-"""Install and test the project from a fresh clone of the GitHub repository.
+"""Installation test from a fresh clone of the public repository.
 
-Run:  venv/Scripts/python src/check_fresh_clone.py      (about 10 minutes; needs internet)
+Clones the repository into a temporary folder, creates a new virtual environment, installs
+requirements.txt and runs the checks that need no generated data, then reports the simulation
+CPU-hours of a full regeneration. Requires network access.
 
-Clones the published repository into a temporary folder, creates a new virtual environment,
-installs requirements.txt and runs the checks that need no generated data. Also reports how much
-computing a full regeneration of the data would take. The temporary folder is removed afterwards.
+Usage:
+    python src/check_fresh_clone.py
 """
 
 import csv

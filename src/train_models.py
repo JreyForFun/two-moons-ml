@@ -1,14 +1,14 @@
-"""Phase 4 model training and the pre-registered rules P1, P2, P3 and P6.
+"""Model training by nested cross-validation and the pre-registered rules P1, P2, P3 and P6.
 
-Run, in order:
-  venv/Scripts/python src/train_models.py baselines   majority class and physics rule
-  venv/Scripts/python src/train_models.py features    rule P1 (feature set)
-  venv/Scripts/python src/train_models.py compare     rules P2, P3, P6 (about 1-1.5 hours)
-  venv/Scripts/python src/train_models.py final       settings for Phase 5
-  venv/Scripts/python src/train_models.py lifetime    secondary lifetime-class task
+Each fitted model is saved to data/phase4/ immediately; repeating a command skips saved models,
+so an interrupted run resumes.
 
-Each finished model is saved to data/phase4/ at once; running a command again skips models
-that are already saved, so an interrupted run resumes.
+Usage:
+    python src/train_models.py baselines    (majority class and physics rule)
+    python src/train_models.py features     (rule P1: feature set)
+    python src/train_models.py compare      (rules P2, P3, P6: model comparison)
+    python src/train_models.py final        (settings of the selected model)
+    python src/train_models.py lifetime     (lifetime-class task)
 """
 
 import argparse

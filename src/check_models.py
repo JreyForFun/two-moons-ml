@@ -1,6 +1,8 @@
-"""Check the Phase 4 inputs, targets and cross-validation for leaks and errors.
+"""Checks of model inputs, targets and cross-validation: leakage, the test-set guard and
+reproducibility.
 
-Run:  venv/Scripts/python src/check_models.py      (about 3 minutes)
+Usage:
+    python src/check_models.py
 """
 
 import json

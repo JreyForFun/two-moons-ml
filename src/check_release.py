@@ -1,6 +1,7 @@
 """Release checklist: frozen results, documentation integrity and consistent numbers.
 
-Run:  venv/Scripts/python src/check_release.py
+Usage:
+    python src/check_release.py
 """
 
 import ast
@@ -22,7 +23,8 @@ FROZEN = {  # file: commit in which its final content was committed
     "configs/dataset_manifest.json": "ed0f1d6",
 }
 DOCS = ["README.md", "notes.md", "docs/report.md", "docs/questions.md", "docs/figures.md",
-        "docs/glossary.md", "docs/model_card.md", "paper/README.md"]
+        "docs/glossary.md", "docs/model_card.md", "docs/code_guide.md", "docs/summary.md",
+        "docs/data_archive.md", "paper/README.md"]
 STALE = [r"(?i)phase 5 next", r"(?i)results so far", r"(?i)checked in phase 5",
          r"(?i)until the phase 5", r"(?i)await the phase 5", r"(?i)\bso far:"]
 BANNED_VARIANTS = ["81,000", "80,521", "7,100 predictions", "7,055 predictions"]

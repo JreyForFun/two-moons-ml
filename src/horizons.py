@@ -1,9 +1,10 @@
-"""Get Sun, Earth and Moon starting states from NASA JPL Horizons.
+"""Download of the Sun, Earth and Moon starting states from JPL Horizons.
 
-Run once from the project root:  venv/Scripts/python src/horizons.py
-Another start date:              venv/Scripts/python src/horizons.py --date 2026-05-01
-The result is saved to configs/initial_state.json. Everything else reads that
-file, so reruns need no internet and always start from identical numbers.
+The state is saved to configs/initial_state.json, or to configs/state_<date>.json with --date.
+All other code reads the saved file, so runs need no network and start from identical values.
+
+Usage:
+    python src/horizons.py [--date 2026-05-01]
 """
 
 import argparse
@@ -15,10 +16,10 @@ ROOT = Path(__file__).resolve().parents[1]
 STATE_FILE = ROOT / "configs" / "initial_state.json"
 
 EPOCH_TDB = "2026-01-01 00:00:00"
-CENTER = "500@0"  # Solar System barycenter (the center of mass)
+CENTER = "500@0"  # Solar System barycenter
 
-# GM (gravity strength) is used instead of mass because GM is measured far more
-# precisely than G or the mass alone. GM: JPL DE440 (Park et al., 2021).
+# Gravitational parameters GM from JPL DE440 (Park et al. 2021); GM is known far more
+# precisely than G or the masses separately.
 # Radii are for collision detection: IAU nominal Sun, mean Earth and Moon.
 BODIES = {
     "sun": {"horizons_id": "10", "gm_km3_s2": 132712440041.279419, "radius_km": 695700.0},
@@ -29,7 +30,7 @@ BODIES = {
 
 def fetch_state(epoch_tdb=EPOCH_TDB):
     """Download the state vectors and return them as a JSON-ready dictionary."""
-    # Imported here so that loading the saved file needs no astroquery/internet.
+    # Imported lazily: loading the saved state needs neither astroquery nor a network.
     import astropy.units as u
     import astroquery
     from astropy.time import Time

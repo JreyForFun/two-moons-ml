@@ -1,9 +1,10 @@
-"""Phase 3: apply rules R1-R3 to the training moons and draw the stability maps.
+"""Exploration rules R1-R3 and the stability maps of the training moons.
 
-Run:  venv/Scripts/python src/plot_dataset.py
+Prints the rule results and writes data/phase3_results.json and the figures. Rules and bins were
+fixed before the analysis (docs/report.md, Phase 3).
 
-Prints the rule results and saves data/phase3_results.json and figures to figures/.
-Rules and binning were fixed before the analysis (docs/report.md, Phase 3).
+Usage:
+    python src/plot_dataset.py
 """
 
 import json
@@ -51,7 +52,6 @@ def interval(values):
             float(np.quantile(values, 0.975, method="higher"))]
 
 
-# ---------------------------------------------------------------- rules
 
 def rule_r1(df):
     """Survival share after reweighting to isotropic inclinations."""
@@ -125,7 +125,6 @@ def robustness(df):
                                  "distance_x_eccentricity": (A_COL, E_COL)}.items()}
 
 
-# ---------------------------------------------------------------- figures
 
 def distance_axis(ax, label=True):
     ax.set_xscale("log")

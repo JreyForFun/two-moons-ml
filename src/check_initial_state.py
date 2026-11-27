@@ -1,10 +1,10 @@
-"""Check the saved NASA starting data.
+"""Checks of the saved JPL Horizons starting state.
 
-Run:            venv/Scripts/python src/check_initial_state.py
-With internet:  venv/Scripts/python src/check_initial_state.py --online
+By default the saved vectors are compared with astropy's built-in ephemeris; --online also
+repeats the Horizons query.
 
-The normal run compares the saved data with astropy's built-in (less precise)
-ephemeris. --online also asks Horizons again, directly in km.
+Usage:
+    python src/check_initial_state.py [--online]
 """
 
 import argparse
@@ -22,7 +22,7 @@ from astropy.utils import iers
 from horizons import STATE_FILE, load_state
 
 AU_KM = 149597870.7
-OBLIQUITY = math.radians(84381.448 / 3600)  # J2000 ecliptic tilt
+OBLIQUITY = math.radians(84381.448 / 3600)  # J2000 obliquity of the ecliptic
 MAX_ASTROPY_DIFFERENCE_KM = 100.0
 MAX_ONLINE_DIFFERENCE_KM = 1e-6
 

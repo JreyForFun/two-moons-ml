@@ -1,12 +1,12 @@
-"""Build the data archive for Zenodo.
+"""Data archive for Zenodo (dist/two-moons-ml-data-v1.0.zip).
 
-Run:  venv/Scripts/python src/package_data.py
+Contains the simulation files with their run records and logs, the configurations and manifests,
+the derived results, docs/data_archive.md as README.md and a SHA256SUMS file. The main CSV files
+are verified against their manifests first; files are written in a fixed order with a fixed
+timestamp, so identical inputs give a byte-identical archive.
 
-Writes dist/two-moons-ml-data-v1.0.zip with the simulation files, their run records and logs,
-the configurations and manifests, the derived results, docs/data_archive.md as README.md and a
-SHA256SUMS file. The main CSV files are first checked against the SHA-256 checksums in their
-committed manifests. Files are added in a fixed order with a fixed timestamp, so the same inputs
-give a byte-identical archive.
+Usage:
+    python src/package_data.py
 """
 
 import hashlib

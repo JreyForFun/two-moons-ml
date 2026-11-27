@@ -1,12 +1,14 @@
-"""One-time evaluation of the selected model on the held-out test set (Phase 5).
+"""Single evaluation of the selected model on the held-out test set.
 
-Run:  venv/Scripts/python src/evaluate_test.py --dry-run   training holdout only, no test moons
-      venv/Scripts/python src/evaluate_test.py             the single test evaluation
-
-This is the only script that loads the test set. The real run checks, before opening it, that the
-Git tree is clean, that the Phase 5 criteria are unchanged since commit 975d7fb, that the test
+This is the only script that loads the test set. Before opening it, the real run verifies that
+the Git tree is clean, that the pass criteria are unchanged since commit 975d7fb, that the test
 split is unchanged since commit ccb9bbc, that the dataset matches its manifest, and that no
-earlier results exist. It records the commit and file fingerprints with the results.
+earlier results exist; otherwise it stops. The commit and file fingerprints are recorded with
+the results in results/.
+
+Usage:
+    python src/evaluate_test.py --dry-run    (training holdout only; no test moons)
+    python src/evaluate_test.py
 """
 
 import argparse

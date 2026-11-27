@@ -1,6 +1,7 @@
-"""Print the derived numbers quoted in the paper, so each can be traced to code.
+"""Derived numbers quoted in the paper, printed for traceability.
 
-Run:  venv/Scripts/python src/paper_numbers.py
+Usage:
+    python src/paper_numbers.py
 """
 
 import json

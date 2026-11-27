@@ -1,8 +1,10 @@
-"""Save NASA's real Moon positions (as seen from Earth) to compare against.
+"""Download of the Moon's geocentric positions from JPL Horizons for the validation.
 
-Run once:  venv/Scripts/python src/fetch_reference.py
+The positions are saved to configs/reference_moon.csv and used only by the validation; the
+simulation never reads them.
 
-Only used for checking. The simulation never reads this file.
+Usage:
+    python src/fetch_reference.py [--force]
 """
 
 import argparse
@@ -28,7 +30,7 @@ def fetch():
     stop = Time(start_jd + config["duration_days"], format="jd", scale="tdb")
     query = Horizons(
         id="301",
-        location="500@399",  # center of the Earth
+        location="500@399",  # geocenter
         epochs={"start": start.iso[:16], "stop": stop.iso[:16],
                 "step": f"{config['output_interval_hours']}h"},
     )

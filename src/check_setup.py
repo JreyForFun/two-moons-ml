@@ -1,9 +1,10 @@
-"""Check that the packages work by simulating one simple orbit.
+"""Installation check: one Keplerian orbit must close and conserve energy.
 
-Run:  venv/Scripts/python src/check_setup.py
+After exactly one period the planet must return to its starting position, and the total energy
+must be conserved, within the tolerances below.
 
-A small planet goes around a star exactly once, so it should end where it
-started and the total energy should not change.
+Usage:
+    python src/check_setup.py
 """
 
 import math
@@ -18,7 +19,7 @@ MAX_ENERGY_ERROR = 1e-13  # relative
 
 
 def relative_position(sim):
-    """Position of the planet as seen from the star."""
+    """Position of the planet relative to the star."""
     star, planet = sim.particles[0], sim.particles[1]
     return (planet.x - star.x, planet.y - star.y, planet.z - star.z)
 
@@ -28,12 +29,12 @@ def run_test_orbit():
     sim = rebound.Simulation()  # units: G = 1
     sim.integrator = "ias15"
     sim.add(m=1.0)  # star
-    sim.add(m=1e-3, a=1.0, e=0.1)  # planet on a slightly stretched orbit
+    sim.add(m=1e-3, a=1.0, e=0.1)  # planet, e = 0.1
     sim.move_to_com()
 
     start = relative_position(sim)
     start_energy = sim.energy()
-    sim.integrate(sim.particles[1].P)  # P = one orbital period
+    sim.integrate(sim.particles[1].P)  # one orbital period
 
     position_error = math.dist(start, relative_position(sim))
     energy_error = abs((sim.energy() - start_energy) / start_energy)

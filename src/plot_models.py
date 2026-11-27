@@ -1,6 +1,7 @@
-"""Phase 4 figures.
+"""Figures of the model comparison and the selected model.
 
-Run after analyze_models.py:  venv/Scripts/python src/plot_models.py
+Usage:
+    python src/plot_models.py
 """
 
 import json

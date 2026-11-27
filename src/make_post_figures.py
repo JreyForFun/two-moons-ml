@@ -1,10 +1,11 @@
-"""Images and video for a social-media post about the project.
+"""Images and video for a social-media post.
 
-Run:  venv/Scripts/python src/make_post_figures.py      (needs the generated data in data/)
+Writes five carousel slides (1080 x 1350 px, also combined in carousel.pdf) and a 1200 x 627 px
+cover to figures/post/, and the orbit animation as an H.264 video to figures/two_moons.mp4.
+Numbers are read from the same result files as the paper.
 
-Saves to figures/post/: five carousel slides (1080 x 1350 px PNG, and all five in carousel.pdf)
-and a 1200 x 627 px cover image; and figures/two_moons.mp4, the orbit animation as an H.264
-video. Numbers come from the same result files as the paper.
+Usage:
+    python src/make_post_figures.py
 """
 
 import json

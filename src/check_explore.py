@@ -1,6 +1,7 @@
-"""Check the test split and the exploration helpers.
+"""Checks of the train/test split and the exploration helpers.
 
-Run:  venv/Scripts/python src/check_explore.py
+Usage:
+    python src/check_explore.py
 """
 
 import json

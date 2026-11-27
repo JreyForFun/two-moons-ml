@@ -1,17 +1,16 @@
-"""Turn second-moon settings into a starting position and velocity.
+"""Conversion of second-moon orbital elements into initial state vectors.
 
 Settings (see configs/single_run.json):
-  mass_lunar        mass, in Moon masses
-  distance_lunar    semi-major axis (average size of the orbit), in units of
-                    the Moon's average distance, 384,400 km
-  eccentricity      shape: 0 is a circle, closer to 1 is more stretched
-  inclination_deg   tilt from the plane of Earth's orbit around the Sun
-  node_deg          direction in which the tilt goes
-  periapsis_deg     direction of the point closest to Earth
-  true_anomaly_deg  starting angle, measured from that closest point
+  mass_lunar        mass, in lunar masses
+  distance_lunar    semi-major axis, in lunar distances (384,400 km)
+  eccentricity      eccentricity
+  inclination_deg   inclination to the ecliptic, degrees (above 90: retrograde)
+  node_deg          longitude of the ascending node, degrees
+  periapsis_deg     argument of periapsis, degrees
+  true_anomaly_deg  true anomaly at the epoch, degrees
 
-The orbit is the one the second moon would follow if only it and Earth existed.
-The Sun and the Moon then change it during the simulation.
+The elements are geocentric and osculating: they define the two-body orbit around Earth at the
+epoch, which the Moon and the Sun then perturb.
 """
 
 import copy
@@ -28,7 +27,7 @@ def orbit_to_vectors(mu, a, e, inclination, node, periapsis, true_anomaly):
         raise ValueError("need a > 0 and 0 <= eccentricity < 1")
     p = a * (1 - e**2)
     r = p / (1 + e * math.cos(true_anomaly))
-    # In the flat orbit plane, with x toward the closest point:
+    # Perifocal frame, x toward periapsis:
     position = r * np.array([math.cos(true_anomaly), math.sin(true_anomaly), 0.0])
     velocity = math.sqrt(mu / p) * np.array(
         [-math.sin(true_anomaly), e + math.cos(true_anomaly), 0.0]
@@ -65,7 +64,7 @@ def add_second_moon(state, settings):
     )
     state["bodies"]["moon2"] = {
         "gm_km3_s2": gm,
-        # Same density as the Moon, so the radius grows with the cube root of mass.
+        # Lunar density: the radius scales with the cube root of the mass.
         "radius_km": moon["radius_km"] * settings["mass_lunar"] ** (1 / 3),
         "position_km": (np.array(earth["position_km"]) + position).tolist(),
         "velocity_km_s": (np.array(earth["velocity_km_s"]) + velocity).tolist(),

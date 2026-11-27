@@ -1,9 +1,10 @@
-"""Check the finished dataset before anything is learned from it.
+"""Integrity checks of a finished dataset: manifest checksum, labels, inputs and reruns.
 
-Run:  venv/Scripts/python src/check_dataset.py configs/dataset.json
+Every input is regenerated from the seed, labels are checked against the raw outcomes, and 20
+random moons are integrated again and must reproduce their outcomes exactly.
 
-Takes a few minutes: 20 random moons are simulated again and must give exactly
-the same result.
+Usage:
+    python src/check_dataset.py configs/dataset.json
 """
 
 import argparse
@@ -94,7 +95,7 @@ def check_inputs(rows, config, state, config_path):
 
 
 def check_reruns(rows, config, state, config_path):
-    """Simulate random moons again. Same computer and settings, so same result."""
+    """Re-simulate random moons; outcomes and survival times must be identical."""
     chosen = np.random.default_rng(RERUN_SEED).choice(len(rows), RERUNS, replace=False)
     saved = {int(rows[k]["id"]): rows[k] for k in chosen}
     tasks = [(i, state, config) for i in sorted(saved)]

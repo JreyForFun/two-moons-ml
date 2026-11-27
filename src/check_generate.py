@@ -1,6 +1,8 @@
-"""Check the batch runner: workers, stop and resume, and protection of old data.
+"""Checks of the batch runner: parallel workers, interruption and resumption, selected ids,
+and protection of existing output.
 
-Run:  venv/Scripts/python src/check_generate.py
+Usage:
+    python src/check_generate.py
 """
 
 import sys
@@ -34,7 +36,7 @@ def check_resume(config, folder):
     path = folder / "resumed.csv"
     first = generate(config, path, workers=2, stop_after=4)
     with open(path, "a", encoding="utf-8") as f:
-        f.write("7,0.5,0.3")  # like a crash in the middle of writing a row
+        f.write("7,0.5,0.3")  # row truncated by a crash
     second = generate(config, path, workers=2)
     same = comparable(path) == comparable(folder / "one.csv")
     nothing_left = generate(config, path, workers=2) == 0
@@ -80,7 +82,7 @@ def check_error_is_recorded(config, folder):
 
 
 def check_columns(config, folder):
-    """Nothing about the result may be named like an ML input."""
+    """No result column may carry the input_ prefix."""
     row = read_rows(folder / "one.csv")[0]
     known = ("id", "sampling_redraws")
     ok = list(row) == COLUMNS and all(

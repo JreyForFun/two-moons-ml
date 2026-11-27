@@ -732,6 +732,7 @@ changes, and the test evaluation is not repeated.
 | 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | `a4aec08` |
 | 6.10 | Dataset DOI cited in both papers, README, CITATION.cff and `.zenodo.json`; tag v1.0.0 | `02067b5` |
 | 6.11 | Pre-release audit: figure order, introduction, limitation wording, metadata | `f8b9f3f` |
+| 6.12 | Code documentation: docstrings and comments in `src/` rewritten; code guide (`docs/code_guide.md`) | this step |
 
 ### Reproducibility
 
@@ -806,6 +807,16 @@ reread in full. Changes:
 - `.zenodo.json` uses the lowercase license identifier (`mit`) shown in Zenodo's documentation.
 - The model card, notes, paper README and glossary were brought up to date (data on Zenodo, word
   counts, the DOI entry).
+
+### Code documentation
+
+The docstrings and comments of all 52 scripts and modules in `src/` were rewritten in a uniform
+style: a one-line summary, a short description of inputs and outputs, and a `Usage:` block;
+inline comments are limited to units, sources and non-obvious reasons. Explanations of the
+workflow, run times and conventions moved to a separate code guide
+([code_guide.md](code_guide.md)). The change is limited to documentation: for every file, the
+syntax tree with comments and docstrings removed is identical before and after, and all checks
+pass.
 
 ### Communication material
 

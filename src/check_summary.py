@@ -1,6 +1,7 @@
-"""Check run_summary(), the epsilon setting and the time limit per run.
+"""Checks of run_summary(), the integrator tolerance setting and the per-run time limit.
 
-Run:  venv/Scripts/python src/check_summary.py
+Usage:
+    python src/check_summary.py
 """
 
 import copy
@@ -37,7 +38,7 @@ def check_same_ending(state, config):
 
 
 def check_epsilon(state, config):
-    """The accuracy setting must reach the integrator and change the path a little."""
+    """The tolerance setting reaches IAS15 and changes the trajectory slightly."""
     normal = {**config, "bodies": ["sun", "earth", "moon"], "duration_days": 365}
     strict = {**normal, "epsilon": 1e-11}
     values = [build_simulation(state, c).integrator.epsilon for c in (normal, strict)]
@@ -54,7 +55,7 @@ def check_time_limit(state, config):
 
 
 def check_finished_run_is_not_timeout(state, config):
-    """A run that reaches its end counts as survived, however slow it was."""
+    """A run that reaches its end time is labeled survived, regardless of computing time."""
     # Zero length: the first output is also the last, with no time left.
     result = run_summary(state, {**config, "duration_days": 0, "max_seconds": 0.0})
     return result.outcome == "survived", result.outcome
