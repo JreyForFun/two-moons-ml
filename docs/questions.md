@@ -270,10 +270,10 @@ logistic regression (0.658) and the neural network (0.653) trail. The outcome re
 non-linear boundaries (near-polar band, Moon-crossing line), which tree ensembles capture
 naturally; a small tabular dataset does not favor neural networks.
 
-**Q43. Are the predicted probabilities trustworthy?** *Answered (training data).*
+**Q43. Are the predicted probabilities trustworthy?** *Answered.*
 Yes. The expected calibration error of P(survived) is 0.019, below the 0.05 limit of rule P6, and
 the reliability diagram follows the diagonal. As a survival classifier the model reaches a ROC AUC
-of 0.985. Calibration on the test set is checked in Phase 5.
+of 0.985. On the held-out test set the ECE is also 0.019 and every class is calibrated to within 0.03.
 Evidence: [calibration.png](figures.md#calibrationpng).
 
 **Q44. Do the starting conditions also predict when a system fails?** *Answered.*

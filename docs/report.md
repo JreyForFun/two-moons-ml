@@ -59,6 +59,9 @@ Short simulations inside the automated checks and verification reruns (20 datase
 moons) are not counted. The re-integrated survivors, the chaos twins and the benchmark runs are
 existing dataset moons, so the cumulative count of distinct random second moons is unchanged.
 
+**Total:** 15,065 simulations, of 12,360 distinct random second moons (plus the 4 Phase 1 runs
+and the single 1,000-year run of the Phase 1 system).
+
 ---
 
 ## Phase 1: simulation setup and validation (2026-11-25)
@@ -563,7 +566,8 @@ test set is opened:
 - The reported Brier score is the four-class score; the label in `src/paper_numbers.py` was
   corrected before any document quoted it.
 - The cross-validated scores are slightly optimistic because the feature set was chosen on the
-  same training data; the Phase 5 test evaluation is the unbiased estimate.
+  same training data. The Phase 5 test evaluation confirmed that this optimism is small (test
+  macro-F1 0.711 against 0.723 cross-validated).
 
 ---
 
@@ -582,8 +586,8 @@ out since Phase 3, a fair speed comparison with direct simulation, and an analys
 | 5.4 | Speed benchmark (`src/benchmark_speed.py`) | `0ad5d7d`, `69cefc4` |
 | 5.5 | Test chaos twins and failure analysis (`src/analyze_test.py`) | `0ad5d7d`, `69cefc4` |
 | 5.6 | Figures (`src/plot_test.py`) | `6245f8f` |
-| 5.7 | Prediction tool (`src/predict.py`) and model card (`docs/model_card.md`) | `69cefc4`, see Git history |
-| 5.8 | `notebooks/04_evaluation.ipynb` and documentation | see Git history |
+| 5.7 | Prediction tool (`src/predict.py`) and model card (`docs/model_card.md`) | `69cefc4`, `7e2612f` |
+| 5.8 | `notebooks/04_evaluation.ipynb` and documentation | `7e2612f` |
 
 ### Protocol
 

@@ -12,7 +12,7 @@ Phase 6, final cleanup and write-up.
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
-## Results so far
+## Results
 
 ![Which second moons survive 100 years](figures/stability_map.png)
 

@@ -342,7 +342,7 @@ chaos reference of 0.923.
 between the best model and the chaos reference is small compared with the gap to the baselines.
 
 **Caveats.** Cross-validated on training data, with the feature set chosen on the same data, so
-slightly optimistic. Macro-F1 has no direct chaos reference, so the reference is shown only for
+possibly optimistic; the held-out test set confirms the scores ([test_vs_cv.png](#test_vs_cvpng)). Macro-F1 has no direct chaos reference, so the reference is shown only for
 accuracy.
 
 ---
@@ -380,7 +380,8 @@ few points above the prediction. The expected calibration error is 0.019.
 **Interpretation.** The probabilities can be read at face value: a system given 70% survives about
 70% of the time, slightly more. No calibration step is needed (rule P6).
 
-**Caveats.** Out-of-fold, training systems only; calibration on the test set is checked in Phase 5.
+**Caveats.** Out-of-fold, training systems only. On the held-out test set the ECE is also 0.019
+([test_calibration.png](#test_calibrationpng)).
 
 ---
 

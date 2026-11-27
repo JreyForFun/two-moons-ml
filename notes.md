@@ -23,7 +23,7 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
   real Moon lost 1.2%. No timeouts or errors.
 
 - Phase 3: 9,600 training moons explored, 2,400 test moons held out. 500 survivors re-run to
-  1,000 years (17.9 CPU-hours, 4.5 hours); 393 survived. Total simulations so far: 12,865.
+  1,000 years (17.9 CPU-hours, 4.5 hours); 393 survived. Total simulations after Phase 3: 12,865.
 - Close, low-tilt orbits: 96.5% survive. Close near-polar orbits: 0.7% survive, 99.1% hit Earth.
 - Beyond the Moon's orbit: prograde 0.3% survive, retrograde 11.4%.
 - Heaviest second moons knock out the real Moon in 7.4% of systems.
@@ -35,7 +35,7 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
 - Chaos twins: a 1 m nudge leaves 92.3% of outcomes unchanged; the model is right 89.5% of the
   time on those stable systems and wrong 53.4% of the time on chaotic ones.
 - Lifetime class predicted with 76.7% accuracy, 98.6% within one class.
-- Total simulations so far: 14,365 (12,360 distinct random second moons).
+- Total simulations after Phase 4: 14,365 (12,360 distinct random second moons).
 
 - Phase 5 (held-out test, 2,400 moons, evaluated once): 85.1% accuracy, macro-F1 0.711
   (cross-validated 85.0%, 0.723); physics rule 78.9%; all pre-registered criteria met.
@@ -43,7 +43,7 @@ The structured record lives in `docs/`: [technical report](docs/report.md),
 - Speed: 111 ms per prediction vs 2.67 s median simulation (24x); 133 µs per moon in batches
   (about 80,000x vs mean simulation); 12,000 moons in 1.6 s vs 20.8 CPU-hours; break-even
   after about 7,000 predictions.
-- Total simulations so far: 15,065 (12,360 distinct random second moons).
+- Total simulations after Phase 5 (final): 15,065 (12,360 distinct random second moons).
 
 ## Checks passed
 

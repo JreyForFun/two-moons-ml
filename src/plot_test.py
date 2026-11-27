@@ -106,7 +106,9 @@ def calibration(test, frame):
 
 
 def rounded(value):
-    """Two significant figures, as a timing ratio is not more precise than that."""
+    """Timing ratios are not precise: two significant figures, or the nearest 10,000 above that."""
+    if value >= 10000:
+        return f"{round(value, -4):,.0f}"
     return f"{float(f'{value:.2g}'):,.0f}"
 
 
