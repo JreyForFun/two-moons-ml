@@ -1,7 +1,7 @@
 # Paper
 
-Draft: *The Fate of a Hypothetical Second Moon of Earth: N-body Simulations and a
-Machine-Learning Surrogate.*
+*The Fate of a Hypothetical Second Moon of Earth: N-body Simulations and a Machine-Learning
+Surrogate.* Final text; only the dataset DOI remains to be inserted.
 
 | File | Contents |
 |---|---|

@@ -1,14 +1,15 @@
 # What if Earth had 2 moons?
 
-Simulating Earth, the Moon and a hypothetical second moon with N-body gravity
-([REBOUND](https://rebound.readthedocs.io/)), then training a machine learning model to predict
-the outcome from the starting conditions alone.
+What would happen if Earth had a second natural satellite? This project simulates 12,000
+hypothetical second moons with N-body gravity ([REBOUND](https://rebound.readthedocs.io/)),
+starting from the real Sun, Earth and Moon, maps where a second moon can survive, and trains a
+machine-learning surrogate that predicts each moon's fate from its starting orbit, without
+simulating it. The approach follows SPOCK (Tamayo et al. 2020), which uses machine learning to
+predict the stability of planetary systems.
 
-Inspired by SPOCK (Tamayo et al., 2020), which uses machine learning to predict the stability of
-planetary systems.
-
-**Status:** Phase 5 of 6 finished (surrogate model evaluated on the held-out test set). Next:
-Phase 6, final cleanup and write-up.
+**Status:** complete (v1.0.0). Paper: [paper/main.pdf](paper/main.pdf); short version for Research
+Notes of the AAS: [paper/rnaas.pdf](paper/rnaas.pdf). Plain-language summary:
+[docs/summary.md](docs/summary.md).
 
 ![Both moons orbiting Earth](figures/two_moons.gif)
 
@@ -21,20 +22,38 @@ Phase 6, final cleanup and write-up.
 - **12,000 random second moons**, from 0.001 to 1 lunar masses and 0.1 to 3 lunar distances,
   prograde and retrograde, each followed for up to 100 years: 38.0% survive, 32.0% are ejected,
   27.4% collide with Earth, 1.4% collide with the Moon, and in 1.2% the Moon itself is lost.
+- **Where second moons survive:** close orbits near the ecliptic plane, prograde or retrograde
+  (96.5% survive inside 0.5 lunar distances). Near-polar orbits are driven into Earth (99.1%),
+  consistent with Lidov–Kozai cycles; orbits reaching the Moon's are ejected or collide. The Moon,
+  not the Sun, sets the outer limit, and beyond the Moon's orbit survivors are almost all
+  retrograde (11.4% of retrograde vs 0.3% of prograde moons survive).
+- **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
 - **Chaos limits prediction:** moving a second moon by 1 meter changes about 8% of outcomes
   (7.7% of 1,500 re-simulated moons; 12% in the 100-moon pilot).
-- **Where second moons survive:** close orbits near the ecliptic plane, prograde or retrograde
-  (96.5% survive inside 0.5 lunar distances). Near-polar
-  orbits are driven into Earth (99.1%), consistent with Lidov–Kozai cycles; orbits reaching the
-  Moon's are ejected or collide. Beyond the Moon's orbit, survivors are almost all retrograde (11.4% of
-  retrograde vs 0.3% of prograde moons survive).
-- **Beyond 100 years:** of 500 survivors followed to 1,000 years, 21.4% are lost.
-- **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting values.
+
+![The test set confirms the cross-validated scores](figures/test_vs_cv.png)
+
+- **Machine-learning surrogate:** a Random Forest predicts the outcome from the starting orbit.
   On 2,400 held-out systems, evaluated once under criteria fixed in advance, it reaches 85.1%
   accuracy (physics rule 78.9%, majority class 38.0%) with calibrated survival probabilities
-  (ROC AUC 0.988). Its errors concentrate on chaotic systems near the Moon's orbit.
+  (ROC AUC 0.988). Its errors concentrate on chaotic systems near the Moon's orbit, and its most
+  confident half of predictions is 98.2% correct.
 - **Speed:** 24 times faster than a median simulation per prediction, about 80,000 times faster
   in batches; it repays the cost of its training simulations after about 7,000 predictions.
+
+## How the results were checked
+
+- **Validation against reality:** the three-body setup reproduces NASA's lunar ephemeris before
+  any second moon is added.
+- **Decisions before results:** every analysis question had a decision rule written before its
+  data were examined; rules that failed are reported as failed (see the
+  [report](docs/report.md#key-findings)).
+- **A held-out test set:** 2,400 systems were set aside before any exploration and used once, by a
+  script that verified the frozen criteria and refuses to run twice (tag `phase5-evaluated-model`).
+- **Provenance:** fixed seeds, saved configurations, SHA-256 manifests for every dataset, and
+  checks (`src/check_*.py`) that print PASS or FAIL, including a test that installs the project
+  from a fresh clone.
+- **Uncertainty:** Wilson intervals for shares and bootstrap intervals for other statistics.
 
 ## Try it
 
@@ -44,22 +63,26 @@ venv\Scripts\python src\predict.py --mass 0.1 --distance 0.4 --eccentricity 0.0 
 
 Mass in lunar masses, semi-major axis in lunar distances, inclination in degrees (above 90 is
 retrograde). The tool prints the probabilities of each outcome and of each lifetime class; see the
-[model card](docs/model_card.md) for valid ranges and limits.
+[model card](docs/model_card.md) for valid ranges and limits. It needs the data (see
+[Data and reproducibility](#data-and-reproducibility)).
 
 ## Documentation
 
 | Document | Contents |
 |---|---|
+| [docs/summary.md](docs/summary.md) | Plain-language summary for non-specialists |
+| [paper/](paper/README.md) | Paper (AASTeX), compiled PDF and the Research Notes version |
 | [docs/report.md](docs/report.md) | Technical report: key findings, then methods, results and decisions phase by phase |
 | [docs/questions.md](docs/questions.md) | Design decisions and open questions, with evidence |
 | [docs/figures.md](docs/figures.md) | How to read every figure |
 | [docs/model_card.md](docs/model_card.md) | The prediction model: use, performance, limits |
+| [docs/data_archive.md](docs/data_archive.md) | The data archive: files and columns |
 | [docs/glossary.md](docs/glossary.md) | Physics, statistics and machine learning terms |
 | [notebooks/01_first_simulation.ipynb](notebooks/01_first_simulation.ipynb) | Setup, validation and a first second moon |
 | [notebooks/02_dataset_exploration.ipynb](notebooks/02_dataset_exploration.ipynb) | Stability maps, decision rules and long-term survival |
 | [notebooks/03_models.ipynb](notebooks/03_models.ipynb) | Surrogate models, chaos reference and the selected model |
 | [notebooks/04_evaluation.ipynb](notebooks/04_evaluation.ipynb) | Held-out test evaluation, failures and speed |
-| [paper/](paper/README.md) | Manuscript draft (AASTeX) |
+| [CHANGELOG.md](CHANGELOG.md) | Release notes |
 | [notes.md](notes.md) | Lab notes and key numbers |
 
 ## Setup
@@ -114,8 +137,8 @@ b4960d4d7aa4d36a2bd1815583cce8a558ba7d2269d32ecc099a27faec83bec9  data/twins_tes
 ```
 
 They are also recorded, with outcome counts and package versions, in the
-`configs/*_manifest.json` files, and identify the archived files exactly. A regenerated file contains the same moons and the same outcomes and
-survival times, but its rows are written in the order the simulations finish and it records each
+`configs/*_manifest.json` files, and identify the archived files exactly. A regenerated file
+contains the same moons and the same outcomes and survival times, but its rows are written in the order the simulations finish and it records each
 run's computing time, so its checksum differs. Compare regenerated files with the archived ones by
 moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms identical outcomes.
 
@@ -230,9 +253,10 @@ Shared modules used by the scripts above:
 ## Data and reproducibility
 
 - Generated data in `data/` is not stored in Git. It is archived with its documentation
-  ([docs/data_archive.md](docs/data_archive.md)) and can be regenerated with the commands above. `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json` and
-  `configs/twins_1m_manifest.json`, `configs/twins_test_1m_manifest.json` record the
-  SHA-256 checksum, outcome counts, computing time and package versions of each dataset.
+  ([docs/data_archive.md](docs/data_archive.md)) and can be regenerated with the commands above.
+  The manifests `configs/dataset_manifest.json`, `configs/survivors_1000yr_manifest.json`,
+  `configs/twins_1m_manifest.json` and `configs/twins_test_1m_manifest.json` record the SHA-256
+  checksum, outcome counts, computing time and package versions of each dataset.
 - Every random draw uses a fixed seed stored in its configuration file, and every second moon has
   its own generator, so results do not depend on the order in which simulations finish.
 - 2,400 systems (20%, `configs/split.json`) are held out for the final model evaluation and are
@@ -249,9 +273,10 @@ Shared modules used by the scripts above:
 | `notebooks/` | Walkthroughs |
 | `figures/` | Charts and animations |
 | `docs/` | Technical report, design decisions, figure guide, glossary |
-| `paper/` | Manuscript draft and bibliography |
+| `paper/` | Paper source, compiled PDFs, print-size figures and the Research Notes version |
 | `results/` | Committed test-set results and predictions (Phase 5) |
-| `data/` | Generated simulation results (not stored in Git) |
+| `data/` | Generated simulation results (not stored in Git; archived separately) |
+| `dist/`, `tools/` | Release bundles and the local LaTeX tool (not stored in Git) |
 
 ## Known limitations
 
@@ -268,7 +293,8 @@ Starting conditions and reference positions come from the
 
 ## License and citation
 
-Code is released under the [MIT License](LICENSE). To cite this project, use the metadata in
-[CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button).
+Code is released under the [MIT License](LICENSE) and the data under CC BY 4.0. To cite this
+project, use the metadata in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository"
+button).
 
 Author: John Rey Ishiguro Quizon, STI College Legazpi.

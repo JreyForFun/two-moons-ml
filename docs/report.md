@@ -4,8 +4,8 @@ A record of the project, phase by phase: methods, results, decisions and revisio
 defined in the [glossary](glossary.md); figures are described in the [figure guide](figures.md);
 design decisions and open questions are collected in [questions.md](questions.md).
 
-**Status (2026-11-28):** Phase 5 (test-set evaluation) complete. Phase 6 (cleanup and final
-write-up) next. A manuscript draft covering Phases 1 to 5 is in [`paper/`](../paper/README.md).
+**Status (2026-11-28):** complete (release v1.0.0). The paper and its Research Notes version are
+in [`paper/`](../paper/README.md); a plain-language summary is in [summary.md](summary.md).
 
 ## Key findings
 
@@ -727,7 +727,8 @@ changes, and the test evaluation is not repeated.
 | 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | `494d5d4` |
 | 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | `22b3d5a` |
 | 6.6 | Research Notes version (`paper/rnaas.tex`, `paper/rnaas.pdf`) and its checks | `5d07f8d` |
-| 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | this step |
+| 6.7 | Data archive (`src/package_data.py`, `docs/data_archive.md`), `CITATION.cff` 1.0.0, `.zenodo.json` | `2f9a38f` |
+| 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | this step |
 
 ### Reproducibility
 
