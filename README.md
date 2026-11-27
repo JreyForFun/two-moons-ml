@@ -163,6 +163,7 @@ command again.
 | `venv\Scripts\python src\check_explore.py` | The test split and the exploration helpers |
 | `venv\Scripts\python src\check_models.py` | Model inputs, targets and cross-validation: leaks, test-set guard, reproducibility |
 | `venv\Scripts\python src\check_evaluation.py` | Phase 5 safeguards: test access, frozen criteria, determinism, dry run, prediction tool |
+| `venv\Scripts\python src\check_release.py` | Release checklist: frozen results, links, imports, wording, consistent numbers |
 
 ## Code layout
 
