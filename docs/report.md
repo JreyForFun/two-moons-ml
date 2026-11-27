@@ -731,7 +731,7 @@ changes, and the test evaluation is not repeated.
 | 6.8 | README as landing page, plain-language summary (`docs/summary.md`), `CHANGELOG.md`, final status lines | `1f2484a` |
 | 6.9 | Post images (`src/make_post_figures.py`, `figures/post/`) and the animation as video (`figures/two_moons.mp4`; `imageio-ffmpeg` pinned) | `a4aec08` |
 | 6.10 | Dataset DOI cited in both papers, README, CITATION.cff and `.zenodo.json`; tag v1.0.0 | `02067b5` |
-| 6.11 | Pre-release audit: figure order, introduction, limitation wording, metadata | this step |
+| 6.11 | Pre-release audit: figure order, introduction, limitation wording, metadata | `f8b9f3f` |
 
 ### Reproducibility
 
