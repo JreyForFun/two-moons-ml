@@ -131,6 +131,17 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 - T5: test errors 53.8% on chaotic moons vs 11.3% on stable ones; errors near the Moon's orbit.
 - predict.py and a model card make the model usable.
 
+## Phase 6 (2026-11-28, release and final paper)
+
+- Fresh clone from GitHub installs and passes every data-free check; full regeneration is about
+  44 CPU-hours (11 hours with 4 workers).
+- Related work checked: closest are moon packing around an Earth-mass planet (Satyal et al. 2022)
+  and ML maps of stable orbits (Pinheiro et al. 2025); no study of a second moon of the real
+  Earth-Moon system found.
+- Paper: abstract 288 -> 240 words, UAT keywords, all references verified, compiled locally
+  (8 pages, 5 print-size figures, no overfull lines); paper/main.pdf in the repository.
+- Notebooks re-executed from fresh kernels: all 33 text outputs identical to the committed ones.
+
 ## Story moments
 
 - Moving a moon by just 1 meter changed the outcome of 12 out of 100 moons. Chaos limits
@@ -225,8 +236,9 @@ Reproduce with `src/check_setup.py` and `src/check_initial_state.py --online`.
 
 ## For Phase 6
 
-- Final README polish, notebook tidy, paper finishing (UAT keywords, Zenodo DOI, references check,
-  acknowledgments and disclosures required by the venue), condensed RNAAS version, LinkedIn post.
+- Done: paper finishing (keywords, references, abstract, compiled PDF), notebook re-execution,
+  fresh-clone test. Remaining: condensed RNAAS version, data archive and DOI, final README,
+  LinkedIn post material.
 
 ## Limitations to state in a paper
 

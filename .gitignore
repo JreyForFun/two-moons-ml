@@ -13,3 +13,7 @@ data/*
 .env
 .DS_Store
 Thumbs.db
+
+# Local tools (portable LaTeX) and release bundles
+tools/
+dist/

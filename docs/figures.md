@@ -593,3 +593,19 @@ CPU-hours of training simulations, it pays off after about 7,000 predictions.
 **Caveats.** Absolute times depend on the hardware. Simulation time depends strongly on the outcome
 (survivors about 20 s, failures under 1.1 s). Single-prediction latency is dominated by per-call
 overhead.
+
+---
+
+## Paper figures (`paper/figures/`)
+
+Drawn by `src/plot_paper.py` at print size (3.4 inches for one column, 6.0 inches for the
+full-width map) as vector PDFs with embedded fonts, without titles, since the captions in
+`paper/main.tex` carry them. They show the same data as the screen figures above:
+
+| Paper figure | Screen counterpart | Difference |
+|---|---|---|
+| `paper_validation.pdf` | [real_moon_error](#real_moon_errorpng) | Largest errors in the legend |
+| `paper_stability_map.pdf` | [stability_map](#stability_mappng) | Same map |
+| `paper_survival.pdf` | [survival_curve_full](#survival_curve_fullpng) | Replaces the pilot-only survival figure in the paper |
+| `paper_test_vs_cv.pdf` | [test_vs_cv](#test_vs_cvpng) | Legend below the axes |
+| `paper_speed.pdf` | [speedup](#speeduppng) | No speedup title; the ratios are in the text |

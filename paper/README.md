@@ -7,15 +7,23 @@ Machine-Learning Surrogate.*
 |---|---|
 | `main.tex` | Manuscript (AASTeX 6.3.1, two-column) |
 | `references.bib` | Bibliography |
+| `main.pdf` | Compiled manuscript |
+| `figures/` | Print-size figures (PDF), drawn by `src/plot_paper.py` |
 
-Figures are read from the repository's `figures/` folder. Every number in the text is printed by
+Figures are read from `paper/figures/`. Every number in the text is printed by
 `src/paper_numbers.py` or `src/analyze_pilot.py`, and `src/check_paper.py` checks citations,
 references, figure files, length limits and the headline numbers against the result files.
 
 ## Building
 
-**Overleaf (no installation):** create a blank project, upload `main.tex`, `references.bib` and a
-`figures/` folder containing the PNG files referenced in the text, then compile with pdfLaTeX.
+**Tectonic (used for `main.pdf`):** `venv/Scripts/python src/package_paper.py` compiles the
+paper with [Tectonic](https://tectonic-typesetting.github.io/) 0.17.0 from `tools/tectonic/`
+(or `tectonic` on the PATH), fails on undefined references and overfull lines, copies the PDF to
+`paper/main.pdf` and writes `dist/main_upload.zip` (source, bibliography, `.bbl` and figures)
+for Overleaf, arXiv or a journal.
+
+**Overleaf (no installation):** create a blank project, upload the contents of `dist/main_upload.zip`
+(or `main.tex`, `references.bib` and the `figures/` folder), then compile with pdfLaTeX.
 The AASTeX class (`aastex631.cls`) is included in Overleaf's TeX Live.
 
 **Locally (TeX Live or MiKTeX):** from this folder,
@@ -36,7 +44,7 @@ Text in red brackets marks the dataset DOI, inserted once the data are archived.
 
 | Section | Status |
 |---|---|
-| Abstract (233 words) | Final |
+| Abstract (240 words) | Final |
 | Introduction, including related work | Final |
 | Methods: simulation, sampling, outcomes, pilot | Edited |
 | Methods: surrogate models | Edited |

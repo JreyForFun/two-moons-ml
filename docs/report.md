@@ -722,8 +722,10 @@ changes, and the test evaluation is not repeated.
 | Step | Content | Commit |
 |---|---|---|
 | 6.1 | Release checklist as code (`src/check_release.py`): frozen results, links, imports, run-table coverage, documented figures, wording, headline numbers across documents | `f14b7aa` |
-| 6.2 | Fresh-clone test (`src/check_fresh_clone.py`); README section on reproducing everything | `47fca00`, this step |
-| 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | this step |
+| 6.2 | Fresh-clone test (`src/check_fresh_clone.py`); README section on reproducing everything | `47fca00`, `494d5d4` |
+| 6.3 | All four notebooks re-executed from fresh kernels; every text output identical to the committed version | this step |
+| 6.4 | Paper: references verified, related work, keywords, abstract, editing pass; paper check (`src/check_paper.py`) | `494d5d4` |
+| 6.5 | Print-size paper figures (`src/plot_paper.py`); compilation and upload bundle (`src/package_paper.py`); `paper/main.pdf` | this step |
 
 ### Reproducibility
 
@@ -746,7 +748,7 @@ written in completion order and include each run's computing time.
   around planets (Pinheiro et al. 2025). No prior study of a second moon of the present
   Earth–Moon system was found, so the novelty statement is qualified ("to our knowledge").
 - Keywords carry Unified Astronomy Thesaurus identifiers (1089, 2212, 436, 1857, 1858).
-- The abstract was shortened from 288 to 233 words (limit 250). It now quotes the chaos limit
+- The abstract was shortened from 288 to 240 words (limit 250). It now quotes the chaos limit
   from the 1,500 chaos twins (about 8%) rather than the 100-system pilot (12%).
 - Wording corrections: survival is "concentrated on close orbits near the ecliptic plane,
   prograde or retrograde" rather than "requires a close, low-inclination orbit"; the 0.003%
@@ -754,6 +756,14 @@ written in completion order and include each run's computing time.
 - `src/check_paper.py` checks citations, labels, figure files, balanced environments, the
   abstract length, placeholders and 32 headline numbers recomputed from the committed result files
   and manifests. Only the dataset DOI placeholder remains.
+- Figures are drawn at print size (one column, 3.4 inches; the stability map 6.0 inches) as vector
+  PDFs with text of 6 to 8 pt. The survival figure now shows the training systems, the extension
+  to 1,000 years, the isotropic reweighting and the pilot, replacing the pilot-only figure; figures
+  comparing test and cross-validated scores and model and simulation time were added.
+- The paper is compiled with Tectonic 0.17.0 (archive verified against its published SHA-256)
+  into 8 pages without undefined references or overfull lines; each page was inspected.
+  `src/package_paper.py` also writes an upload bundle including the generated `.bbl` file, which
+  arXiv requires because it does not run BibTeX.
 
 ---
 

@@ -7,7 +7,7 @@
 
 \usepackage{xcolor}
 \newcommand{\pending}[1]{\textcolor{red}{[#1]}}
-\graphicspath{{../figures/}{figures/}}
+\graphicspath{{figures/}}
 
 \shorttitle{A hypothetical second moon of Earth}
 \shortauthors{Quizon}
@@ -188,9 +188,9 @@ period differs by 0.6~s. Omitting the Sun increases the maximum error to 55,535~
 relative energy error stays at the $10^{-15}$ level.
 
 \begin{figure}
-\includegraphics[width=\columnwidth]{real_moon_error.png}
+\includegraphics[width=\columnwidth]{paper_validation.pdf}
 \caption{Distance between the simulated and JPL Horizons positions of the Moon over one year,
-with (blue) and without (orange) the Sun. \label{fig:validation}}
+with (blue) and without (orange) the Sun; logarithmic axis. \label{fig:validation}}
 \end{figure}
 
 \subsection{Pilot study}
@@ -213,12 +213,6 @@ expected for isotropic orientations. To cover near-planar orbits better, the ful
 inclination uniformly in degrees. This decision was made after the pilot, and it over-represents
 near-planar orbits relative to random orientations.
 
-\begin{figure}
-\includegraphics[width=\columnwidth]{pilot_survival.png}
-\caption{Fraction of the 100 pilot second moons that have neither collided nor been ejected, as a
-function of time. \label{fig:survival}}
-\end{figure}
-
 \subsection{Dataset}
 
 The full dataset contains 12,000 systems drawn with an independent seed. It required 20.8
@@ -229,6 +223,9 @@ their outcomes and survival times exactly.
 
 \begin{table}
 \caption{Outcomes in the full dataset (95\% Wilson intervals). \label{tab:outcomes}}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrr}
 \hline
 Outcome & Systems & Share \\
@@ -276,7 +273,7 @@ and 0.78 Hill radii, in qualitative agreement with the greater stability of retr
 heaviest second moons destabilize the Moon itself in 7.4\% of systems.
 
 \begin{figure*}
-\includegraphics[width=0.85\textwidth]{stability_map.png}
+\includegraphics[width=0.85\textwidth]{paper_stability_map.pdf}
 \caption{Share of training systems surviving 100 years by initial semi-major axis (bottom axis in
 lunar distances, top axis in Hill radii) and inclination; inclinations above $90^\circ$ are
 retrograde. Each cell contains 44 to 93 systems. Dashed line: the Moon's orbit; dotted line: half
@@ -288,9 +285,17 @@ of Earth's Hill radius. \label{fig:map}}
 Of the 500 survivors integrated to 1,000 years, all repeated their first century exactly and 393
 survived the full integration. The fraction lost between 100 and 1,000 years, 21.4\% (95\%
 interval 18.0--25.2\%), is smaller than the 34.7\% lost between 10 and 100 years but more than
-half of it, so by rule R4 survival does not level off. Combining both samples, an estimated
-29.8\% of training systems would survive 1,000 years. Most late losses are collisions with Earth
-(69 of 107).
+half of it, so by rule R4 survival does not level off (Figure~\ref{fig:survival}). Combining both
+samples, an estimated 29.8\% of training systems would survive 1,000 years. Most late losses are
+collisions with Earth (69 of 107).
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{paper_survival.pdf}
+\caption{Share of systems in which the second moon has neither collided nor been ejected. Solid
+blue: the 9,600 training systems; dashed blue: continued to 1,000 years with the 500 extended
+survivors (band: 95\% interval); dotted orange: training systems reweighted to isotropic
+inclinations; gray: the 100-system pilot, drawn with isotropic inclinations. \label{fig:survival}}
+\end{figure}
 
 As an individual example, a second moon of 0.1 lunar masses started on a circular orbit in the
 ecliptic at 0.4 lunar distances survives a 1,000-year integration. Its eccentricity oscillates
@@ -312,6 +317,9 @@ they collide with Earth, and wider orbits are ejected.
 \begin{table}
 \caption{Cross-validated performance on the 9,600 training systems (out-of-fold).
 \label{tab:models}}
+\centering
+\small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lrrr}
 \hline
 Model & Macro-F1 & Accuracy & Log loss \\
@@ -349,7 +357,15 @@ cross-validated interval (by 0.003), its difference from the cross-validated val
 (0.088--0.144), and the ECE of the survival probability is 0.019. The survival ROC AUC is 0.988,
 every class is calibrated to within 0.03, and retraining with five other random seeds gives test
 macro-F1 between 0.709 and 0.716. Moon interactions are recognized in 27\% of cases (17 of 63), and
-the lifetime class with 76.9\% accuracy.
+the lifetime class with 76.9\% accuracy. Figure~\ref{fig:testcv} compares the test and
+cross-validated scores.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{paper_test_vs_cv.pdf}
+\caption{Scores of the Random Forest from cross-validation (blue; out-of-fold predictions for the
+9,600 training systems) and on the held-out test set (orange; 2,400 systems), with 95\% bootstrap
+intervals. Shaded: the range fixed in advance for the test macro-F1. \label{fig:testcv}}
+\end{figure}
 
 The 600 re-integrated test systems confirm the role of chaos: 91.3\% of their outcomes are unchanged
 by the 1~m displacement, and the model errs on 53.8\% of the chaotic systems against 11.3\% of the
@@ -359,9 +375,15 @@ is 98.2\% correct.
 
 A single prediction takes 0.11~s and a batch prediction 133~$\mu$s per system, against a median of
 2.7~s and a mean of 10.7~s for a direct integration (a median of about 20~s for survivors, which
-run the full 100 years). The surrogate is therefore 24 times faster than the median integration for single
-predictions and about 80,000 times faster than the mean in batches; including the 20.8 CPU-hours of
-training simulations, it pays off after about 7,000 predictions.
+run the full 100 years; Figure~\ref{fig:speed}). The surrogate is therefore 24 times faster than the median
+integration for single predictions and about 80,000 times faster than the mean in batches;
+including the 20.8 CPU-hours of training simulations, it pays off after about 7,000 predictions.
+
+\begin{figure}
+\includegraphics[width=\columnwidth]{paper_speed.pdf}
+\caption{Time per system for direct integration (blue; 100 random systems) and for the surrogate
+(orange), measured in a single process on the same computer; logarithmic axis. \label{fig:speed}}
+\end{figure}
 
 \section{Discussion} \label{sec:discussion}
 

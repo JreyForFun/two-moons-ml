@@ -181,6 +181,13 @@ moon id and outcome; `check_dataset.py` re-simulates 20 moons and confirms ident
 | `venv\Scripts\python src\plot_test.py` | Draws the Phase 5 figures |
 | `venv\Scripts\python src\predict.py --mass ... --distance ... --eccentricity ... --inclination ...` | Predicts the fate of any second moon |
 
+### Phase 6: paper and release
+
+| Command | What it does |
+|---|---|
+| `venv\Scripts\python src\plot_paper.py` | Draws the print-size paper figures (`paper/figures/`) |
+| `venv\Scripts\python src\package_paper.py` | Compiles the paper with Tectonic, saves `paper/main.pdf` and the upload bundle `dist/main_upload.zip` |
+
 ### Checks (each prints PASS or FAIL)
 
 | Command | What it checks |
