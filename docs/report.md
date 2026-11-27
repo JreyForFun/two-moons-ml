@@ -805,6 +805,9 @@ reread in full. Changes:
 - The limitation on omitted physics no longer cites the one-year validation as evidence for 100
   years; it states that the effects are expected to remain minor for most orbits.
 - `.zenodo.json` uses the lowercase license identifier (`mit`) shown in Zenodo's documentation.
+- The full paper's header reads "Preprint, version 1.0 (November 28, 2026)" instead of AASTeX's
+  default "Draft version" with the build date, so the archived PDF states its status and a fixed
+  date; the Research Notes template sets its own header.
 - The model card, notes, paper README and glossary were brought up to date (data on Zenodo, word
   counts, the DOI entry).
 
