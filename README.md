@@ -121,6 +121,13 @@ command again.
 | `venv\Scripts\python src\analyze_models.py` | Chaos reference, rules P4 and P5, learning curve, importance, Phase 5 criteria |
 | `venv\Scripts\python src\plot_models.py` | Draws the Phase 4 figures |
 
+### Phase 5: test-set evaluation
+
+| Command | What it does |
+|---|---|
+| `venv\Scripts\python src\evaluate_test.py --dry-run` | Rehearses the evaluation on a training holdout (no test moons) |
+| `venv\Scripts\python src\evaluate_test.py` | The single evaluation on the held-out test set (refuses to run twice) |
+
 ### Checks (each prints PASS or FAIL)
 
 | Command | What it checks |
@@ -135,6 +142,7 @@ command again.
 | `venv\Scripts\python src\check_dataset.py configs\dataset.json` | The finished dataset, including 20 re-simulated moons |
 | `venv\Scripts\python src\check_explore.py` | The test split and the exploration helpers |
 | `venv\Scripts\python src\check_models.py` | Model inputs, targets and cross-validation: leaks, test-set guard, reproducibility |
+| `venv\Scripts\python src\check_evaluation.py` | Phase 5 safeguards: test access, frozen criteria, determinism, dry run, prediction tool |
 
 ## Code layout
 
@@ -177,6 +185,7 @@ Shared modules used by the scripts above:
 | `figures/` | Charts and animations |
 | `docs/` | Technical report, design decisions, figure guide, glossary |
 | `paper/` | Manuscript draft and bibliography |
+| `results/` | Committed test-set results and predictions (Phase 5) |
 | `data/` | Generated simulation results (not stored in Git) |
 
 ## Known limitations

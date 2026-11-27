@@ -1,0 +1,53 @@
+{
+  "description": "Phase 5 protocol: one-time evaluation of the selected model on the held-out test set. Fixed before the test set is opened.",
+  "fixed_on": "2026-11-27, before the test set is opened",
+  "test_set": {"file": "configs/split.json", "frozen_in_commit": "ccb9bbc", "moons": 2400},
+  "selected_model": {"file": "configs/selected_model.json", "criteria_fixed_in_commit": "975d7fb"},
+  "primary_criteria": ["C1_generalization", "C2_beats_physics_rule", "C3_calibration", "C4_rare_class"],
+  "amendment": {
+    "name": "C1b_generalization_with_test_noise",
+    "reason": "The C1 interval reflects the uncertainty of the cross-validated score on 9,600 moons. The test score on 2,400 moons scatters about twice as widely, so a perfectly generalizing model would fall outside the C1 interval about one time in three.",
+    "criterion": "The 95% interval of (test macro-F1 minus cross-validated macro-F1) includes 0.",
+    "method": "1,000 draws; each resamples the test predictions and the out-of-fold predictions independently and takes the difference of macro-F1.",
+    "status": "supplementary; C1 is reported unchanged and strictly as defined"
+  },
+  "seed": 20261201,
+  "seed_luck_seeds": [20261211, 20261212, 20261213, 20261214, 20261215],
+  "bootstrap_samples": 1000,
+  "bootstrap_seed": 20261203,
+  "dry_run": {"holdout_share": 0.2, "seed": 20261204},
+  "baselines": ["majority", "physics_rule"],
+  "no_model_switching": true,
+  "descriptive_analyses": [
+    "all metrics of src/cv.py with bootstrap intervals, cross-validated versus test",
+    "isotropic-weighted test metrics",
+    "per-class calibration (one-vs-rest ECE)",
+    "seed luck: test macro-F1 of the selected model retrained with 5 other seeds",
+    "lifetime class on test, Random Forest with the same final settings",
+    "error map on a 6 x 6 grid of semi-major axis and inclination",
+    "coverage-accuracy curve",
+    "test chaos twins (rule T5) and chaos-adjusted test accuracy"
+  ],
+  "rule_T5": {
+    "question": "Do test errors concentrate on chaotic moons?",
+    "criterion": "95% bootstrap interval of (error rate on twin-disagreeing moons minus error rate on twin-agreeing moons) above 0",
+    "twins": {"count": 600, "seed": 20261205, "shift_m": 1.0, "run": "after the test evaluation is committed"}
+  },
+  "speed_benchmark": {
+    "model_latency": "feature computation plus prediction for one moon, single-threaded, median of 1,000 repetitions",
+    "model_throughput": "2,400 moons in one batch, single-threaded",
+    "simulation": {"moons": 100, "seed": 20261206, "source": "training moons", "process": "single process"},
+    "preregistered_reference_s": 1.456,
+    "reported": ["pre-registered speedup", "same-machine median and mean speedups", "time for 12,000 moons", "one-time costs", "break-even number of predictions", "simulation time by outcome"]
+  },
+  "outcome_handling": {
+    "C1_and_C1b_pass": "Generalization confirmed; test scores become the headline numbers.",
+    "C1_fails_C1b_passes": "Consistent with cross-validation within test-set noise; test scores reported as headline numbers with that wording.",
+    "C1b_fails": "Reported as overfitting or selection optimism; the gap is quantified; no model change.",
+    "C2_fails": "The surrogate is not shown to beat the physics rule out of sample; stated in the abstract.",
+    "C3_fails": "Miscalibration reported; no recalibration on test moons.",
+    "C4": "Descriptive: recall with Wilson interval.",
+    "T5_fails": "Errors are not shown to concentrate on chaotic test moons; failure analysis focuses on the error map."
+  },
+  "prediction_tool": "src/predict.py uses the evaluated model (trained on the 9,600 training moons), not a model retrained on all 12,000 moons."
+}
