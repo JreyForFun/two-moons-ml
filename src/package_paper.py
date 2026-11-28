@@ -49,17 +49,20 @@ def compile_tex(name):
 
 
 def bundle(name):
+    """Flat upload bundle (submission portals do not accept subfolders), as a zip and a folder."""
     tex = (PAPER / f"{name}.tex").read_text(encoding="utf-8")
     figures = re.findall(r"\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}", tex)
-    DIST.mkdir(exist_ok=True)
+    files = [(PAPER / f"{name}.tex", f"{name}.tex"), (PAPER / "references.bib", "references.bib"),
+             (BUILD / f"{name}.bbl", f"{name}.bbl"), (BUILD / f"{name}.pdf", f"{name}.pdf")]
+    files += [(next(d / fig for d in FIGURE_DIRS if (d / fig).exists()), fig) for fig in figures]
+    folder = DIST / f"{name}_upload"
+    shutil.rmtree(folder, ignore_errors=True)
+    folder.mkdir(parents=True)
     target = DIST / f"{name}_upload.zip"
     with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
-        z.write(PAPER / f"{name}.tex", f"{name}.tex")
-        z.write(PAPER / "references.bib", "references.bib")
-        z.write(BUILD / f"{name}.bbl", f"{name}.bbl")
-        for fig in figures:
-            source = next(d / fig for d in FIGURE_DIRS if (d / fig).exists())
-            z.write(source, f"figures/{fig}")
+        for source, arcname in files:
+            z.write(source, arcname)
+            shutil.copyfile(source, folder / arcname)
     return target, len(figures)
 
 
@@ -72,7 +75,7 @@ def main():
         return 1
     shutil.copyfile(BUILD / f"{name}.pdf", PAPER / f"{name}.pdf")
     target, figures = bundle(name)
-    print(f"Saved paper/{name}.pdf and dist/{target.name} ({figures} figures)")
+    print(f"Saved paper/{name}.pdf, dist/{target.name} and dist/{name}_upload/ ({figures} figures)")
     print("PASS")
     return 0
 

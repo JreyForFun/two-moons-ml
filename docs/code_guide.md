@@ -71,7 +71,7 @@ of workers.
 | `predict.py` | dataset (first run) or cache | prints probabilities | 1–2 min on first run (fits and caches the model), then about 0.1 s |
 | `plot_*.py`, `animate.py`, `make_post_figures.py` | results and data | figures | seconds to a few minutes |
 | `paper_numbers.py` | results and data | (prints numbers) | seconds |
-| `package_paper.py` | `paper/*.tex`, figures | `paper/<name>.pdf`, `dist/<name>_upload.zip` | under a minute |
+| `package_paper.py` | `paper/*.tex`, figures | `paper/<name>.pdf`, flat upload bundle `dist/<name>_upload.zip` and `dist/<name>_upload/` | under a minute |
 | `package_data.py` | data, configurations, results | `dist/two-moons-ml-data-v1.0.zip` | seconds |
 
 ## Conventions
