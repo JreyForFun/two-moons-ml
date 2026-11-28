@@ -790,7 +790,10 @@ file; 83 files, 7.2 MB. The four main data files are checked against the checksu
 committed manifests before packaging, and the archive is byte-identical when rebuilt. The data
 are released under CC BY 4.0 and the code under the MIT license. The archive is deposited on
 Zenodo as doi:10.5281/zenodo.24607389; the uploaded file was confirmed byte-identical to the rebuilt archive, and
-the paper cites the dataset in its references (`Quizon2026data`).
+the paper cites the dataset in its references (`Quizon2026data`). The GitHub release v1.0.0 was archived
+automatically as a software record: doi:10.5281/zenodo.24612629 (v1.0.0) and
+doi:10.5281/zenodo.24612628 (all versions); the Research Notes version cites it
+(`Quizon2026code`).
 
 ### Pre-release audit
 

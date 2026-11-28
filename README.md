@@ -1,6 +1,7 @@
 # What if Earth had 2 moons?
 
 [![Data DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24607389.svg)](https://doi.org/10.5281/zenodo.24607389)
+[![Code DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24612628.svg)](https://doi.org/10.5281/zenodo.24612628)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 What would happen if Earth had a second natural satellite? This project simulates 12,000
@@ -304,8 +305,9 @@ Starting conditions and reference positions come from the
 ## License and citation
 
 Code is released under the [MIT License](LICENSE) and the data under CC BY 4.0
-([doi:10.5281/zenodo.24607389](https://doi.org/10.5281/zenodo.24607389)). To cite this
-project, use the metadata in [CITATION.cff](CITATION.cff) (GitHub's "Cite this repository"
-button).
+([doi:10.5281/zenodo.24607389](https://doi.org/10.5281/zenodo.24607389)). Each release of the
+code is archived on Zenodo: all versions [doi:10.5281/zenodo.24612628](https://doi.org/10.5281/zenodo.24612628), v1.0.0
+[doi:10.5281/zenodo.24612629](https://doi.org/10.5281/zenodo.24612629). To cite this project, use the metadata in
+[CITATION.cff](CITATION.cff) (GitHub's "Cite this repository" button).
 
 Author: John Rey Ishiguro Quizon, STI College Legazpi.

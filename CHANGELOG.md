@@ -2,6 +2,8 @@
 
 ## v1.0.0 (2026-11-28)
 
+Archived on Zenodo: doi:10.5281/zenodo.24612629 (this version), doi:10.5281/zenodo.24612628 (all versions).
+
 First release, accompanying the paper *The Fate of a Hypothetical Second Moon of Earth: N-body
 Simulations and a Machine-Learning Surrogate*.
 
